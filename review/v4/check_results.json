@@ -1,0 +1,753 @@
+{
+ "contrast_welcome_mac_1440": {
+  "count": 6,
+  "fails": [],
+  "min": {
+   "t": "支援 MP4、MOV、Insta360 LRV（",
+   "cr": 8.49,
+   "need": 4.5,
+   "fs": 13,
+   "el": "sec"
+  },
+  "minfs": 13
+ },
+ "contrast_main_mac_1440": {
+  "count": 143,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_trim_mac_1440": {
+  "count": 13,
+  "fails": [],
+  "min": {
+   "t": "播放此段（循環）",
+   "cr": 8.03,
+   "need": 4.5,
+   "fs": 14,
+   "el": "SPAN"
+  },
+  "minfs": 12
+ },
+ "contrast_dResume_mac_1440": {
+  "count": 148,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dImport_mac_1440": {
+  "count": 151,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dDelete_mac_1440": {
+  "count": 160,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dTrash_mac_1440": {
+  "count": 157,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dDisk_mac_1440": {
+  "count": 152,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dProg_mac_1440": {
+  "count": 151,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dCancel_mac_1440": {
+  "count": 147,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dDone_mac_1440": {
+  "count": 150,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dErr_mac_1440": {
+  "count": 149,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dSet_mac_1440": {
+  "count": 155,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_welcome_win_1440": {
+  "count": 6,
+  "fails": [],
+  "min": {
+   "t": "支援 MP4、MOV、Insta360 LRV（",
+   "cr": 8.49,
+   "need": 4.5,
+   "fs": 13,
+   "el": "sec"
+  },
+  "minfs": 13
+ },
+ "contrast_main_win_1440": {
+  "count": 143,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_trim_win_1440": {
+  "count": 13,
+  "fails": [],
+  "min": {
+   "t": "播放此段（循環）",
+   "cr": 8.03,
+   "need": 4.5,
+   "fs": 14,
+   "el": "SPAN"
+  },
+  "minfs": 12
+ },
+ "contrast_dResume_win_1440": {
+  "count": 148,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dImport_win_1440": {
+  "count": 151,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dDelete_win_1440": {
+  "count": 160,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dTrash_win_1440": {
+  "count": 157,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dDisk_win_1440": {
+  "count": 152,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dProg_win_1440": {
+  "count": 151,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dCancel_win_1440": {
+  "count": 147,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dDone_win_1440": {
+  "count": 150,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dErr_win_1440": {
+  "count": 149,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dSet_win_1440": {
+  "count": 155,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "layout_1440": {
+  "scrollW": 1440,
+  "vw": 1440,
+  "rightVisible": true,
+  "rail": 0,
+  "sumH": 18.84375,
+  "cols": 4,
+  "topOverflow": false,
+  "tlOverflow": false
+ },
+ "contrast_welcome_mac_1024": {
+  "count": 6,
+  "fails": [],
+  "min": {
+   "t": "支援 MP4、MOV、Insta360 LRV（",
+   "cr": 8.49,
+   "need": 4.5,
+   "fs": 13,
+   "el": "sec"
+  },
+  "minfs": 13
+ },
+ "contrast_main_mac_1024": {
+  "count": 119,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_trim_mac_1024": {
+  "count": 13,
+  "fails": [],
+  "min": {
+   "t": "播放此段（循環）",
+   "cr": 8.03,
+   "need": 4.5,
+   "fs": 14,
+   "el": "SPAN"
+  },
+  "minfs": 12
+ },
+ "contrast_dResume_mac_1024": {
+  "count": 124,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dImport_mac_1024": {
+  "count": 127,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dDelete_mac_1024": {
+  "count": 136,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dTrash_mac_1024": {
+  "count": 133,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dDisk_mac_1024": {
+  "count": 128,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dProg_mac_1024": {
+  "count": 127,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dCancel_mac_1024": {
+  "count": 123,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dDone_mac_1024": {
+  "count": 126,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dErr_mac_1024": {
+  "count": 125,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dSet_mac_1024": {
+  "count": 131,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_welcome_win_1024": {
+  "count": 6,
+  "fails": [],
+  "min": {
+   "t": "支援 MP4、MOV、Insta360 LRV（",
+   "cr": 8.49,
+   "need": 4.5,
+   "fs": 13,
+   "el": "sec"
+  },
+  "minfs": 13
+ },
+ "contrast_main_win_1024": {
+  "count": 119,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_trim_win_1024": {
+  "count": 13,
+  "fails": [],
+  "min": {
+   "t": "播放此段（循環）",
+   "cr": 8.03,
+   "need": 4.5,
+   "fs": 14,
+   "el": "SPAN"
+  },
+  "minfs": 12
+ },
+ "contrast_dResume_win_1024": {
+  "count": 124,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dImport_win_1024": {
+  "count": 127,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dDelete_win_1024": {
+  "count": 136,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dTrash_win_1024": {
+  "count": 133,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dDisk_win_1024": {
+  "count": 128,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dProg_win_1024": {
+  "count": 127,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dCancel_win_1024": {
+  "count": 123,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dDone_win_1024": {
+  "count": 126,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dErr_win_1024": {
+  "count": 125,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "contrast_dSet_win_1024": {
+  "count": 131,
+  "fails": [],
+  "min": {
+   "t": "1. VID_0001",
+   "cr": 6.98,
+   "need": 4.5,
+   "fs": 12,
+   "el": "band"
+  },
+  "minfs": 12
+ },
+ "layout_1024": {
+  "scrollW": 1024,
+  "vw": 1024,
+  "rightVisible": false,
+  "rail": 48,
+  "sumH": 18.84375,
+  "cols": 3,
+  "topOverflow": false,
+  "tlOverflow": false
+ },
+ "drawerOpen": {
+  "open": true,
+  "focus": "16:9"
+ },
+ "drawerEsc": true,
+ "tabOrder": [
+  "|BUTTON|1 歡迎",
+  "|BUTTON|1b 續作",
+  "|BUTTON|2 主畫面",
+  "|BUTTON|3 精修",
+  "|BUTTON|匯入資料夾",
+  "|BUTTON|刪除",
+  "|BUTTON|磁碟檢查",
+  "|BUTTON|輸出進度",
+  "|BUTTON|完成",
+  "|BUTTON|錯誤",
+  "|BUTTON|設定",
+  "pfBtn|BUTTON|macOS",
+  "rmBtn|BUTTON|減少動態：關",
+  "aiBtn|BUTTON|雲端 AI：關",
+  "|BUTTON|匯入影片",
+  "|BUTTON|資料夾",
+  "|BUTTON|復原",
+  "|BUTTON|重做",
+  "|BUTTON|每支選最佳 2 段",
+  "|BUTTON|清除全部勾選",
+  "onlyChk|INPUT|",
+  "|BUTTON|設定",
+  "q|INPUT|",
+  "|BUTTON|全部 6",
+  "|BUTTON|已勾選 2",
+  "|BUTTON|待分析 2",
+  "|BUTTON|錯誤 2",
+  "v1|option|VID_0001.mp4已分析 00:42",
+  "|BUTTON|知道了",
+  "aiq|INPUT|",
+  "|BUTTON|雲端 AI 挑選",
+  "|BUTTON|VID_0001.mp4",
+  "|BUTTON|重新推薦",
+  "|BUTTON|＋ 手動新增片段",
+  "c1_0|checkbox|VID_0001.mp4 00:04.0 到",
+  "c1_1|checkbox|VID_0001.mp4 00:13.0 到",
+  "c1_2|checkbox|VID_0001.mp4 00:22.0 到",
+  "c1_3|checkbox|VID_0001.mp4 00:31.0 到",
+  "|BUTTON|LRV_0002.lrv",
+  "|BUTTON|重新推薦"
+ ],
+ "cardSpace": {
+  "active": "c1_2",
+  "checked": "true"
+ },
+ "cardArrow": "c1_3|checkbox|VID_0001.mp4 00:31.0 到",
+ "listDown": "v2|option|LRV_0002.lrv已分析 01:15",
+ "listSel": "true",
+ "radio": {
+  "focus": "9:16",
+  "checked": "9:16",
+  "mask": "34.2%"
+ },
+ "tlMove": {
+  "before": [
+   "c1_0",
+   "c1_1",
+   "c2_0",
+   "c2_1",
+   "c1_2"
+  ],
+  "after": [
+   "c1_1",
+   "c1_0",
+   "c2_0",
+   "c2_1",
+   "c1_2"
+  ],
+  "focus": "c1_0"
+ },
+ "dlgOpenFocus": "|BUTTON|選擇其他位置…",
+ "trapInside": true,
+ "escClosed": true,
+ "focusRestored": "go|BUTTON|產生成品",
+ "progEsc": "dCancel",
+ "progEsc2": "dProg",
+ "errHasClose": true,
+ "disabled": {
+  "dis": true,
+  "why": "請至少勾選 1 個片段"
+ },
+ "delList": "VID_0003.mov\nVID_0004.insv",
+ "afterRemove": 4,
+ "afterUndo": 6,
+ "winText": {
+  "reveal": "在檔案總管中顯示",
+  "tip": "產生成品（Ctrl+Enter）",
+  "order": "row"
+ },
+ "macText": {
+  "reveal": "在 Finder 中顯示",
+  "tip": "產生成品（⌘↩）",
+  "order": "row-reverse"
+ },
+ "trimHandle": "00:13.5",
+ "rmAnim": "none",
+ "tabs": {
+  "sel": "推薦",
+  "panel": "t2"
+ },
+ "pageErrors": []
+}

@@ -1,0 +1,5 @@
+PySide6>=6.6
+Send2Trash>=1.8
+imageio-ffmpeg>=0.4.9
+numpy>=1.24
+keyring>=24   # 選用：雲端 AI 金鑰存系統鑰匙圈

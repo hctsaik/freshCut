@@ -1,0 +1,22 @@
+== /tmp/test_core.python.log
+ALL OK /tmp/tmpah1b42sp
+final MediaInfo(path='/tmp/tmpah1b42sp/final.mp4', duration=12.5, width=1920, height=1080, has_audio=True)
+FLOW OK
+== /tmp/test_core.python3.log
+ALL OK /tmp/tmpaz8gecu8
+final MediaInfo(path='/tmp/tmpaz8gecu8/final.mp4', duration=12.5, width=1920, height=1080, has_audio=True)
+FLOW OK
+== /tmp/test_groups.python.log
+GROUPS OK
+== /tmp/test_groups.python3.log
+GROUPS OK
+== /tmp/test_library.python.log
+MediaInfo(path='/tmp/tmp8cbs2o9i/out.mp4', duration=4.5, width=1920, height=1080, has_audio=True)
+first analysis 1.3s; LIBRARY OK
+== /tmp/test_library.python3.log
+MediaInfo(path='/tmp/tmp0y7_1zzf/out.mp4', duration=4.5, width=1920, height=1080, has_audio=True)
+first analysis 2.9s; LIBRARY OK
+== /tmp/test_volume.python.log
+VOLUME OK
+== /tmp/test_volume.python3.log
+VOLUME OK

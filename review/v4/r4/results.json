@@ -1,0 +1,459 @@
+{
+ "R1_open": {
+  "id": "",
+  "txt": "關閉",
+  "vis": true,
+  "dlg": "dConsent",
+  "mode": "info",
+  "scr": "main"
+ },
+ "R1_btns": [
+  "查看 OpenAI 相容 API 的資料政策",
+  "在設定中關閉雲端 AI",
+  "關閉"
+ ],
+ "R1_esc": [
+  {
+   "id": "",
+   "txt": "詳細",
+   "vis": true,
+   "dlg": null,
+   "scr": "main"
+  },
+  true
+ ],
+ "R1_enter": [
+  {
+   "id": "",
+   "txt": "詳細",
+   "vis": true,
+   "dlg": null,
+   "scr": "main"
+  },
+  true
+ ],
+ "R1_consentAfterInfo": [
+  {
+   "id": "",
+   "txt": "取消",
+   "vis": true,
+   "dlg": "dConsent",
+   "mode": "consent",
+   "scr": "main"
+  },
+  [
+   "查看 OpenAI 相容 API 的資料政策",
+   "我了解，開啟",
+   "取消"
+  ]
+ ],
+ "R1_consentEsc": [
+  {
+   "id": "",
+   "txt": "完成",
+   "vis": true,
+   "dlg": "dSet",
+   "scr": "main"
+  },
+  false
+ ],
+ "R1_offLink": [
+  {
+   "id": "s14",
+   "txt": "on",
+   "vis": true,
+   "dlg": "dSet",
+   "scr": "main"
+  },
+  [
+   true,
+   true
+  ]
+ ],
+ "F3_idle": {
+  "all": false,
+  "q": false,
+  "go": false,
+  "note": "將上傳 64 張影像到 OpenAI 相容 API 詳細",
+  "err": "",
+  "tags": 0
+ },
+ "F3_run": {
+  "all": false,
+  "q": true,
+  "go": true,
+  "note": "AI 分析中 12/30… 取消",
+  "err": "",
+  "tags": 0
+ },
+ "F3_done": {
+  "all": true,
+  "q": false,
+  "go": false,
+  "note": "將上傳 64 張影像到 OpenAI 相容 API 詳細",
+  "err": "",
+  "tags": 4
+ },
+ "F3_key": {
+  "all": false,
+  "q": true,
+  "go": true,
+  "note": "金鑰無效，請到設定重新測試 開啟設定",
+  "err": "金鑰無效・請到設定重新輸入並測試金鑰；測試通過前無法使用雲端 AI。 設定",
+  "tags": 0
+ },
+ "F3_quota": {
+  "all": false,
+  "q": false,
+  "go": false,
+  "note": "上次未完成・將上傳 64 張影像到 OpenAI 相容 API 詳細",
+  "err": "已達額度上限・OpenAI 相容 API 回報額度不足，已改用本機評分。 重試 設定",
+  "tags": 0
+ },
+ "F3_off": {
+  "all": false,
+  "q": false,
+  "go": false,
+  "note": "上次未完成・將上傳 64 張影像到 OpenAI 相容 API 詳細",
+  "err": "無法連線，已改用本機評分・請檢查網路後重試。 重試 設定",
+  "tags": 0
+ },
+ "F3_keyOK": false,
+ "R2_at30": false,
+ "R2_hiddenVisible": [],
+ "R2_custom": true,
+ "R2_8": {
+  "inv": "false",
+  "err": null,
+  "sum": "已選 4 段・15.0 秒 / 目標 8 秒 ・超過 7.0 秒，將依比例縮短",
+  "bc": "rgb(112, 112, 112)"
+ },
+ "R2_3": {
+  "inv": "true",
+  "err": "請輸入 5–600 秒（目前沿用 8 秒）",
+  "sum": "已選 4 段・15.0 秒 / 目標 8 秒 ・超過 7.0 秒，將依比例縮短",
+  "bc": "rgb(255, 107, 107)"
+ },
+ "R2_empty": {
+  "inv": "true",
+  "err": "請輸入 5–600 秒（目前沿用 8 秒）",
+  "sum": "已選 4 段・15.0 秒 / 目標 8 秒 ・超過 7.0 秒，將依比例縮短",
+  "bc": "rgb(255, 107, 107)"
+ },
+ "R2_700": {
+  "inv": "true",
+  "err": "請輸入 5–600 秒（目前沿用 70 秒）",
+  "sum": "已選 4 段・15.0 秒 / 目標 70 秒",
+  "bc": "rgb(255, 107, 107)"
+ },
+ "R2_601": {
+  "inv": "true",
+  "err": "請輸入 5–600 秒（目前沿用 60 秒）",
+  "sum": "已選 4 段・15.0 秒 / 目標 60 秒",
+  "bc": "rgb(255, 107, 107)"
+ },
+ "R2_ok": {
+  "inv": "false",
+  "err": null,
+  "sum": "已選 4 段・15.0 秒 / 目標 45 秒",
+  "bc": "rgb(112, 112, 112)"
+ },
+ "R2_live": [
+  null,
+  null,
+  "custHint custErr"
+ ],
+ "R2_back30": [
+  false,
+  false
+ ],
+ "R2_invThen30": [
+  false,
+  true,
+  "已選 4 段・15.0 秒 / 目標 30 秒"
+ ],
+ "R3": [
+  [
+   true,
+   "rgb(138, 138, 138)",
+   "rgb(58, 58, 58)",
+   "rgb(36, 36, 36)",
+   "not-allowed"
+  ],
+  [
+   false,
+   "rgb(255, 179, 179)",
+   "rgb(255, 107, 107)",
+   "rgb(44, 44, 44)",
+   "pointer"
+  ]
+ ],
+ "S2": [
+  "⚠ 下列 3 個檔案位於 記憶卡或 USB 磁碟（E:），該磁碟沒有資源回收筒，刪除後無法還原。可以略過這些檔案，其餘照常移到資源回收筒。",
+  [
+   "永久刪除",
+   "略過這 3 個檔案",
+   "取消"
+  ]
+ ],
+ "R3_tab": [
+  "on",
+  "略過這 3 個檔案",
+  "取消",
+  "on",
+  "略過這 3 個檔案"
+ ],
+ "S2_skip": [
+  "略過 3 個檔案（仍在清單中）",
+  []
+ ],
+ "S4": [
+  "檔案已在資源回收筒中，請到檔案總管的資源回收筒還原 在資源回收筒中顯示",
+  []
+ ],
+ "R4_btns": [
+  "素材庫",
+  "確定",
+  "取消",
+  "套用(dis)"
+ ],
+ "R4_s3": [
+  false,
+  "減少動態（停用自動播放）"
+ ],
+ "R4_dirty": [
+  "有尚未套用的變更",
+  false,
+  "win"
+ ],
+ "R4_cancel": [
+  false,
+  "win"
+ ],
+ "R4_selects": [
+  "s1",
+  "s2",
+  "s3b",
+  "s8",
+  "s11",
+  "s15",
+  ""
+ ],
+ "R4_selDirty": "有尚未套用的變更",
+ "R4_escRevertSel": [
+  "隨機",
+  "無"
+ ],
+ "R4_staged": [
+  false,
+  true,
+  "有尚未套用的變更"
+ ],
+ "R4_cancelAI": [
+  false,
+  false
+ ],
+ "R4_apply": [
+  true,
+  true,
+  "已套用"
+ ],
+ "R4_cancelAfterApply": true,
+ "R4_keyTested": [
+  true,
+  false
+ ],
+ "R4_keyAfterCancel": [
+  false,
+  "",
+  true
+ ],
+ "R4_delKey": [
+  false,
+  "已刪除儲存的金鑰"
+ ],
+ "R4_delKeyCancel": [
+  true,
+  ""
+ ],
+ "R4_ok": [
+  true,
+  "win"
+ ],
+ "R4_mac": [
+  true,
+  "mac",
+  [
+   "素材庫",
+   "完成"
+  ]
+ ],
+ "S1_path": [
+  "全部 7",
+  "v1",
+  "知道了",
+  "c1_0",
+  "target",
+  "16:9",
+  "1080p",
+  "交叉淡化",
+  "mus",
+  "mv",
+  "on",
+  "ov",
+  "fo",
+  "第 1 段：VID_0001 00:04.0，4",
+  "pvBtn",
+  "go"
+ ],
+ "S1_n": 16,
+ "S1_nNoBanner": 15,
+ "S1_skip": {
+  "id": "",
+  "txt": "第 1 段：VID_0001 00:04.0，4",
+  "vis": true,
+  "dlg": null,
+  "scr": "main"
+ },
+ "S1_discover": [
+  [
+   "|Meta+Alt+T Control+Alt+T"
+  ],
+  "true",
+  "⌥⌘T 跳到時間軸",
+  "產生成品（⌘↩）"
+ ],
+ "S1_wallEntry": {
+  "id": "c1_0",
+  "txt": "勾選 VID_0001 00:04.0 到 00",
+  "vis": true,
+  "dlg": null,
+  "scr": "main"
+ },
+ "S1_remember": [
+  "c1_2",
+  "target",
+  "c1_2"
+ ],
+ "S1_space": [
+  "true",
+  "c1_2"
+ ],
+ "S1_home": {
+  "id": "",
+  "txt": "＋ 手動新增片段",
+  "vis": true,
+  "dlg": null,
+  "scr": "main"
+ },
+ "S1_homeDown": {
+  "id": "c1_0",
+  "txt": "勾選 VID_0001 00:04.0 到 00",
+  "vis": true,
+  "dlg": null,
+  "scr": "main"
+ },
+ "S1_hdrRight": {
+  "id": "c1_1",
+  "txt": "勾選 VID_0001 00:13.0 到 00",
+  "vis": true,
+  "dlg": null,
+  "scr": "main"
+ },
+ "S1_enterTrim": "trim",
+ "wallStops": 1,
+ "wallHint": [
+  "vh",
+  "absolute",
+  null
+ ],
+ "S1_clickRemember": "c2_2",
+ "S1_afterCollapse": {
+  "id": "v1",
+  "txt": "VID_0001MP4已分析 00:42",
+  "vis": true,
+  "dlg": null,
+  "scr": "main"
+ },
+ "S3": [
+  [
+   12.5,
+   16.5
+  ],
+  [
+   13.2,
+   16.5
+  ],
+  [
+   13.2,
+   16.5
+  ],
+  [
+   "播放頭太靠近入點，至少保留 0.5 秒"
+  ]
+ ],
+ "S3_real": [
+  13.2,
+  16.5
+ ],
+ "S3_inInput": [
+  13.2,
+  16.5,
+  "00:13.2o"
+ ],
+ "O1": [
+  false,
+  {
+   "id": "",
+   "txt": "模型：\n1 歡迎1b 續作2 主畫面3 精修\n匯",
+   "vis": false,
+   "dlg": null,
+   "scr": "main"
+  }
+ ],
+ "O2_before": "VID_0001 共 3 個檔案，1.2 GB VID_0001.mp4（1.1 GB）・LRV_0001.lrv（92 MB）・VID_0001.thm（<1 MB）",
+ "O2_after": [
+  "LRV_0001.lrv（92 MB） VID_0001.thm（<1 MB） 原始檔保留，影片仍在清單中",
+  "確定將\n2\n個檔案移到\n垃圾桶\n？",
+  [
+   "移到垃圾桶",
+   "取消"
+  ]
+ ],
+ "O2_toast": [
+  "已將 2 個預覽檔移到垃圾桶，原始檔保留 在垃圾桶中顯示",
+  []
+ ],
+ "O3": [
+  [
+   "VID_0001MP4",
+   null
+  ],
+  [
+   "VID_0002LRV",
+   null
+  ],
+  [
+   "VID_0003MOV",
+   null
+  ]
+ ],
+ "reg_N3": "dDisk",
+ "reg_consent": {
+  "id": "",
+  "txt": "取消",
+  "vis": true,
+  "dlg": "dConsent",
+  "mode": "consent",
+  "scr": "main"
+ },
+ "hs_mac1440": 1440,
+ "hid_mac1440": [],
+ "hs_win1440": 1440,
+ "hid_win1440": [],
+ "hs_mac1024": 1024,
+ "hid_mac1024": [],
+ "hs_win1024": 1024,
+ "hid_win1024": [],
+ "errs": []
+}

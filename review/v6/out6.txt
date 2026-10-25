@@ -1,0 +1,116 @@
+{"contrast_welcome_mac_1440":{"n":6,"fails":0,"min":"8.49 支援 MP4、MOV、Insta360 LRV（","minfs":13},"contrast_main_mac_1440":{"n":150,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_trim_mac_1440":{"n":13,"fails":0,"min":"8.03 播放此段（循環）","minfs":12},"contrast_dResume_mac_1440":{"n":155,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dImport_mac_1440":{"n":158,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dDelete_mac_1440":{"n":174,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dTrash_mac_1440":{"n":168,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dDisk_mac_1440":{"n":159,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dProg_mac_1440":{"n":158,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dCancel_mac_1440":{"n":154,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dDone_mac_1440":{"n":157,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dErr_mac_1440":{"n":156,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dSet_mac_1440":{"n":163,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dPerm_mac_1440":{"n":165,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dConsent_mac_1440":{"n":165,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_welcome_win_1440":{"n":6,"fails":0,"min":"8.49 支援 MP4、MOV、Insta360 LRV（","minfs":13},"contrast_main_win_1440":{"n":150,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_trim_win_1440":{"n":13,"fails":0,"min":"8.03 播放此段（循環）","minfs":12},"contrast_dResume_win_1440":{"n":155,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dImport_win_1440":{"n":158,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dDelete_win_1440":{"n":174,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dTrash_win_1440":{"n":168,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dDisk_win_1440":{"n":159,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dProg_win_1440":{"n":158,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dCancel_win_1440":{"n":154,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dDone_win_1440":{"n":157,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dErr_win_1440":{"n":156,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dSet_win_1440":{"n":164,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dPerm_win_1440":{"n":172,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dConsent_win_1440":{"n":165,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_welcome_mac_1024":{"n":6,"fails":0,"min":"8.49 支援 MP4、MOV、Insta360 LRV（","minfs":13},"contrast_main_mac_1024":{"n":126,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_trim_mac_1024":{"n":13,"fails":0,"min":"8.03 播放此段（循環）","minfs":12},"contrast_dResume_mac_1024":{"n":131,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dImport_mac_1024":{"n":134,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dDelete_mac_1024":{"n":150,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dTrash_mac_1024":{"n":144,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dDisk_mac_1024":{"n":135,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dProg_mac_1024":{"n":134,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dCancel_mac_1024":{"n":130,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dDone_mac_1024":{"n":133,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dErr_mac_1024":{"n":132,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dSet_mac_1024":{"n":139,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dPerm_mac_1024":{"n":141,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dConsent_mac_1024":{"n":141,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_welcome_win_1024":{"n":6,"fails":0,"min":"8.49 支援 MP4、MOV、Insta360 LRV（","minfs":13},"contrast_main_win_1024":{"n":126,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_trim_win_1024":{"n":13,"fails":0,"min":"8.03 播放此段（循環）","minfs":12},"contrast_dResume_win_1024":{"n":131,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dImport_win_1024":{"n":134,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dDelete_win_1024":{"n":150,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dTrash_win_1024":{"n":144,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dDisk_win_1024":{"n":135,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dProg_win_1024":{"n":134,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dCancel_win_1024":{"n":130,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dDone_win_1024":{"n":133,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dErr_win_1024":{"n":132,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dSet_win_1024":{"n":140,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dPerm_win_1024":{"n":148,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_dConsent_win_1024":{"n":141,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_F3_run":{"n":158,"fails":0,"min":"4.5 雲端 AI 挑選","minfs":12},"contrast_F3_done":{"n":167,"fails":0,"min":"5.6 —","minfs":12},"contrast_F3_key":{"n":161,"fails":0,"min":"4.5 雲端 AI 挑選","minfs":12},"contrast_F3_quota":{"n":162,"fails":0,"min":"5.6 —","minfs":12},"contrast_F3_off":{"n":162,"fails":0,"min":"5.6 —","minfs":12},"contrast_F3b_run":{"n":153,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_F3b_key":{"n":156,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_F3b_quota":{"n":157,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_F3b_off":{"n":157,"fails":0,"min":"4.5 移除…","minfs":12},"contrast_F3b_done":{"n":162,"fails":0,"min":"4.5 移除…","minfs":12}}
+layout_1440 {"scrollW":1440,"vw":1440,"rightVisible":true,"rail":0,"sumH":18.84375,"cols":4,"topOverflow":false,"tlOverflow":false}
+layout_1024 {"scrollW":1024,"vw":1024,"rightVisible":false,"rail":48,"sumH":18.84375,"cols":3,"topOverflow":false,"tlOverflow":false}
+drawerOpen {"open":true,"focus":"16:9"}
+drawerEsc true
+tabOrder ["|BUTTON|1 歡迎","|BUTTON|1b 續作","|BUTTON|2 主畫面","|BUTTON|3 精修","|BUTTON|匯入資料夾","|BUTTON|刪除","|BUTTON|無垃圾桶磁碟","|BUTTON|網路磁碟","|BUTTON|磁碟檢查","|BUTTON|輸出進度","|BUTTON|完成","|BUTTON|錯誤","|BUTTON|設定","pfBtn|BUTTON|macOS","rmBtn|BUTTON|減少動態：關","aiBtn|BUTTON|雲端 AI：關","|BUTTON|分析中","|BUTTON|結果","|BUTTON|金鑰無效","|BUTTON|額度用完","|BUTTON|離線","|BUTTON|匯入影片","|BUTTON|資料夾","|BUTTON|復原","|BUTTON|重做","|BUTTON|每支選最佳 2 段","|BUTTON|清除全部勾選","onlyChk|INPUT|","|BUTTON|設定","q|INPUT|","|BUTTON|全部 7","v1|option|VID_0001MP4已分析 00:42","|BUTTON|知道了","c1_0|checkbox|勾選 VID_0001 00:04.0 到 ","target|SELECT|自動（全部已勾選片段）15 秒30 秒60 ","|radio|16:9","|radio|1080p","|radio|交叉淡化","mus|SELECT|隨機（預設資料夾）summer_vibes.","mv|INPUT|"]
+cardSpace {"active":"c1_2","checked":"true"}
+cardArrow "c1_3|checkbox|勾選 VID_0001 00:31.0 到 "
+listDown "v2|option|VID_0002LRV已分析 01:15"
+listSel "true"
+radio {"focus":"9:16","checked":"9:16","mask":"34.2%"}
+tlMove {"before":["c1_0","c1_1","c2_0","c2_1","c1_2"],"after":["c1_1","c1_0","c2_0","c2_1","c1_2"],"focus":"c1_0"}
+dlgOpenFocus "|BUTTON|選擇其他位置…"
+trapInside true
+escClosed true
+focusRestored "go|BUTTON|產生成品"
+progEsc "dCancel"
+progEsc2 "dProg"
+errHasClose true
+disabled {"dis":true,"why":"請至少勾選 1 個片段"}
+delList "VID_0003 共 1 個檔案，1.2 GB\nVID_0003.mov（1.2 GB）\nVID_0004 共 2 個檔案，3.8 GB\nVID_0004.insv（3.8 GB）・VID_0004.thm（<1 MB）"
+afterRemove 5
+afterUndo 7
+winText {"reveal":"在檔案總管中顯示","tip":"產生成品（Ctrl+Enter）","order":"row"}
+macText {"reveal":"在 Finder 中顯示","tip":"產生成品（⌘↩）","order":"row-reverse"}
+trimHandle "00:13.5"
+rmAnim "none"
+tabs {"sel":"推薦","panel":"t2"}
+N2_disabled {"delBtn":{"bg":"rgb(36, 36, 36)","color":"rgb(138, 138, 138)","border":"rgb(58, 58, 58)","bs":"none","filter":"none","cursor":"not-allowed"},"enabledRef":{"bg":"rgb(44, 44, 44)","color":"rgb(238, 238, 238)","border":"rgb(122, 122, 122)","bs":"none","filter":"none","cursor":"pointer"},"pvBtnDisabled":{"bg":"rgb(36, 36, 36)","color":"rgb(138, 138, 138)","border":"rgb(58, 58, 58)","bs":"none","filter":"none","cursor":"not-allowed"}}
+N1 {"hoverUnchecked":{"bg":"rgb(34, 34, 34)","color":"rgb(238, 238, 238)","border":"rgb(168, 168, 168)","bs":"none","filter":"brightness(1.08)","cursor":"pointer"},"hoverChk":{"bg":"rgba(255, 255, 255, 0.25)","color":"rgb(17, 17, 17)","border":"rgb(255, 255, 255)","bs":"none","filter":"none","cursor":"pointer"},"checked":{"bg":"rgb(34, 34, 34)","color":"rgb(238, 238, 238)","border":"rgb(255, 196, 0)","bs":"rgb(255, 196, 0) 0px 0px 0px 1px","filter":"none","cursor":"pointer"}}
+N3_cardMetaEnter {"dlg":"dDisk","trimShown":false}
+N3_cardEnterOpensTrim true
+N3_clipCtrlEnterWin "dDisk"
+N5 {"nestedInCheckbox":0,"chkSize":[32,32],"trimTabbable":-1,"cards":12}
+N5_space {"before":false,"after":true,"focus":"c1_2|checkbox|勾選 VID_0001 00:22.0 到 "}
+N5_tabToTrim "target|SELECT|自動（全部已勾選片段）15 秒30 秒60 "
+N5_cardClickToggles true
+must7_actions ["說明","移除…"]
+N8 {"bg":"rgb(61, 53, 32)","color":"rgb(238, 238, 238)","border":"rgba(0, 0, 0, 0)","bs":"rgb(255, 196, 0) 3px 0px 0px 0px inset","filter":"none","cursor":"pointer"}
+N4_open "|radio|16:9"
+N4_tabStaysInDrawer true
+N4_escFocus {"id":"rail","visible":true,"open":false}
+N4_toggleCloseFocus true
+F1_consent {"dlg":"dConsent","focus":"|BUTTON|取消","s14":false}
+F1_escBack {"dlg":"dSet","aiOn":false}
+F1_afterConsent {"aiOn":true,"s14":true,"dlg":"dSet"}
+F1_keyStatus "✓ 連線成功"
+F1_barNoKey {"inputDisabled":true,"btnDisabled":true,"note":"請先在設定 › 智慧評分填入並測試金鑰\n開啟設定"}
+F3_run {"note":"AI 分析中 12/30…\n取消","err":"","badges":0,"all":""}
+F3_done {"note":"將上傳 64 張影像到 OpenAI 相容 API\n詳細","err":"","badges":4,"all":"勾選全部相符（4）"}
+F3_key {"note":"金鑰無效，請到設定重新測試\n開啟設定","err":"金鑰無效・請到設定重新輸入並測試金鑰；測試通過前無法使用雲端 AI。\n設定","badges":0,"all":""}
+F3_quota {"note":"上次未完成・將上傳 64 張影像到 OpenAI 相容 API\n詳細","err":"已達額度上限・OpenAI 相容 API 回報額度不足，已改用本機評分。\n重試\n設定","badges":0,"all":""}
+F3_off {"note":"上次未完成・將上傳 64 張影像到 OpenAI 相容 API\n詳細","err":"無法連線，已改用本機評分・請檢查網路後重試。\n重試\n設定","badges":0,"all":""}
+N6 {"fs":"13px","color":"rgb(238, 238, 238)","text":"將上傳 64 張影像到 OpenAI 相容 API\n詳細","icon":true,"link":true}
+F5_groupList "VID_0002 共 3 個檔案，4.9 GB\nLRV_0002.lrv（118 MB）・VID_0002.insv（4.8 GB）・VID_0002.thm（<1 MB）"
+F2_toast "已將 3 個檔案移到垃圾桶\n在垃圾桶中顯示"
+F2_perm {"focus":"|BUTTON|取消","goDisabled":true,"msg":"⚠ 下列 3 個檔案位於 記憶卡或 USB 磁碟（E:），該磁碟沒有資源回收筒，刪除後無法還原。可以略過這些檔案，其餘照常移到資源回收筒。","goAfterCheck":false}
+F2_permToast "已永久刪除 3 個檔案"
+F8_custVisible true
+F8_sum "已選 6 段・24.0 秒 / 目標 5 秒 ・縮到每段 1.5 秒仍超過 4.0 秒，建議取消勾選 3 段"
+N7 [24,84]
+N9_win ["確定\n取消\n套用"]
+N9_winFocus "|BUTTON|確定"
+F4_win "本機臉部／笑容／清晰度評分\n模型隨 App 安裝（約 12 MB），完全離線、不需下載或帳號；分析較慢。\n只在你的電腦上計算臉部數量、大小、笑容與清晰度分數；不做身分辨識，不儲存臉部影像、特徵或 landmark，素材庫只保存 0–100 的分數。\n此裝置（Windows on ARM）不支援笑容偵測，只計算臉部與清晰度。\n雲端 AI「描述你想要的畫面」\n預設關閉。會上傳低解析度關鍵影格與描述文字到你選的服務\n服務\nOpenAI 相容 API\nGoogle Gemini\nxAI\nAPI 金鑰（存在認證管理員）\n測試連線\n刪除已儲存的金鑰"
+F6_settings "快取（預覽、縮圖、分析結果）\n1.8 GB・412 支影片\n監看資料夾\n~/Movies/Insta360/DCIM（含子資料夾）・監看中 移除\nE:\\DCIM・已中斷連線（SD 卡未插入） 移除\n掃描頻率\n每 30 秒；使用電池時每 5 分鐘；磁碟休眠或卸載時暫停\n快取上限\n5 GB\n10 GB\n不限\n重新分析全部…\n清除預覽快取（保留勾選）"
+N9_mac ["變更會立即生效\n完成"]
+F6_card "SD 卡未插入\nVID_0007 在監看資料夾「SD 卡/DCIM」。重新插入後會自動恢復；勾選與微調都已保留，不會標成遺失。"
+nonText {"ghost_767676_on_222":3.5,"btn_7A7A7A_on_2c2c2c":3.25,"selBar_FFC400_on_3d3520":7.61,"selBar_FFC400_on_141414":11.53,"hover_A8A8A8_on_141414":7.75,"disabledText_8A8A8A_on_242424":4.5,"aiBadge_CFE3FF_on_1f3350":9.76,"uplNote_EEE_on_141414":15.88,"link_9CC3FF_on_262626":8.41,"dangerDisabled_8A8A8A_on_242424":4.5}
+R2_hidden {"custRowAt30":"none","aiAllIdle":"none"}
+F3b_run {"aiAllVisible":false,"inputDisabled":true,"btnDisabled":true,"note":"AI 分析中 12/30…\n取消","err":""}
+F3b_key {"aiAllVisible":false,"inputDisabled":true,"btnDisabled":true,"note":"金鑰無效，請到設定重新測試\n開啟設定","err":"金鑰無效・請到設定重新輸入並測試金鑰；測試通過前無法使用雲端 AI。\n設定"}
+F3b_quota {"aiAllVisible":false,"inputDisabled":false,"btnDisabled":false,"note":"上次未完成・將上傳 64 張影像到 OpenAI 相容 API\n詳細","err":"已達額度上限・OpenAI 相容 API 回報額度不足，已改用本機評分。\n重試\n設定"}
+F3b_off {"aiAllVisible":false,"inputDisabled":false,"btnDisabled":false,"note":"上次未完成・將上傳 64 張影像到 OpenAI 相容 API\n詳細","err":"無法連線，已改用本機評分・請檢查網路後重試。\n重試\n設定"}
+F3b_done {"aiAllVisible":true,"inputDisabled":false,"btnDisabled":false,"note":"將上傳 64 張影像到 OpenAI 相容 API\n詳細","err":""}
+R1_info {"dlg":"dConsent","mode":"info","focus":"|BUTTON|關閉","buttons":["查看 OpenAI 相容 API 的資料政策","在設定中關閉雲端 AI","關閉"]}
+R1_escBack {"dlg":null,"aiOn":true,"focus":"|BUTTON|詳細"}
+R1_closeBtn {"dlg":null,"aiOn":true,"focus":"|BUTTON|詳細"}
+R1_offLink {"dlg":"dSet","tab":"t5","focus":"s14|INPUT|","aiOn":true}
+R4_dirty {"txt":"有尚未套用的變更","apply":false}
+R4_s3AfterCancel false
+R4_consentStaged {"s14":true,"aiOn":false,"aiwrapHidden":true}
+R4_escReverts {"dlg":null,"aiOn":false,"s14":false}
+R4_apply {"aiOn":true,"dirty":"已套用"}
+R4_cancelAfterApply {"aiOn":true,"s3":false}
+R4_ok true
+R4_macEscKeeps true
+R2_invalid {"inv":"true","err":"請輸入 5–600 秒（目前沿用 45 秒）","errColor":"rgb(255, 156, 156)","errFs":"12px","border":"rgb(255, 107, 107)","sum":"已選 4 段・15.0 秒 / 目標 45 秒"}
+R2_valid {"inv":"false","errShown":false,"sum":"已選 4 段・15.0 秒 / 目標 60 秒"}
+R2_rowHiddenAt30 "none"
+R3_permDisabled {"bg":"rgb(36, 36, 36)","color":"rgb(138, 138, 138)","border":"rgb(58, 58, 58)","cursor":"not-allowed","display":"flex"}
+S2_perm {"msg":"⚠ 下列 3 個檔案位於 記憶卡或 USB 磁碟（E:），該磁碟沒有資源回收筒，刪除後無法還原。可以略過這些檔案，其餘照常移到資源回收筒。","buttons":["永久刪除(停用)","略過這 3 個檔案","取消"]}
+R3_permEnabled {"bg":"rgb(44, 44, 44)","color":"rgb(255, 179, 179)","border":"rgb(255, 107, 107)","cursor":"pointer","display":"flex"}
+S2_skipToast {"toast":"略過 3 個檔案（仍在清單中）","list":["v1","v2","v3","v4","v5","v6","v7"]}
+S2_netMsg "⚠ 下列 3 個檔案位於 網路磁碟 \\\\NAS\\video，該磁碟沒有資源回收筒，刪除後無法還原。可以略過這些檔案，其餘照常移到資源回收筒。"
+S4_undoAfterTrash {"toast":"檔案已在垃圾桶中，請到Finder的垃圾桶還原\n在垃圾桶中顯示","shown":true}
+O3_listName "VID_0002LRV"
+O2_rowVisible true
+O2_files {"files":"LRV_0001.lrv（92 MB）\nVID_0001.thm（<1 MB）\n原始檔保留，影片仍在清單中","nf":"確定將\n2\n個檔案移到\n垃圾桶\n？"}
+O2_after {"toast":"已將 2 個預覽檔移到垃圾桶，原始檔保留\n在垃圾桶中顯示","inList":true,"fs":["VID_0001.mp4"]}
+O2_hiddenNoPreviews true
+S1_tabsSearchToGo 16
+S1_path ["|BUTTON|全部 7","v1|option|VID_0001MP4已分析 00:42","|BUTTON|知道了","c1_0|checkbox|勾選 VID_0001 00:04.0 到 ","target|SELECT|自動（全部已勾選片段）15 秒30 秒60 ","|radio|16:9","|radio|1080p","|radio|交叉淡化","mus|SELECT|隨機（預設資料夾）summer_vibes.","mv|INPUT|","|INPUT|","ov|INPUT|","fo|INPUT|","|LI|第 1 段：VID_0001 00:04.0","pvBtn|BUTTON|預覽成品","go|BUTTON|產生成品"]
+S1_wallStops 1
+S1_skipShortcut "|LI|第 1 段：VID_0001 00:04.0"
+S1_tabsAfterSkipToGo 2
+S1_skipShortcutWin "|LI|第 1 段：VID_0001 00:04.0"
+S1_rovingRemembers "c1_1|checkbox|勾選 VID_0001 00:13.0 到 "
+S1_hint {"ks":"Enter","desc":"方向鍵移動，空白鍵勾選，Enter 微調，Home 到該影片的標題列"}
+S1_homeToHeader "|BUTTON|＋ 手動新增片段"
+S1_headerDown "c1_0|checkbox|勾選 VID_0001 00:04.0 到 "
+S1_tabsSearchToGo_bannerDismissed 15
+S3_in {"tIn":13.2,"live":"入點 00:13.2","vt":"00:13.2"}
+S3_out {"tOut":20,"live":"出點 00:20.0"}
+O1_clickOutside {"openedFirst":true,"closed":true,"focus":false}
+pageErrors []
+FAILS 

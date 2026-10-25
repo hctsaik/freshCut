@@ -1,0 +1,493 @@
+{
+ "F1_open": {
+  "id": "",
+  "tag": "BUTTON",
+  "txt": "取消",
+  "vis": true,
+  "dlg": "dConsent",
+  "scr": "main"
+ },
+ "F1_s14": false,
+ "F1_esc": {
+  "id": "",
+  "tag": "BUTTON",
+  "txt": "完成",
+  "vis": true,
+  "dlg": "dSet",
+  "scr": "main"
+ },
+ "F1_esc_ai": [
+  false,
+  false,
+  true
+ ],
+ "F1_tab": [
+  "查看 OpenAI 相容 API 的資料|dConsent",
+  "我了解，開啟|dConsent",
+  "取消|dConsent",
+  "查看 OpenAI 相容 API 的資料|dConsent",
+  "我了解，開啟|dConsent",
+  "取消|dConsent"
+ ],
+ "F1_after": {
+  "id": "s14",
+  "tag": "INPUT",
+  "txt": "",
+  "vis": true,
+  "dlg": "dSet",
+  "scr": "main"
+ },
+ "F1_state": [
+  true,
+  false,
+  true
+ ],
+ "F1_bar": {
+  "q": true,
+  "go": true,
+  "note": "請先在設定 › 智慧評分填入並測試金鑰\n開啟設定"
+ },
+ "F1_keyShort": [
+  "金鑰無效或未填寫",
+  "status",
+  false
+ ],
+ "F1_keyOK": [
+  "✓ 連線成功",
+  true
+ ],
+ "F1_keyBtnH": 32,
+ "F1_uncheck": [
+  false,
+  false,
+  "dSet"
+ ],
+ "F1_navBtn": {
+  "id": "",
+  "tag": "BUTTON",
+  "txt": "取消",
+  "vis": true,
+  "dlg": "dConsent",
+  "scr": "main"
+ },
+ "F1_enterOnCancel": [
+  false,
+  "dSet",
+  "s14"
+ ],
+ "F1_errs": [],
+ "F3_run": {
+  "note": "AI 分析中 12/30… 取消",
+  "err": "",
+  "tags": 0,
+  "tagTxt": [],
+  "all": null,
+  "lbl": [],
+  "q": true
+ },
+ "F3_done": {
+  "note": "將上傳 64 張影像到 OpenAI 相容 API 詳細",
+  "err": "",
+  "tags": 4,
+  "tagTxt": [
+   "AI 相符 66%",
+   "AI 相符 87%",
+   "AI 相符 81%",
+   "AI 相符 74%"
+  ],
+  "all": "勾選全部相符（4）",
+  "lbl": [
+   "勾選 VID_0001.mp4 00:04.0 到 00:08.0，5 星，AI 相符 66%"
+  ],
+  "q": false
+ },
+ "F3_key": {
+  "note": "將上傳 64 張影像到 OpenAI 相容 API 詳細",
+  "err": "金鑰無效・請到設定重新輸入並測試金鑰。 重試 設定",
+  "role": "alert",
+  "tags": 0,
+  "tagTxt": [],
+  "all": null,
+  "lbl": [],
+  "q": false
+ },
+ "F3_quota": {
+  "note": "將上傳 64 張影像到 OpenAI 相容 API 詳細",
+  "err": "已達額度上限・OpenAI 相容 API 回報額度不足，已改用本機評分。 重試 設定",
+  "role": "alert",
+  "tags": 0,
+  "tagTxt": [],
+  "all": null,
+  "lbl": [],
+  "q": false
+ },
+ "F3_off": {
+  "note": "將上傳 64 張影像到 OpenAI 相容 API 詳細",
+  "err": "無法連線，已改用本機評分・請檢查網路後重試。 重試 設定",
+  "role": "alert",
+  "tags": 0,
+  "tagTxt": [],
+  "all": null,
+  "lbl": [],
+  "q": false
+ },
+ "F3_pickAll": [
+  4,
+  6,
+  true
+ ],
+ "F3_aimStyle": [
+  "rgb(207, 227, 255)",
+  "rgb(31, 51, 80)",
+  "12px"
+ ],
+ "F3_explain": "AI 相符 87% | 靜音循環・5.0 秒 | 00:22.0–00:27.0 | ★★★☆☆ | 微調 | 小孩在浪邊笑、臉部清楚",
+ "F2_delFocus": {
+  "id": "",
+  "tag": "BUTTON",
+  "txt": "從清單移除",
+  "vis": true,
+  "dlg": "dDelete",
+  "scr": "main"
+ },
+ "F2_trFocus": {
+  "id": "",
+  "tag": "BUTTON",
+  "txt": "取消",
+  "vis": true,
+  "dlg": "dTrash",
+  "scr": "main"
+ },
+ "F2_trText": "確定將 3 個檔案移到 垃圾桶 ？ VID_0001 共 3 個檔案，1.2 GB VID_0001.mp4（1.1 GB）・LRV_0001.lrv（92 MB）・VID_0001.thm（<1 MB）  這些檔案會離開素材庫；之後可從垃圾桶還原原始檔（App 內無法復原）。  移到 垃圾桶 取消",
+ "F2_toast": "已將 3 個檔案移到垃圾桶 在垃圾桶中顯示",
+ "F2_toastFocus": {
+  "id": "q",
+  "tag": "INPUT",
+  "txt": "",
+  "vis": true,
+  "dlg": null,
+  "scr": "main"
+ },
+ "F2_cmdZ": [
+  true,
+  false
+ ],
+ "F2w_after": {
+  "id": "",
+  "tag": "BUTTON",
+  "txt": "取消",
+  "vis": true,
+  "dlg": "dTrash",
+  "scr": "main"
+ },
+ "F2w_perm": {
+  "id": "",
+  "tag": "BUTTON",
+  "txt": "取消",
+  "vis": true,
+  "dlg": "dPerm",
+  "scr": "main"
+ },
+ "F2w_permTxt": "無法移到 資源回收筒 ⚠ 下列 1 個檔案位於 SD 卡（E:），該磁碟沒有資源回收筒，刪除後無法還原。 VID_0003 共 1 個檔案，1.2 GB VID_0003.mov（1.2 GB）  其他磁碟上的檔案（若有）仍會移到資源回收筒。不想永久刪除的話，可先把檔案複製到電腦再刪除。  我了解無法還原 永久刪除 取消",
+ "F2w_goDisabled": true,
+ "F2w_tab": [
+  "permOk",
+  "取消",
+  "permOk",
+  "取消"
+ ],
+ "F2w_goAfter": false,
+ "F2w_esc": {
+  "id": "",
+  "tag": "BUTTON",
+  "txt": "匯入影片",
+  "vis": true,
+  "dlg": null,
+  "scr": "main"
+ },
+ "F2w_toast": "已將 3 個檔案移到資源回收筒；已永久刪除 1 個檔案 在資源回收筒中顯示",
+ "F2_macSD": "已將 1 個檔案移到垃圾桶 在垃圾桶中顯示",
+ "N1": {
+  "hoverUnchecked": [
+   "rgb(238, 238, 238)",
+   "3px",
+   "none",
+   "rgb(168, 168, 168)",
+   "none",
+   "brightness(1.08)"
+  ],
+  "checked": [
+   "rgb(238, 238, 238)",
+   "3px",
+   "none",
+   "rgb(255, 196, 0)",
+   "rgb(255, 196, 0) 0px 0px 0px 1px",
+   "none"
+  ],
+  "chkBg": "rgba(255, 255, 255, 0.25)"
+ },
+ "N1_hoverChecked": [
+  "rgb(238, 238, 238)",
+  "rgb(255, 196, 0)",
+  "rgb(255, 196, 0) 0px 0px 0px 1px"
+ ],
+ "N2": [
+  [
+   "#delBtn",
+   true,
+   "rgb(36, 36, 36)",
+   "rgb(138, 138, 138)",
+   "rgb(58, 58, 58)",
+   "not-allowed"
+  ],
+  [
+   "#pvBtn",
+   false,
+   "rgb(44, 44, 44)",
+   "rgb(238, 238, 238)",
+   "rgb(122, 122, 122)",
+   "pointer"
+  ]
+ ],
+ "N2_empty": [
+  [
+   "#delBtn",
+   true,
+   "rgb(36, 36, 36)",
+   "rgb(138, 138, 138)",
+   "rgb(58, 58, 58)"
+  ],
+  [
+   "#pvBtn",
+   true,
+   "rgb(36, 36, 36)",
+   "rgb(138, 138, 138)",
+   "rgb(58, 58, 58)"
+  ],
+  [
+   "#go",
+   true,
+   "rgb(58, 58, 58)",
+   "rgb(179, 179, 179)",
+   "rgb(85, 85, 85)"
+  ],
+  [
+   "#aiGo",
+   false,
+   "rgb(44, 44, 44)",
+   "rgb(238, 238, 238)",
+   "rgb(122, 122, 122)"
+  ]
+ ],
+ "N3_card_mac": {
+  "id": "",
+  "tag": "BUTTON",
+  "txt": "選擇其他位置…",
+  "vis": true,
+  "dlg": "dDisk",
+  "scr": "main"
+ },
+ "N3_cardEnter_mac": "trim",
+ "N3_clip_mac": {
+  "id": "",
+  "tag": "BUTTON",
+  "txt": "選擇其他位置…",
+  "vis": true,
+  "dlg": "dDisk",
+  "scr": "main"
+ },
+ "N3_mac_ctrlEnter": {
+  "id": "c1_0",
+  "tag": "BUTTON",
+  "txt": "",
+  "vis": true,
+  "dlg": null,
+  "scr": "main"
+ },
+ "N3_card_win": {
+  "id": "",
+  "tag": "BUTTON",
+  "txt": "選擇其他位置…",
+  "vis": true,
+  "dlg": "dDisk",
+  "scr": "main"
+ },
+ "N3_cardEnter_win": "trim",
+ "N3_clip_win": {
+  "id": "",
+  "tag": "BUTTON",
+  "txt": "選擇其他位置…",
+  "vis": true,
+  "dlg": "dDisk",
+  "scr": "main"
+ },
+ "N5_space": [
+  "false",
+  "true",
+  "c1_2"
+ ],
+ "N5_space2": "false",
+ "N5_tabNext": {
+  "id": "",
+  "tag": "BUTTON",
+  "txt": "微調",
+  "vis": true,
+  "dlg": null,
+  "scr": "main"
+ },
+ "N5_clickChk": "true",
+ "N5_struct": {
+  "nested": 0,
+  "chk": [
+   32,
+   32
+  ],
+  "cardRole": "group",
+  "tabStopsWall": 40,
+  "cardsN": 12
+ },
+ "N5_tabsToGo": 63,
+ "m7_err": "說明|0",
+ "m7_tab": {
+  "id": "",
+  "tag": "BUTTON",
+  "txt": "說明",
+  "vis": true,
+  "dlg": null,
+  "scr": "main"
+ },
+ "m7_ctx": {
+  "id": "",
+  "tag": "BUTTON",
+  "txt": "重新指定位置…",
+  "vis": true,
+  "dlg": null,
+  "scr": "main"
+ },
+ "m7_ctxActs": "重新指定位置…",
+ "m7_chg": "重新分析",
+ "N8": [
+  "rgb(61, 53, 32)",
+  "rgb(255, 196, 0) 3px 0px 0px 0px inset",
+  "2px solid rgba(0, 0, 0, 0)"
+ ],
+ "w1024": [
+  1024,
+  3
+ ],
+ "N4_open": {
+  "id": "",
+  "tag": "BUTTON",
+  "txt": "16:9",
+  "vis": true,
+  "dlg": null,
+  "scr": "main"
+ },
+ "N4_tabOut": false,
+ "N4_shiftOk": true,
+ "N4_esc": {
+  "id": "",
+  "tag": "BUTTON",
+  "txt": "預覽與成品設定",
+  "vis": true,
+  "dlg": null,
+  "scr": "main"
+ },
+ "N4_escRail": "false",
+ "N4_toggle": [
+  false,
+  true
+ ],
+ "N4_clickOutside": true,
+ "N4_errs": [],
+ "N7": [
+  [
+   24,
+   84
+  ],
+  [
+   24,
+   84
+  ]
+ ],
+ "N7_IO": [
+  12.5,
+  12.5
+ ],
+ "F8_opts": [
+  "0:自動（全部已勾選片段）",
+  "15:15 秒",
+  "30:30 秒",
+  "60:60 秒",
+  "-1:自訂…"
+ ],
+ "F8": {
+  "row": true,
+  "inp": [
+   "5",
+   "600",
+   "20",
+   "number"
+  ],
+  "sum": "已選 4 段・15.0 秒 / 目標 20 秒"
+ },
+ "F8_low": [
+  "3",
+  "已選 4 段・15.0 秒 / 目標 5 秒 ・縮到每段 1.5 秒仍超過 1.0 秒，建議取消勾選 1 段",
+  false
+ ],
+ "F8_8": "已選 4 段・15.0 秒 / 目標 8 秒 ・超過 7.0 秒，將依比例縮短",
+ "N6": [
+  "將上傳 64 張影像到 OpenAI 相容 API\n詳細",
+  "13px",
+  "rgb(238, 238, 238)",
+  true,
+  true
+ ],
+ "N6_lnk": {
+  "id": "",
+  "tag": "BUTTON",
+  "txt": "取消",
+  "vis": true,
+  "dlg": "dConsent",
+  "scr": "main"
+ },
+ "N6_lnkEsc": {
+  "id": "",
+  "tag": "BUTTON",
+  "txt": "完成",
+  "vis": true,
+  "dlg": "dSet",
+  "scr": "main"
+ },
+ "N9_mac": "素材庫/測試連線/刪除已儲存的金鑰/完成 | ",
+ "N9_win": "刪除已儲存的金鑰/確定/取消/套用 | 此裝置（Windows on ARM）不支援笑容偵測，只計算臉部與清晰度。",
+ "N9_cb": "s3",
+ "N9_cancelReverts": [
+  false,
+  true
+ ],
+ "N9_winAIdialog": {
+  "id": "",
+  "tag": "BUTTON",
+  "txt": "取消",
+  "vis": true,
+  "dlg": "dConsent",
+  "scr": "main"
+ },
+ "N9_cancelAfterConsent": [
+  true,
+  false
+ ],
+ "F6": [
+  "SD 卡未插入 VID_0007.mp4 在監看資料夾「SD 卡/DCIM」。重新插入後會自動恢復；勾選與微調都已保留，不會標成遺失。",
+  "dashed",
+  "VID_0007.mp4 已中斷連線 00:26"
+ ],
+ "F5": "VID_0002 共 3 個檔案，4.9 GB LRV_0002.lrv（118 MB）・VID_0002.insv（4.8 GB）・VID_0002.thm（<1 MB）",
+ "hs_mac1440": 1440,
+ "hs_win1440": 1440,
+ "hs_mac1024": 1024,
+ "hs_win1024": 1024,
+ "errs": []
+}

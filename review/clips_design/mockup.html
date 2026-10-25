@@ -1,0 +1,133 @@
+<!doctype html><html lang="zh-Hant-TW"><head><meta charset="utf-8"><title>精華剪輯器 — 片段匯出 mockup</title>
+<style>
+:root{--bg:#141414;--panel:#1D1D1D;--card:#222;--line:#3A3A3A;--tx:#EEE;--tx2:#B0B0B0;--acc:#FFC400}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:13px/1.45 "Noto Sans CJK TC","PingFang TC","Microsoft JhengHei",sans-serif;height:900px;overflow:hidden}
+button{font:inherit;color:var(--tx);background:#2C2C2C;border:1px solid #4A4A4A;border-radius:6px;padding:6px 12px;cursor:pointer}
+button.primary{background:var(--acc);color:#111;border:none;font-weight:700;padding:8px 20px}
+button.sec{color:var(--acc);border-color:var(--acc)}
+.top{height:48px;display:flex;align-items:center;gap:8px;padding:0 12px;border-bottom:1px solid var(--line);background:var(--panel)}
+.top .sp{flex:1}.search{width:300px;background:#262626;border:1px solid #4A4A4A;border-radius:6px;padding:6px 10px;color:#9A9A9A}
+.main{display:grid;grid-template-columns:240px 1fr 320px;height:calc(900px - 48px - 56px)}
+.left{background:var(--panel);border-right:1px solid var(--line);padding:12px;overflow:hidden}
+.left h3,.right h3{font-size:14px;margin:0 0 8px}
+.vid{padding:6px 8px;border-radius:6px;display:flex;justify-content:space-between;color:var(--tx)}.vid small{color:var(--tx2)}
+.vid.on{background:#2E2A1A}
+.center{overflow:hidden;display:flex;flex-direction:column}
+.strip{padding:10px 16px;border-bottom:1px solid var(--line);background:#181818}
+.strip .row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.lbl{color:var(--tx2);margin-right:4px}
+.sbtn{display:inline-flex;align-items:center;gap:6px;border-radius:16px;padding:5px 12px;border:1.5px solid;font-weight:600;background:transparent;font-size:13px}
+.sbtn .ck{width:14px;height:14px;border-radius:3px;border:1.5px solid currentColor;display:inline-grid;place-items:center;font-size:10px}
+.sbtn.on .ck{background:currentColor}.sbtn.on .ck::after{content:"✓";color:#111;font-weight:900}
+.sbtn.off{opacity:1;color:#8A8A8A!important;border-color:#4A4A4A!important}
+.sbtn .n{color:var(--tx2);font-weight:400}
+.filters{display:flex;gap:8px;align-items:center;margin-top:8px}
+.seg{display:inline-flex;border:1px solid #4A4A4A;border-radius:6px;overflow:hidden}.seg span{padding:4px 10px;color:var(--tx2)}.seg span.on{background:#3A3A3A;color:var(--tx)}
+.count{margin-left:auto;color:var(--tx);font-weight:600}.count b{color:var(--acc)}
+.panel{display:none;margin-top:10px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px}
+.strat-open .panel{display:block}
+.ptab{display:grid;grid-template-columns:28px 120px 1fr 120px 110px;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid #2A2A2A}
+.ptab:last-child{border:none}.ptab .d{color:var(--tx2)}
+.cb{width:18px;height:18px;border:1.5px solid #8A8A8A;border-radius:4px;display:inline-grid;place-items:center}
+.cb.on{background:var(--acc);border-color:var(--acc)}.cb.on::after{content:"✓";color:#111;font-weight:900;font-size:12px}
+.num{background:#262626;border:1px solid #4A4A4A;border-radius:5px;padding:3px 8px;color:var(--tx)}
+.new{font-size:11px;color:#111;background:#7EE0A8;border-radius:3px;padding:0 4px;margin-left:4px;font-weight:700}
+.wall{padding:12px 16px;overflow:hidden;flex:1}
+.ghead{display:flex;align-items:center;gap:10px;margin:6px 0 8px}.ghead b{font-size:14px}.ghead .meta{color:var(--tx2)}.ghead .sp{flex:1}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+.card{background:var(--card);border:2px solid #707070;border-radius:8px;overflow:hidden;position:relative}
+.card.sel{border-color:var(--acc)}
+.th{height:118px;position:relative}
+.dur{position:absolute;right:6px;bottom:6px;background:#000C;padding:1px 6px;border-radius:4px;font-size:12px}
+.card .ck2{position:absolute;left:8px;top:8px;width:24px;height:24px;border-radius:5px;border:2px solid #EEE;background:#0008;display:grid;place-items:center}
+.card.sel .ck2{background:var(--acc);border-color:var(--acc)}.card.sel .ck2::after{content:"✓";color:#111;font-weight:900}
+.cb2{padding:8px}.time{color:var(--tx);font-size:12px}
+.tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+.tag{font-size:12px;padding:1px 8px;border-radius:10px;font-weight:600}
+.more{font-size:12px;color:var(--tx2);padding:1px 4px}
+.acts{display:flex;gap:6px;margin-top:6px}.acts button{padding:3px 8px;font-size:12px}
+.t-start{color:#8EC5FF;background:#16283D;border-color:#8EC5FF}.t-uniform{color:#B8C4D0;background:#262C33;border-color:#B8C4D0}
+.t-people{color:#FF9EC7;background:#3A1A2A;border-color:#FF9EC7}.t-action{color:#FFB067;background:#3A2412;border-color:#FFB067}
+.t-whole{color:#C8B8FF;background:#261F3D;border-color:#C8B8FF}.t-loud{color:#7EE0A8;background:#12301F;border-color:#7EE0A8}
+.t-scene{color:#6FE3E3;background:#0F2E2E;border-color:#6FE3E3}
+.sbtn.t-start,.sbtn.t-uniform,.sbtn.t-people,.sbtn.t-action,.sbtn.t-whole,.sbtn.t-loud,.sbtn.t-scene{background:transparent}
+.right{background:var(--panel);border-left:1px solid var(--line);padding:14px;overflow:hidden}
+.fld{margin-bottom:12px}.fld label{display:block;color:var(--tx2);margin-bottom:4px}
+.sel2{background:#262626;border:1px solid #4A4A4A;border-radius:6px;padding:6px 10px;display:flex;justify-content:space-between}
+.chk{display:flex;align-items:center;gap:8px;margin:6px 0}
+.preview{font-family:Menlo,Consolas,monospace;font-size:12px;color:var(--tx2);background:#181818;border:1px dashed #4A4A4A;border-radius:6px;padding:6px 8px;word-break:break-all}
+.bottom{height:56px;display:flex;align-items:center;gap:12px;padding:0 16px;border-top:1px solid var(--line);background:var(--panel)}
+.bottom .sp{flex:1}.bottom .s{color:var(--tx2)}
+.overlay{display:none;position:fixed;inset:0;background:#000A;place-items:center}
+.done .overlay{display:grid}
+.dlg{width:520px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:22px}
+.dlg h2{margin:0 0 6px;font-size:18px}.dlg p{color:var(--tx2);margin:4px 0}
+.flist{background:#181818;border-radius:6px;padding:8px 10px;margin:12px 0;font-family:Menlo,Consolas,monospace;font-size:12px;color:var(--tx)}
+.flist div{padding:2px 0}.dlg .btns{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+</style></head><body>
+<div class="top"><b style="font-size:15px">精華剪輯器</b><button>匯入資料夾…</button><button>匯入影片…</button><div class="sp"></div><div class="search">🔍 找片段（檔名、日期）</div><button>設定</button></div>
+<div class="main">
+ <aside class="left"><h3>影片（7）</h3>
+  <div class="vid on">VID_20240825_0232 <small>3 段</small></div><div class="vid">VID_20240825_0406 <small>4 段</small></div><div class="vid">VID_20240825_0435 <small>3 段</small></div><div class="vid">VID_20240826_0555 <small>2 段</small></div><div class="vid">VID_20240828_0934 <small>4 段</small></div><div class="vid">VID_20240829_0810 <small>3 段</small></div><div class="vid">VID_20250201_2127 <small>分析中 35%</small></div>
+ </aside>
+ <section class="center">
+  <div class="strip">
+   <div class="row"><span class="lbl">剪片策略</span>
+    <span class="sbtn on t-start"><span class="ck"></span>從頭開始 <span class="n">7</span></span>
+    <span class="sbtn on t-people"><span class="ck"></span>AI 人物 <span class="n">6</span></span>
+    <span class="sbtn on t-action"><span class="ck"></span>精彩動作 <span class="n">7</span></span>
+    <span class="sbtn on t-whole"><span class="ck"></span>整支（短片） <span class="n">2</span></span>
+    <span class="sbtn off t-uniform"><span class="ck"></span>均勻取樣</span>
+    <span class="sbtn off t-loud"><span class="ck"></span>音量高峰</span>
+    <span class="sbtn off t-scene"><span class="ck"></span>場景變換</span>
+    <button style="margin-left:auto">策略設定 ▾</button></div>
+   <div class="panel">
+    <div class="ptab" style="color:#B0B0B0;font-size:12px"><span></span><span>策略</span><span>說明</span><span>片段長度</span><span>每支最多</span></div>
+    <div class="ptab"><span class="cb on"></span><b class="tag t-start" style="justify-self:start">從頭開始</b><span class="d">影片開頭一段，適合開場、交代地點</span><span class="num">7 秒</span><span class="num">1 段</span></div>
+    <div class="ptab"><span class="cb on"></span><b class="tag t-people" style="justify-self:start">AI 人物</b><span class="d">人物最清楚、最靠近鏡頭的時候</span><span class="num">6.5 秒</span><span class="num">1 段</span></div>
+    <div class="ptab"><span class="cb on"></span><b class="tag t-action" style="justify-self:start">精彩動作</b><span class="d">動作、聲音最激烈的高潮（原「AI 動作」）</span><span class="num">6.5 秒</span><span class="num">2 段</span></div>
+    <div class="ptab"><span class="cb on"></span><b class="tag t-whole" style="justify-self:start">整支（短片）</b><span class="d">短於 10 秒的影片整支保留，不切</span><span class="num">≤ 10 秒</span><span class="num">1 段</span></div>
+    <div class="ptab"><span class="cb"></span><b class="tag t-uniform" style="justify-self:start">均勻取樣</b><span class="d">平均分佈抓幾段，N=1 即原「中段」</span><span class="num">5 秒</span><span class="num">3 段</span></div>
+    <div class="ptab"><span class="cb"></span><span><b class="tag t-loud">音量高峰</b><span class="new">新</span></span><span class="d">笑聲、歡呼、尖叫等最大聲的時刻</span><span class="num">5 秒</span><span class="num">2 段</span></div>
+    <div class="ptab"><span class="cb"></span><span><b class="tag t-scene">場景變換</b><span class="new">新</span></span><span class="d">畫面換景後的第一個畫面，適合長片</span><span class="num">4 秒</span><span class="num">3 段</span></div>
+    <div style="display:flex;gap:8px;margin-top:10px"><span class="d" style="color:#B0B0B0;flex:1">改完會只重算策略（使用分析快取，約 1 秒／支），已勾選與微調過的片段會保留。</span><button>還原預設</button><button class="sec">套用到全部影片</button></div>
+   </div>
+   <div class="filters"><span class="lbl">顯示</span><div class="seg"><span class="on">全部</span><span>已勾選</span><span>未勾選</span></div>
+    <div class="seg"><span class="on">依影片</span><span>依策略</span></div><button>全部收合</button><button>本頁全選</button>
+    <span class="count">共 <b>24</b> 段，已選 <b>9</b> 段（約 58 秒）</span></div>
+  </div>
+  <div class="wall">
+   <div class="ghead"><b>▾ VID_20240825_0232</b><span class="meta">0:30 · 3 段</span><span class="sp"></span><button>本支全選</button><button>＋ 手動新增片段</button></div>
+   <div class="cards">
+    <div class="card sel"><div class="th" style="background:linear-gradient(135deg,#1c3a8a,#0b0b20 70%)"><span class="ck2"></span><span class="dur">7.0 秒</span></div><div class="cb2"><div class="time">00:00.0 – 00:07.0</div><div class="tags"><span class="tag t-start">從頭開始</span></div><div class="acts"><button>微調</button><button>鎖定</button></div></div></div>
+    <div class="card sel"><div class="th" style="background:linear-gradient(135deg,#7a2a6a,#1a0b20 70%)"><span class="ck2"></span><span class="dur">6.5 秒</span></div><div class="cb2"><div class="time">00:24.0 – 00:30.5</div><div class="tags"><span class="tag t-people">AI 人物</span><span class="tag t-action">精彩動作</span></div><div class="acts"><button>微調</button><button>鎖定</button></div></div></div>
+    <div class="card"><div class="th" style="background:linear-gradient(135deg,#a0402a,#200b0b 70%)"><span class="ck2"></span><span class="dur">6.5 秒</span></div><div class="cb2"><div class="time">00:10.5 – 00:17.0</div><div class="tags"><span class="tag t-action">精彩動作</span></div><div class="acts"><button>微調</button><button>鎖定</button></div></div></div>
+   </div>
+   <div class="ghead"><b>▾ VID_20240825_0406</b><span class="meta">0:31 · 4 段</span><span class="sp"></span><button>本支全選</button><button>＋ 手動新增片段</button></div>
+   <div class="cards">
+    <div class="card sel"><div class="th" style="background:linear-gradient(135deg,#c08020,#302010 70%)"><span class="ck2"></span><span class="dur">7.0 秒</span></div><div class="cb2"><div class="time">00:00.0 – 00:07.0</div><div class="tags"><span class="tag t-start">從頭開始</span><span class="tag t-people">AI 人物</span></div><div class="acts"><button>微調</button><button>鎖定</button></div></div></div>
+    <div class="card"><div class="th" style="background:linear-gradient(135deg,#208060,#0b2018 70%)"><span class="ck2"></span><span class="dur">6.5 秒</span></div><div class="cb2"><div class="time">00:17.5 – 00:24.0</div><div class="tags"><span class="tag t-action">精彩動作</span></div><div class="acts"><button>微調</button><button>鎖定</button></div></div></div>
+    <div class="card"><div class="th" style="background:linear-gradient(135deg,#406090,#101830 70%)"><span class="ck2"></span><span class="dur">5.0 秒</span></div><div class="cb2"><div class="time">00:21.0 – 00:26.0</div><div class="tags"><span class="tag t-action">精彩動作</span><span class="tag t-loud">音量高峰</span><span class="more">+1</span></div><div class="acts"><button>微調</button><button>鎖定</button></div></div></div>
+    <div class="card sel"><div class="th" style="background:linear-gradient(135deg,#606060,#181818 70%)"><span class="ck2"></span><span class="dur">6.0 秒</span></div><div class="cb2"><div class="time">00:03.0 – 00:09.0</div><div class="tags"><span class="tag" style="color:#EEE;background:#3A3A3A">手動</span></div><div class="acts"><button>微調</button><button>鎖定</button></div></div></div>
+   </div>
+  </div>
+ </section>
+ <aside class="right"><h3>匯出設定</h3>
+  <div class="fld"><label>輸出資料夾</label><div class="sel2"><span>~/Movies/精華片段/2024-08-25</span><span>選擇…</span></div></div>
+  <div class="fld"><label>檔名規則</label><div class="sel2"><span>影片名_策略_序號</span><span>▾</span></div>
+   <div class="preview" style="margin-top:6px">VID_20240825_0232_AI人物_01.mp4</div></div>
+  <div class="fld"><label>格式</label><div class="sel2"><span>MP4（H.264）</span><span>▾</span></div></div>
+  <div class="fld"><label>畫面比例</label><div class="sel2"><span>原始比例</span><span>▾</span></div></div>
+  <div class="fld"><label>解析度</label><div class="sel2"><span>與原片相同（最高 4K）</span><span>▾</span></div></div>
+  <div class="fld"><label>聲音</label><div class="chk"><span class="cb on"></span>保留原音</div></div>
+  <div class="fld"><label>其他</label><div class="chk"><span class="cb on"></span>依影片建立子資料夾</div><div class="chk"><span class="cb"></span>同名檔案時覆寫（預設：自動加 _2）</div></div>
+  <p style="color:#B0B0B0;font-size:12px">每個片段各輸出成一個檔案，不加配樂、轉場或字幕。</p>
+ </aside>
+</div>
+<div class="bottom"><span class="s">已選 <b style="color:#EEE">9</b> 段 · 約 58 秒 · 預估 182 MB</span><span class="sp"></span><button>預覽選取</button><button class="primary">匯出已選片段（9）</button></div>
+<div class="overlay"><div class="dlg"><h2>✓ 已匯出 9 個片段</h2><p>耗時 0:41 · 共 182 MB · 存到 ~/Movies/精華片段/2024-08-25</p>
+ <div class="flist"><div>VID_20240825_0232/VID_20240825_0232_從頭開始_01.mp4</div><div>VID_20240825_0232/VID_20240825_0232_AI人物_01.mp4</div><div>VID_20240825_0406/VID_20240825_0406_從頭開始_01.mp4</div><div>VID_20240825_0406/VID_20240825_0406_手動_01.mp4</div><div style="color:#B0B0B0">…還有 5 個</div></div>
+ <p>1 個片段失敗：VID_20250201_2127_精彩動作_01（來源檔已移動）<a style="color:#9CC3FF;margin-left:6px">重試</a></p>
+ <div class="btns"><button>關閉</button><button>再匯出一次</button><button class="primary">在 Finder 中顯示</button></div></div></div>
+<script>const h=location.hash.slice(1);if(h==="strip")document.body.classList.add("strat-open");if(h==="done")document.body.classList.add("done");</script>
+</body></html>

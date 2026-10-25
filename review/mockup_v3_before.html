@@ -1,0 +1,93 @@
+<!doctype html><html lang="zh-Hant-TW"><head><meta charset="utf-8"><title>精華剪輯器 — 介面模型</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;background:#141414;color:#eee}
+.nav{background:#000;padding:6px 12px;font-size:12px}.nav button{background:#333;color:#ccc;border:0;margin-right:6px;padding:4px 10px;border-radius:4px;cursor:pointer}
+.screen{display:none;height:calc(100vh - 30px)}.screen.on{display:flex;flex-direction:column}
+.top{display:flex;gap:10px;align-items:center;padding:8px 14px;background:#1d1d1d;border-bottom:1px solid #2a2a2a}
+.btn{background:#2c2c2c;color:#eee;border:1px solid #3a3a3a;padding:6px 12px;border-radius:6px;cursor:pointer}
+.btn:focus,.card:focus{outline:2px solid #fff;outline-offset:2px}
+.primary{background:#FFC400;color:#111;border:0;font-weight:700;padding:10px 26px;font-size:16px;border-radius:8px;cursor:pointer}
+.primary:disabled{background:#555;color:#999}
+.main{flex:1;display:flex;min-height:0}.left{width:220px;border-right:1px solid #2a2a2a;overflow:auto;padding:8px}
+.vid{display:flex;gap:8px;padding:6px;border-radius:6px;cursor:pointer;font-size:13px}.vid:hover,.vid.sel{background:#2a2a2a}
+.thumb{width:64px;height:36px;border-radius:4px;background:linear-gradient(45deg,#345,#567)}
+.badge{font-size:11px;color:#9c9}.badge.err{color:#f77}
+.center{flex:1;overflow:auto;padding:12px 16px}.group h3{font-size:14px;margin:14px 0 8px;display:flex;gap:10px;align-items:center}
+.group h3 small{color:#999;font-weight:400}.cards{display:flex;flex-wrap:wrap;gap:12px}
+.card{width:200px;background:#202020;border:2px solid #333;border-radius:8px;overflow:hidden;cursor:pointer;transition:transform .15s}
+.card:hover{transform:scale(1.05)}.card.on{border-color:#FFC400}
+.pv{height:112px;position:relative;background-size:300% 300%;animation:play 3s linear infinite}
+@keyframes play{0%{background-position:0 50%}100%{background-position:100% 50%}}
+.pv .chk{position:absolute;top:6px;left:6px;width:24px;height:24px;border-radius:50%;background:#0008;border:2px solid #fff;display:grid;place-items:center;font-weight:900}
+.card.on .chk{background:#FFC400;color:#111;border-color:#FFC400}
+.pv .loop{position:absolute;bottom:4px;right:6px;font-size:11px;background:#0009;padding:1px 5px;border-radius:3px}
+.meta{padding:6px 8px;font-size:12px;display:flex;justify-content:space-between;align-items:center}
+.star{color:#FFC400}.meta a{color:#8bf;text-decoration:none}
+.right{width:300px;border-left:1px solid #2a2a2a;padding:10px;overflow:auto;font-size:13px}
+.player{height:170px;background:#000;border-radius:6px;display:grid;place-items:center;color:#666}
+.row{margin:10px 0}.row label{display:block;color:#aaa;margin-bottom:4px}.seg{display:flex;gap:4px}.seg span{flex:1;text-align:center;padding:5px;background:#2a2a2a;border-radius:4px;cursor:pointer}.seg span.on{background:#FFC400;color:#111;font-weight:700}
+input[type=range]{width:100%}select{width:100%;background:#2a2a2a;color:#eee;border:1px solid #444;padding:4px}
+.tl{height:110px;border-top:1px solid #2a2a2a;background:#1a1a1a;display:flex;align-items:center;gap:12px;padding:0 14px}
+.track{flex:1;display:flex;gap:4px;overflow:auto;padding:8px 0}.clip{height:56px;border-radius:5px;position:relative;cursor:grab;font-size:11px;padding:4px;color:#fff}
+.clip b{position:absolute;top:2px;right:4px;cursor:pointer}.sum{font-size:12px;color:#aaa;width:150px}.warn{color:#fa0}
+.welcome{flex:1;display:grid;place-items:center}.drop{width:560px;height:320px;border:3px dashed #555;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#bbb}
+.modal{position:fixed;inset:0;background:#000a;display:none;place-items:center}.modal.on{display:grid}
+.box{background:#222;border-radius:12px;padding:22px;width:460px}.bar{height:10px;background:#333;border-radius:5px;overflow:hidden}.bar i{display:block;height:100%;width:62%;background:#FFC400}
+.energy{height:70px;background:#111;position:relative;border-radius:4px;margin:8px 0}
+.energy svg{width:100%;height:100%}.range{position:absolute;top:0;bottom:0;left:30%;width:18%;background:#FFC40033;border-left:4px solid #FFC400;border-right:4px solid #FFC400}
+.skel{background:linear-gradient(90deg,#222,#333,#222);background-size:200%;animation:play 1.2s infinite}
+</style></head><body>
+<div class="nav">模型頁面：<button onclick="show('welcome')">1 歡迎/空狀態</button><button onclick="show('main')">2 主畫面</button><button onclick="show('trim')">3 精修</button><button onclick="openM('prog')">4 輸出進度</button><button onclick="openM('done')">5 完成</button><button onclick="openM('err')">6 錯誤</button></div>
+
+<section id="welcome" class="screen"><div class="top"><b>精華剪輯器</b><span style="flex:1"></span><button class="btn">⚙ 設定</button></div>
+<div class="welcome"><div class="drop" role="button" tabindex="0" aria-label="匯入影片"><div style="font-size:48px">🎬</div><div style="font-size:20px">把影片拖到這裡</div>
+<button class="primary" onclick="show('main')">＋ 匯入影片</button><div style="font-size:12px">支援 MP4、MOV、Insta360 LRV（不限數量）・INSV 請先於 Insta360 Studio 匯出平面 MP4</div>
+<a href="#" style="color:#8bf" onclick="show('main')">開啟上次的專案</a></div></div></section>
+
+<section id="main" class="screen on"><div class="top"><b>精華剪輯器</b><button class="btn">＋ 匯入影片</button><button class="btn" aria-label="復原">↶</button><button class="btn" aria-label="重做">↷</button><span style="color:#888;font-size:12px">墾丁之旅（已自動儲存）</span><span style="flex:1"></span><span style="font-size:12px;color:#aaa">每支影片推薦 <select style="width:50px;display:inline"><option>3</option><option selected>4</option><option>5</option></select> 段</span><button class="btn">⚙</button></div>
+<div class="main"><div class="left" aria-label="影片清單">
+<div class="vid sel"><div class="thumb"></div><div>VID_0001.mp4<br><span class="badge">✓ 4 段候選・00:42</span></div></div>
+<div class="vid"><div class="thumb" style="background:linear-gradient(45deg,#543,#a74)"></div><div>LRV_0002.lrv<br><span class="badge">✓ 4 段候選・01:15</span></div></div>
+<div class="vid"><div class="thumb skel"></div><div>VID_0003.mov<br><span class="badge" style="color:#fc6">分析中 42%</span></div></div>
+<div class="vid"><div class="thumb" style="background:#422"></div><div>VID_0004.insv<br><span class="badge err">⚠ 無法開啟・請先匯出 MP4</span></div></div>
+</div>
+<div class="center" id="wall"></div>
+<div class="right"><div class="player">▶ 預覽（有聲）</div>
+<h4 style="margin:14px 0 4px">成品設定</h4>
+<div class="row"><label>畫面比例</label><div class="seg" data-g><span class="on">16:9</span><span>9:16</span><span>1:1</span></div></div>
+<div class="row"><label>解析度</label><div class="seg" data-g><span class="on">1080p</span><span>4K</span></div></div>
+<div class="row"><label>轉場</label><div class="seg" data-g><span class="on">交叉淡化 0.5s</span><span>無</span></div></div>
+<div class="row"><label>背景音樂（預設資料夾：~/Music/旅行）</label><select><option>🎲 隨機</option><option>summer_vibes.mp3</option><option>無音樂</option><option>選擇其他檔案…</option></select></div>
+<div class="row"><label>音樂音量 60%</label><input type="range" value="60" aria-label="音樂音量"></div>
+<div class="row"><label><input type="checkbox" checked> 保留原音　音量 100%</label><input type="range" value="100" aria-label="原音音量"></div>
+<div class="row"><label>結尾淡出 1.5 秒</label><input type="range" min="0" max="5" step=".5" value="1.5"></div>
+</div></div>
+<div class="tl"><div class="track" id="track" aria-label="成品時間軸"></div><div class="sum" id="sum"></div><button class="btn">預覽成品</button><button class="primary" id="go" onclick="openM('prog')">產生成品</button></div></section>
+
+<section id="trim" class="screen"><div class="top"><button class="btn" onclick="show('main')">← 返回</button><b>精修：VID_0001.mp4 片段 2</b></div>
+<div style="padding:20px;max-width:900px;margin:auto;width:100%"><div class="player" style="height:380px">▶ 播放此段（循環）</div>
+<div class="energy" aria-label="能量曲線"><svg viewBox="0 0 100 20" preserveAspectRatio="none"><polyline fill="none" stroke="#6cf" stroke-width=".4" points="0,15 8,12 15,16 22,8 30,4 36,6 42,3 48,10 55,14 62,9 70,13 78,6 85,11 92,15 100,12"/></svg><div class="range"></div></div>
+<div style="display:flex;gap:12px;align-items:center">入點 <input value="00:12.5" style="width:80px"> 出點 <input value="00:16.5" style="width:80px"> 長度 4.0 秒
+<span style="flex:1"></span><button class="btn">還原 AI 建議</button><button class="primary" onclick="show('main')">套用</button></div>
+<p style="color:#888;font-size:12px">I / O 設定入出點・← → 逐格・Shift+← → ±1 秒・空白鍵 播放/暫停</p></div></section>
+
+<div class="modal" id="prog"><div class="box"><h3>正在產生成品…</h3><div class="bar"><i></i></div><p>處理片段 5/8・約剩 40 秒</p><button class="btn" onclick="closeM()">取消</button> <button class="btn" onclick="openM('done')">（模擬完成）</button></div></div>
+<div class="modal" id="done"><div class="box"><h3>✅ 完成！</h3><p>精華_20261024_2310.mp4（32 秒・1080p）</p><button class="primary" onclick="closeM()">▶ 播放</button> <button class="btn" onclick="closeM()">在 Finder 中顯示</button> <button class="btn" onclick="closeM()">再做一支</button></div></div>
+<div class="modal" id="err"><div class="box"><h3>⚠ 輸出失敗</h3><p>磁碟空間不足（需要約 1.2 GB）。</p><pre style="background:#111;padding:8px;font-size:11px">ffmpeg: No space left on device</pre><button class="btn">複製錯誤細節</button> <button class="primary" onclick="closeM()">重試</button></div></div>
+<script>
+const vids=[["VID_0001.mp4",["#f60,#fc0,#09f","#0a8,#9f6,#036","#c0f,#f39,#30c","#999,#333,#ccc"],[5,4,3,2]],["LRV_0002.lrv",["#06f,#0ff,#003","#f30,#900,#fa0","#3c3,#060,#cfc","#fcf,#909,#f6f"],[5,4,4,2]]];
+let sel=[];function fmt(s){return "00:"+String(s.toFixed(1)).padStart(4,"0")}
+function render(){let h="";vids.forEach(([n,cols,st],vi)=>{const c=sel.filter(k=>k[0]==vi).length;h+=`<div class="group"><h3>${n}<small>4 段候選・已選 ${c}</small><button class="btn" style="font-size:11px">重新推薦</button><button class="btn" style="font-size:11px">＋ 手動新增片段</button></h3><div class="cards">`;
+cols.forEach((g,ci)=>{const on=sel.some(k=>k[0]==vi&&k[1]==ci),s=4+ci*9;h+=`<div class="card ${on?"on":""}" tabindex="0" role="checkbox" aria-checked="${on}" aria-label="${n} ${fmt(s)} 到 ${fmt(s+4)}" onclick="tog(${vi},${ci})" onkeydown="if(event.key==' '){event.preventDefault();tog(${vi},${ci})}if(event.key=='Enter')show('trim')"><div class="pv" style="background-image:linear-gradient(120deg,${g},${g.split(",")[0]})"><div class="chk">${on?"✓":""}</div><div class="loop">⟳ 靜音預覽</div></div><div class="meta"><span>${fmt(s)}–${fmt(s+4)}<br><span class="star">${"★".repeat(st[ci])}${"☆".repeat(5-st[ci])}</span></span><a href="#" onclick="event.stopPropagation();show('trim')">微調</a></div></div>`});h+="</div></div>"});
+h+=`<div class="group"><h3>VID_0003.mov<small>分析中 42%…</small></h3><div class="cards">${'<div class="card"><div class="pv skel"></div><div class="meta">　</div></div>'.repeat(4)}</div></div>`;
+document.getElementById("wall").innerHTML=h;
+const t=document.getElementById("track");t.innerHTML=sel.length?sel.map((k,i)=>`<div class="clip" draggable="true" data-i="${i}" style="width:${4*22}px;background:linear-gradient(120deg,${vids[k[0]][1][k[1]]})" title="雙擊精修">${i+1}. ${vids[k[0]][0].slice(0,8)}<b onclick="sel.splice(${i},1);render()" aria-label="移除">×</b></div>`).join(""):'<span style="color:#888">勾選上方片段卡加入成品</span>';
+t.querySelectorAll(".clip").forEach(el=>{el.ondragstart=e=>e.dataTransfer.setData("i",el.dataset.i);el.ondragover=e=>e.preventDefault();el.ondrop=e=>{const a=+e.dataTransfer.getData("i"),b=+el.dataset.i;const [x]=sel.splice(a,1);sel.splice(b,0,x);render()};el.ondblclick=()=>show('trim')});
+const tot=sel.length*4;document.getElementById("sum").innerHTML=`已選 ${sel.length} 段・<span class="${tot>30?"warn":""}">${tot.toFixed(1)} 秒</span> / 目標 30 秒`;
+const go=document.getElementById("go");go.disabled=!sel.length;go.title=sel.length?"⌘/Ctrl+Enter":"請至少勾選 1 個片段"}
+function tog(v,c){const i=sel.findIndex(k=>k[0]==v&&k[1]==c);i>=0?sel.splice(i,1):sel.push([v,c]);render()}
+function show(id){document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("on",s.id==id));closeM()}
+function openM(id){closeM();document.getElementById(id).classList.add("on")}function closeM(){document.querySelectorAll(".modal").forEach(m=>m.classList.remove("on"))}
+document.querySelectorAll("[data-g]").forEach(g=>g.onclick=e=>{if(e.target.tagName=="SPAN"){g.querySelectorAll("span").forEach(s=>s.classList.remove("on"));e.target.classList.add("on")}});
+sel=[[0,0],[0,1],[1,0],[1,1]];render();
+</script></body></html>

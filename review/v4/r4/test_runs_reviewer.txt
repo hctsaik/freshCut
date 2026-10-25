@@ -1,0 +1,28 @@
+== run1 tests/test_core.py
+final MediaInfo(path='/tmp/tmp2lcinhga/final.mp4', duration=12.5, width=1920, height=1080, has_audio=True)
+FLOW OK
+exit 0
+== run1 tests/test_groups.py
+GROUPS OK
+exit 0
+== run1 tests/test_library.py
+MediaInfo(path='/tmp/tmpzd265w_u/out.mp4', duration=4.5, width=1920, height=1080, has_audio=True)
+first analysis 2.7s; LIBRARY OK
+exit 0
+== run1 tests/test_volume.py
+VOLUME OK
+exit 0
+== run2 tests/test_core.py
+final MediaInfo(path='/tmp/tmp2ekrg7ah/final.mp4', duration=12.5, width=1920, height=1080, has_audio=True)
+FLOW OK
+exit 0
+== run2 tests/test_groups.py
+GROUPS OK
+exit 0
+== run2 tests/test_library.py
+MediaInfo(path='/tmp/tmpm287d1y5/out.mp4', duration=4.5, width=1920, height=1080, has_audio=True)
+first analysis 2.9s; LIBRARY OK
+exit 0
+== run2 tests/test_volume.py
+VOLUME OK
+exit 0

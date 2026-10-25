@@ -1,0 +1,483 @@
+<!doctype html><html lang="zh-Hant-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<title>精華剪輯器 — 介面模型 v5</title>
+<style>
+:root{--bg:#141414;--panel:#1d1d1d;--card:#222;--line:#707070;--line2:#3a3a3a;--tx:#EEEEEE;--tx2:#B0B0B0;--acc:#FFC400;--warn:#FFA000;--err:#FF6B6B;--ok:#8FD18F}
+*{box-sizing:border-box}html,body{height:100%}body{margin:0;font:14px/1.45 -apple-system,"PingFang TC","Microsoft JhengHei UI","Microsoft JhengHei","Noto Sans TC",sans-serif;background:var(--bg);color:var(--tx);overflow:hidden}
+svg.i{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-3px;flex:none}
+:focus-visible{outline:2px solid #fff;outline-offset:2px}
+button{font:inherit;color:inherit}
+.mocknav{height:34px;background:#000;display:flex;gap:6px;align-items:center;padding:0 10px;font-size:12px;color:#ccc;overflow-x:auto;white-space:nowrap}
+.mocknav button{background:#333;border:0;padding:3px 8px;border-radius:4px;cursor:pointer;color:#ddd;font-size:12px}
+.app{height:calc(100% - 34px);display:flex;flex-direction:column}
+.screen{display:none;flex:1;min-height:0;flex-direction:column}.screen.on{display:flex}
+.menubar{display:none;height:28px;background:#262626;align-items:center;gap:2px;padding:0 6px;font-size:13px}.win .menubar{display:flex}.menubar span{padding:3px 10px;border-radius:4px}.menubar span:hover{background:#3a3a3a}
+.macmenu{display:none;height:26px;background:#2a2a2a;align-items:center;gap:18px;padding:0 14px;font-size:13px;color:#ddd}.mac .macmenu{display:flex}
+.top{display:flex;gap:8px;align-items:center;padding:8px 12px;background:var(--panel);border-bottom:1px solid var(--line2);flex-wrap:nowrap;min-width:0}
+.btn{display:inline-flex;gap:6px;align-items:center;background:#2c2c2c;border:1px solid var(--line);padding:5px 11px;border-radius:6px;cursor:pointer;font-size:13px;min-height:32px;white-space:nowrap}
+.btn{border-color:#7A7A7A}.btn:hover:not(:disabled){background:#383838}
+.btn:disabled{background:#242424;color:#8A8A8A;border-color:#3A3A3A;cursor:not-allowed}.btn.icon{padding:5px 8px}.btn.sm{min-height:28px;font-size:12px;padding:3px 9px}
+.btn.ghost{background:transparent;border-color:#767676;color:#EEE;min-height:24px;padding:1px 8px;font-size:12px}
+.btn.danger{border-color:var(--err);color:#FFB3B3}
+[hidden]{display:none!important}
+.btn.danger:disabled{color:#8A8A8A;border-color:#3A3A3A;background:#242424;cursor:not-allowed}
+.txt[aria-invalid=true]{border-color:#FF6B6B;box-shadow:0 0 0 1px #FF6B6B}
+.ferr{font-size:12px;color:#FF9C9C;margin-top:4px}
+#dConsent[data-mode=info] .m-consent,#dConsent:not([data-mode=info]) .m-info{display:none}
+.xbadge{font-size:12px;color:#DDD;border:1px solid #767676;border-radius:4px;padding:0 4px;margin-left:4px}
+.primary{display:inline-flex;align-items:center;gap:8px;background:var(--acc);color:#111;border:0;font-weight:700;padding:10px 24px;font-size:16px;border-radius:8px;cursor:pointer;min-height:44px;white-space:nowrap}
+.primary:disabled{background:#3A3A3A;color:#B3B3B3;border:1px solid #555;cursor:not-allowed}
+.sec{color:var(--tx2);font-size:13px}.small{font-size:12px}
+.main{flex:1;display:flex;min-height:0;position:relative}
+/* 左欄 */
+.left{width:240px;border-right:1px solid var(--line2);display:flex;flex-direction:column;min-height:0;flex:none}
+.left .tools{padding:8px;display:flex;flex-direction:column;gap:6px;border-bottom:1px solid var(--line2)}
+.search{width:100%;background:#2a2a2a;border:1px solid var(--line);color:var(--tx);padding:6px 8px;border-radius:6px;font:inherit;font-size:13px}
+.chips{display:flex;flex-wrap:wrap;gap:4px}.chip{font-size:12px;padding:2px 8px;border-radius:12px;background:#2a2a2a;border:1px solid var(--line);cursor:pointer;min-height:26px}.chip[aria-pressed=true]{background:var(--acc);color:#111;border-color:var(--acc);font-weight:700}
+.list{flex:1;overflow:auto;padding:6px;margin:0;list-style:none}
+.vid{display:flex;gap:8px;padding:6px;border-radius:6px;cursor:pointer;font-size:13px;align-items:flex-start;border:2px solid transparent}
+.vid:hover{background:#262626}.vid[aria-selected=true]{background:#3d3520;box-shadow:inset 3px 0 0 #FFC400}
+.vid .th{width:56px;height:32px;border-radius:4px;flex:none;position:relative;overflow:hidden}
+.vid .nm{word-break:break-all;line-height:1.3}
+.badge{display:inline-block;font-size:12px;padding:0 6px;border-radius:4px;margin-top:2px;background:#26331f;color:var(--ok)}
+.badge.pend{background:#332d1a;color:#FFD666}.badge.chg{background:#2a2540;color:#C9B8FF}.badge.err{background:#3a1f1f;color:#FF9C9C}.badge.miss{background:#3a1f1f;color:#FF9C9C}.badge.off{background:#2e2e2e;color:#D0D0D0}
+.listfoot{padding:6px 8px;border-top:1px solid var(--line2);display:flex;gap:6px;align-items:center;font-size:12px;flex-wrap:wrap}#vacts{display:flex;gap:4px;flex-wrap:wrap}
+/* 中央 */
+.center{flex:1;overflow:auto;padding:10px 14px;min-width:0}
+.banner.err{background:#3a1f1f;border-color:#8a3d3d}.banner{display:flex;gap:10px;align-items:center;background:#22304a;border:1px solid #3d5a8a;border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:13px}
+.aibar{display:flex;gap:8px;align-items:center;margin-bottom:6px}.aibar input{flex:1}.aibar input:disabled{background:#202020;color:#8A8A8A;border-color:#3A3A3A}
+.upl{font-size:13px;color:#EEEEEE;display:flex;gap:6px;align-items:center;margin:0 0 10px;flex-wrap:wrap}
+.lnk{background:none;border:0;color:#9CC3FF;text-decoration:underline;cursor:pointer;padding:0 2px;min-height:24px;font-size:13px}
+.aim{position:absolute;top:6px;right:6px;font-size:12px;background:#1f3350;color:#CFE3FF;padding:0 6px;border-radius:4px}.aiwhy{font-size:13px;color:#B0B0B0;padding:0 8px 6px}
+.group{margin-bottom:14px}.gh{display:flex;gap:8px;align-items:center;margin:6px 0 8px}
+.gh .tog{background:none;border:0;cursor:pointer;display:flex;gap:6px;align-items:center;font-size:15px;font-weight:700;padding:4px;border-radius:4px;min-height:32px}
+.gh .tog[aria-expanded=false] svg{transform:rotate(-90deg)}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(176px,1fr));gap:12px}
+.card{background:var(--card);border:2px solid var(--line);border-radius:8px;overflow:hidden;cursor:pointer;position:relative}
+.card:hover{border-color:#A8A8A8;filter:brightness(1.08)}
+.card[data-on=true],.card[data-on=true]:hover{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc)}
+.pv{aspect-ratio:16/9;position:relative;background-size:300% 300%;animation:play 3s linear infinite}
+.rm .pv,.rm .skel{animation:none}
+@keyframes play{0%{background-position:0 50%}100%{background-position:100% 50%}}
+.mask{position:absolute;top:0;bottom:0;background:rgba(0,0,0,.5);pointer-events:none}.mask.l{left:0}.mask.r{right:0}
+.chk{position:absolute;top:4px;left:4px;width:32px;height:32px;padding:0;border-radius:50%;background:rgba(0,0,0,.6);border:2px solid #fff;display:grid;place-items:center;color:#111;cursor:pointer}
+.card:not([data-on=true]):hover .chk{background:rgba(255,255,255,.25)}
+.chk[aria-checked=true]{background:var(--acc);border-color:var(--acc)}.chk svg{display:none}.chk[aria-checked=true] svg{display:block}
+.pvtag{position:absolute;bottom:4px;right:4px;font-size:12px;background:rgba(0,0,0,.75);color:#fff;padding:0 6px;border-radius:4px}
+.meta{padding:6px 8px;font-size:13px;display:flex;justify-content:space-between;align-items:center;gap:4px}
+.star{color:var(--acc);font-size:12px;letter-spacing:1px}
+.card.errc{border-color:var(--err);cursor:default}.card.offc{border-color:#7A7A7A;border-style:dashed;cursor:default}.card.offc .body{padding:12px;font-size:13px}.card.errc .body{padding:12px;font-size:13px;color:#FFD0D0;aspect-ratio:auto}
+.skel{background:linear-gradient(90deg,#262626,#333,#262626);background-size:200%;animation:play 1.2s infinite}
+/* 右欄 */
+.right{width:320px;border-left:1px solid var(--line2);overflow:auto;padding:10px;font-size:13px;flex:none;background:var(--bg)}
+.rail{display:none}
+.player{aspect-ratio:16/9;background:#000;border-radius:6px;position:relative;display:grid;place-items:center;color:#A0A0A0;overflow:hidden}
+.player .bar2{position:absolute;left:0;right:0;bottom:0;height:4px;background:#333}.player .bar2 i{display:block;height:100%;width:34%;background:var(--acc)}
+.player .cap{position:absolute;left:8px;bottom:10px;font-size:12px;background:rgba(0,0,0,.75);color:#fff;padding:1px 6px;border-radius:4px}
+.right h2{font-size:14px;margin:14px 0 4px}
+.row{margin:10px 0}.row>.lab{display:block;color:var(--tx2);margin-bottom:4px;font-size:13px}
+[role=radiogroup]{display:flex;gap:4px}
+[role=radio]{flex:1;min-height:32px;font-size:13px;background:#2a2a2a;border:1px solid var(--line);border-radius:6px;cursor:pointer;padding:2px 4px}
+[role=radio][aria-checked=true]{background:var(--acc);color:#111;font-weight:700;border-color:var(--acc)}
+input[type=range]{width:100%;accent-color:var(--acc)}select,input.txt{width:100%;background:#2a2a2a;color:var(--tx);border:1px solid var(--line);padding:5px 6px;border-radius:6px;font:inherit;font-size:13px}
+.switch{display:flex;gap:8px;align-items:center;cursor:pointer}
+/* 時間軸 */
+.tl{border-top:1px solid var(--line2);background:#1a1a1a;display:flex;align-items:center;gap:10px;padding:8px 12px;min-height:96px}
+.track{flex:1 1 360px;display:flex;gap:4px;overflow-x:auto;padding:4px 2px;min-width:0;list-style:none;margin:0}
+.clip{height:60px;border-radius:5px;position:relative;cursor:grab;flex:none;overflow:hidden;border:2px solid transparent}
+.clip:focus-visible{outline:2px solid #fff}.clip.drag{opacity:.5}
+.clip .band{position:absolute;left:0;right:0;bottom:0;height:20px;background:rgba(0,0,0,.65);color:#fff;font-size:12px;padding:1px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.clip .x{position:absolute;top:0;right:0;width:32px;height:32px;padding:4px;background:none;border:0;cursor:pointer;display:grid;place-items:center}
+.clip .x span{width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.7);display:grid;place-items:center;color:#fff}
+.tlempty{color:var(--tx2);font-size:13px;padding:0 6px}
+.sum{white-space:nowrap;font-size:13px;color:var(--tx2)}.warn{color:var(--warn)}
+.why{font-size:12px;color:#CCCCCC;white-space:nowrap}
+/* 歡迎 */
+.welcome{flex:1;display:grid;place-items:center;padding:20px}
+.drop{width:min(600px,100%);padding:40px 24px;border:3px dashed #6a6a6a;border-radius:16px;display:flex;flex-direction:column;align-items:center;gap:14px;color:#ccc;text-align:center}
+/* 精修 */
+.trimwrap{padding:16px;max-width:960px;margin:auto;width:100%;overflow:auto}
+.energy{height:84px;background:#0d0d0d;position:relative;border-radius:6px;margin:10px 0}
+.energy svg{width:100%;height:100%;display:block}
+.cand{position:absolute;top:0;height:10px;background:#4f7dc9;border-radius:0 0 3px 3px}
+.sel{position:absolute;top:0;bottom:0;background:rgba(255,196,0,.18)}
+.hd{position:absolute;top:0;bottom:0;width:24px;background:transparent;cursor:ew-resize}.hd::before{content:"";position:absolute;left:6px;top:0;bottom:0;width:12px;background:var(--acc);border-radius:3px}
+.hd:focus-visible{outline:2px solid #fff}
+.ph{position:absolute;top:-4px;bottom:-4px;width:2px;background:#fff}
+.trimrow{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.trimrow input{width:90px}
+/* 對話框 */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.66);display:none;place-items:center;z-index:50}.modal.on{display:grid}
+.box{background:#262626;border:1px solid #444;border-radius:12px;padding:20px 22px;width:min(500px,92vw);max-height:88vh;overflow:auto}
+.box h2{margin:0 0 10px;font-size:18px;display:flex;gap:8px;align-items:center}
+.actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap}
+.mac .actions{flex-direction:row-reverse;justify-content:flex-start}
+.actions .primary{font-size:14px;padding:8px 18px;min-height:36px}
+.pbar{height:10px;background:#3a3a3a;border-radius:5px;overflow:hidden}.pbar i{display:block;height:100%;width:62%;background:var(--acc)}
+.steps{list-style:none;padding:0;margin:10px 0;font-size:13px}.steps li{padding:2px 0;color:var(--tx2)}.steps li.cur{color:var(--tx);font-weight:700}.steps li.done{color:var(--ok)}
+.files{background:#1a1a1a;border-radius:6px;padding:8px 10px;max-height:120px;overflow:auto;font-size:13px;margin:8px 0}
+pre{background:#141414;padding:8px;font-size:12px;border-radius:6px;white-space:pre-wrap}
+[role=tablist]{display:flex;gap:2px;border-bottom:1px solid #444;margin-bottom:12px;flex-wrap:wrap}
+[role=tab]{background:none;border:0;padding:6px 12px;cursor:pointer;border-bottom:3px solid transparent;font-size:13px;min-height:32px}
+[role=tab][aria-selected=true]{border-color:var(--acc);font-weight:700}
+.tabp{display:none}.tabp.on{display:block}.tabp .row{display:flex;justify-content:space-between;align-items:center;gap:10px}.tabp .row>label:first-child{color:var(--tx)}
+.dangerbox{background:#3a1f1f;border:1px solid #FF6B6B;border-radius:8px;padding:8px 10px;color:#FFD0D0;font-size:13px;margin:8px 0}
+.mac .act-win,.win .act-mac{display:none}
+.toast{position:fixed;left:50%;bottom:110px;transform:translateX(-50%);background:#333;border:1px solid #555;border-radius:8px;padding:8px 12px;display:none;gap:12px;align-items:center;z-index:40}.toast.on{display:flex}
+/* 窄視窗 */
+@media (max-width:1279px){
+ .right{position:absolute;right:48px;top:0;bottom:0;z-index:20;box-shadow:-8px 0 24px rgba(0,0,0,.6);display:none}
+ .right.open{display:block}
+ .rail{display:flex;flex-direction:column;gap:6px;width:48px;flex:none;border-left:1px solid var(--line2);padding:8px 6px;align-items:center;background:var(--panel)}
+ .left{width:210px}.top .hide-n{display:none}
+}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style></head><body class="mac">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+<symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></symbol>
+<symbol id="i-redo" viewBox="0 0 24 24"><path d="m15 14 5-5-5-5"/><path d="M20 9H9a5 5 0 0 0 0 10h3"/></symbol>
+<symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+<symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path d="m6 4 14 8-14 8z"/></symbol>
+<symbol id="i-film" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 3v18M17 3v18M3 8h4M3 16h4M17 8h4M17 16h4"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></symbol>
+<symbol id="i-ok" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m8 12 3 3 5-6"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></symbol>
+<symbol id="i-shuffle" viewBox="0 0 24 24"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></symbol>
+<symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/></symbol>
+<symbol id="i-side" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M15 3v18"/></symbol>
+<symbol id="i-refresh" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></symbol>
+<symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18a5 5 0 1 1 .9-9.9A6 6 0 0 1 19 10a4 4 0 0 1 0 8z"/><path d="M12 16v-5M9.5 13.5 12 11l2.5 2.5"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></symbol>
+</defs></svg>
+
+<div class="mocknav" aria-label="模型導覽（非產品介面）">模型：
+<button onclick="show('welcome')">1 歡迎</button><button onclick="openDlg('dResume')">1b 續作</button><button onclick="show('main')">2 主畫面</button><button onclick="show('trim')">3 精修</button>
+<button onclick="openDlg('dImport')">匯入資料夾</button><button onclick="openDlg('dDelete')">刪除</button><button onclick="demoPerm()">無垃圾桶磁碟</button><button onclick="demoPerm('net')">網路磁碟</button><button onclick="openDlg('dDisk')">磁碟檢查</button><button onclick="openDlg('dProg')">輸出進度</button><button onclick="openDlg('dDone')">完成</button><button onclick="openDlg('dErr')">錯誤</button><button onclick="openDlg('dSet')">設定</button>
+｜平台 <button id="pfBtn" onclick="setPf()">macOS</button>｜<button onclick="toggleRM()" id="rmBtn">減少動態：關</button>｜<button onclick="reqAI(!aiOn)" id="aiBtn">雲端 AI：關</button>｜AI 狀態 <button onclick="demoAI('run')">分析中</button><button onclick="demoAI('done')">結果</button><button onclick="demoAI('key')">金鑰無效</button><button onclick="demoAI('quota')">額度用完</button><button onclick="demoAI('off')">離線</button></div>
+
+<div class="app">
+<div class="macmenu" aria-hidden="true"><b>精華剪輯器</b><span>檔案</span><span>編輯</span><span>顯示方式</span><span>視窗</span><span>輔助說明</span></div>
+<div class="menubar" aria-hidden="true"><span>檔案</span><span>編輯</span><span>檢視</span><span>說明</span></div>
+
+<!-- 1 歡迎 -->
+<section id="welcome" class="screen" aria-label="歡迎">
+<div class="top"><b>精華剪輯器</b><span style="flex:1"></span><button class="btn icon" data-tip="設定" data-key-mac="⌘," data-key-win="Ctrl+," onclick="openDlg('dSet',this)"><svg class="i"><use href="#i-gear"/></svg><span class="vh">設定</span></button></div>
+<div class="welcome"><div class="drop"><svg class="i" style="width:48px;height:48px" aria-hidden="true"><use href="#i-film"/></svg>
+<div style="font-size:20px">把影片或資料夾拖到這裡</div>
+<div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><button class="primary" onclick="show('main')"><svg class="i"><use href="#i-plus"/></svg>匯入影片</button><button class="btn" style="min-height:44px" onclick="openDlg('dImport',this)"><svg class="i"><use href="#i-folder"/></svg>匯入資料夾</button></div>
+<div class="sec">支援 MP4、MOV、Insta360 LRV（不限數量）。INSV 360° 原始檔請先在 Insta360 Studio／App 匯出平面 MP4。</div>
+<button class="btn" onclick="openDlg('dResume',this)">開啟上次的專案</button></div></div></section>
+
+<!-- 2 主畫面 -->
+<section id="main" class="screen on" aria-label="主畫面">
+<div class="top">
+<b class="hide-n">精華剪輯器</b>
+<button class="btn" onclick="show('main')" data-tip="匯入影片" data-key-mac="⌘O" data-key-win="Ctrl+O"><svg class="i"><use href="#i-plus"/></svg>匯入影片</button>
+<button class="btn" onclick="openDlg('dImport',this)" data-tip="匯入資料夾" data-key-mac="⇧⌘O" data-key-win="Ctrl+Shift+O"><svg class="i"><use href="#i-folder"/></svg>資料夾</button>
+<button class="btn icon" data-tip="復原" data-key-mac="⌘Z" data-key-win="Ctrl+Z"><svg class="i"><use href="#i-undo"/></svg><span class="vh">復原</span></button>
+<button class="btn icon" data-tip="重做" data-key-mac="⇧⌘Z" data-key-win="Ctrl+Y"><svg class="i"><use href="#i-redo"/></svg><span class="vh">重做</span></button>
+<span class="sec hide-n">墾丁之旅・已自動儲存</span><span style="flex:1"></span>
+<button class="btn" onclick="autoPick()" data-tip="每支影片自動勾選分數最高的 2 段"><svg class="i"><use href="#i-spark"/></svg>每支選最佳 2 段</button>
+<button class="btn" onclick="clearAll()">清除全部勾選</button>
+<label class="switch small"><input type="checkbox" id="onlyChk" onchange="renderWall()"> 只顯示已勾選</label>
+<button class="btn icon" data-tip="設定" data-key-mac="⌘," data-key-win="Ctrl+," onclick="openDlg('dSet',this)"><svg class="i"><use href="#i-gear"/></svg><span class="vh">設定</span></button>
+</div>
+<div class="main">
+<nav class="left" aria-label="影片清單">
+<div class="tools"><label class="vh" for="q">搜尋影片</label><input id="q" class="search" placeholder="搜尋檔名…" oninput="renderList()">
+<div class="chips" role="toolbar" aria-label="篩選（←→ 切換）" id="chips"></div></div>
+<ul class="list" id="vlist" role="listbox" aria-label="影片（可多選：Shift／⌘ 點選）" aria-multiselectable="true"></ul>
+<div class="listfoot" role="toolbar" aria-label="所選影片的動作（也可按右鍵）"><span id="selCount" class="sec">已選 0 支</span><span style="flex:1"></span><span id="vacts"></span><button class="btn sm" id="delBtn" onclick="openDlg('dDelete',this)" disabled><svg class="i"><use href="#i-trash"/></svg>移除…</button></div>
+</nav>
+<main class="center" id="center" aria-label="候選片段">
+<div class="banner" role="status" id="watchBanner"><svg class="i"><use href="#i-refresh"/></svg><span>監看資料夾「DCIM/2026-10」發現 2 支新影片，已加入並開始分析。</span><span style="flex:1"></span><button class="btn sm" onclick="this.parentNode.remove()">知道了</button></div>
+<div id="aiwrap" hidden><div id="aiErr"></div><div class="aibar" id="aibar"><label class="vh" for="aiq">描述你想要的畫面</label><input id="aiq" class="txt" placeholder="描述你想要的畫面，例如「小孩在海邊笑」「跳水的瞬間」" aria-describedby="aiNote"><button class="btn" id="aiGo" onclick="demoAI('run')" aria-describedby="aiNote"><svg class="i"><use href="#i-spark"/></svg>雲端 AI 挑選</button><button class="btn" id="aiAll" hidden onclick="pickAI()"></button></div>
+<div class="upl" id="aiNote"></div></div>
+<p class="vh" id="wallHint">方向鍵移動，空白鍵勾選，Enter 微調，Home 到該影片的標題列</p><div id="wall"></div></main>
+<aside class="right" id="right" aria-label="預覽與成品設定">
+<div class="player" id="player" aria-label="預覽播放器"><span><svg class="i"><use href="#i-play"/></svg> 預覽（有聲）</span><div class="mask l" id="pml"></div><div class="mask r" id="pmr"></div><span class="cap" id="pcap" hidden>預覽成品 00:08 / 00:24（低解析度）</span><div class="bar2" id="pbar" hidden><i></i></div></div>
+<h2>成品設定</h2>
+<div class="row"><span class="lab" id="lLen">成品長度</span><select aria-labelledby="lLen" id="target" onchange="const c=this.value=='-1';$('#custRow').hidden=!c;if(!c){$('#custErr').hidden=true;$('#tcust').removeAttribute('aria-invalid')}renderTL()"><option value="0">自動（全部已勾選片段）</option><option value="15">15 秒</option><option value="30" selected>30 秒</option><option value="60">60 秒</option><option value="-1">自訂…</option></select><div id="custRow" hidden style="margin-top:6px;display:flex;gap:6px;align-items:center"><label for="tcust">自訂秒數</label><input type="number" id="tcust" class="txt" style="width:90px" min="5" max="600" value="20" aria-describedby="custHint custErr" oninput="renderTL()"><span class="sec small" id="custHint">5–600 秒</span></div><div class="ferr" id="custErr" role="alert" hidden>請輸入 5–600 秒（目前沿用 <span id="custLast">20</span> 秒）</div></div>
+<div class="row"><span class="lab" id="lAsp">畫面比例</span><div role="radiogroup" aria-labelledby="lAsp" id="rgAsp"><button role="radio" aria-checked="true" data-v="16:9">16:9</button><button role="radio" aria-checked="false" data-v="9:16">9:16</button><button role="radio" aria-checked="false" data-v="1:1">1:1</button></div></div>
+<div class="row"><span class="lab" id="lRes">解析度</span><div role="radiogroup" aria-labelledby="lRes"><button role="radio" aria-checked="true">1080p</button><button role="radio" aria-checked="false">4K</button></div></div>
+<div class="row"><span class="lab" id="lTr">轉場</span><div role="radiogroup" aria-labelledby="lTr"><button role="radio" aria-checked="true">交叉淡化</button><button role="radio" aria-checked="false">無</button></div></div>
+<div class="row"><label class="lab" for="mus">背景音樂（預設資料夾：~/Music/旅行）</label><select id="mus"><option>隨機（預設資料夾）</option><option>summer_vibes.mp3</option><option>ocean_breeze.m4a</option><option>無音樂</option><option>選擇其他檔案…</option></select><div class="sec small">自動循環或裁切為影片長度，結尾自動淡出</div></div>
+<div class="row"><label class="lab" for="mv">音樂音量 <output id="mvo">60%</output></label><input type="range" id="mv" value="60" oninput="mvo.value=this.value+'%'"></div>
+<div class="row"><label class="switch"><input type="checkbox" checked> 保留原音</label><label class="lab" for="ov" style="margin-top:4px">原音音量 <output id="ovo">100%</output></label><input type="range" id="ov" value="100" oninput="ovo.value=this.value+'%'"></div>
+<div class="row"><label class="lab" for="fo">結尾淡出 <output id="foo">1.5 秒</output></label><input type="range" id="fo" min="0" max="5" step=".5" value="1.5" oninput="foo.value=this.value+' 秒'"></div>
+</aside>
+<div class="rail" aria-label="側欄"><button class="btn icon" onclick="toggleDrawer(this)" aria-expanded="false" aria-controls="right" data-tip="預覽與成品設定"><svg class="i"><use href="#i-side"/></svg><span class="vh">預覽與成品設定</span></button></div>
+</div>
+<div class="tl" aria-label="成品時間軸">
+<ol class="track" id="track" aria-label="成品片段順序（⌘↑↓ 或 Alt+←→ 移動）" aria-keyshortcuts="Meta+Alt+T"></ol>
+<span class="sum" id="sum" role="status"></span>
+<button class="btn" onclick="previewFinal()" id="pvBtn">預覽成品</button>
+<span class="why" id="why"></span>
+<button class="primary" id="go" onclick="startExport(this)" data-tip="產生成品" data-key-mac="⌘↩" data-key-win="Ctrl+Enter">產生成品</button><span class="sec small" id="skipKeys" data-mac="⌥⌘T 跳到時間軸" data-win="Ctrl+Alt+T 跳到時間軸">⌥⌘T 跳到時間軸</span>
+</div></section>
+
+<!-- 3 精修 -->
+<section id="trim" class="screen" aria-label="精修">
+<div class="top"><button class="btn" onclick="show('main')">← 返回</button><b>精修：VID_0001・片段 2</b></div>
+<div class="trimwrap"><div class="player" style="max-height:420px"><span><svg class="i"><use href="#i-play"/></svg> 播放此段（循環）</span><span class="cap">00:13.2</span></div>
+<div class="energy" id="energy" aria-label="能量曲線與候選位置"><svg viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true"><polyline fill="none" stroke="#6cf" stroke-width=".5" points="0,15 8,12 15,16 22,8 30,4 36,6 42,3 48,10 55,14 62,9 70,13 78,6 85,11 92,15 100,12"/></svg>
+<div class="cand" style="left:8%;width:9%" title="候選 1"></div><div class="cand" style="left:30%;width:9%" title="候選 2"></div><div class="cand" style="left:66%;width:9%" title="候選 3"></div><div class="cand" style="left:84%;width:9%" title="候選 4"></div>
+<div class="sel" id="tsel"></div><div class="hd" id="hIn" role="slider" tabindex="0" aria-label="入點" aria-valuemin="0" aria-valuemax="42" aria-valuenow="12.5" aria-valuetext="00:12.5"></div><div class="hd" id="hOut" role="slider" tabindex="0" aria-label="出點" aria-valuemin="0" aria-valuemax="42" aria-valuenow="16.5" aria-valuetext="00:16.5"></div><div class="ph" id="ph" style="left:31.4%" aria-hidden="true"></div></div><span class="vh" id="trimLive" aria-live="polite"></span>
+<div class="sec small" style="display:flex;gap:16px"><span><span style="display:inline-block;width:10px;height:10px;background:#4f7dc9"></span> AI 候選</span><span><span style="display:inline-block;width:10px;height:10px;background:var(--acc)"></span> 目前範圍</span><span>白線：播放頭</span></div>
+<div class="trimrow" style="margin-top:10px"><label>入點 <input class="txt" id="tin" value="00:12.5"></label><label>出點 <input class="txt" id="tout" value="00:16.5"></label><span id="tlen">長度 4.0 秒</span><span style="flex:1"></span><button class="btn">還原 AI 建議</button><button class="primary" onclick="show('main')">套用</button></div>
+<p class="sec">把手點擊區 24×84（視覺 12px）・I／O 設定入出點・←→ 逐格・Shift+←→ ±1 秒・空白鍵 播放／暫停・把手獲得焦點時用 ←→ 微調</p></div></section>
+</div>
+
+<!-- 對話框 -->
+<div class="modal" id="dResume" role="dialog" aria-modal="true" aria-labelledby="hRes" data-esc="close"><div class="box"><h2 id="hRes">繼續上次的專案？</h2><p>墾丁之旅<br><span class="sec">上次編輯：昨天 22:41・12 支影片・已勾選 18 段・有 2 支影片尚未分析完，將自動續跑</span></p>
+<div class="actions"><button class="primary" data-primary onclick="show('main')">繼續</button><button class="btn" onclick="closeDlg()">開新專案</button></div></div></div>
+
+<div class="modal" id="dImport" role="dialog" aria-modal="true" aria-labelledby="hImp" data-esc="close"><div class="box"><h2 id="hImp">匯入資料夾</h2>
+<p>~/Movies/Insta360/DCIM <button class="btn sm">更改…</button></p><p class="sec">找到 128 支影片（96 支已在素材庫且未變更，會直接沿用分析結果；32 支待分析）</p>
+<label class="switch"><input type="checkbox" checked> 包含子資料夾</label><br><label class="switch"><input type="checkbox" checked> 持續監看此資料夾，自動加入新影片</label>
+<div class="actions"><button class="primary" data-primary onclick="show('main')">匯入</button><button class="btn" onclick="closeDlg()">取消</button></div></div></div>
+
+<div class="modal" id="dDelete" role="dialog" aria-modal="true" aria-labelledby="hDel" data-esc="close"><div class="box"><h2 id="hDel"><svg class="i"><use href="#i-trash"/></svg>移除 <span class="dn">3</span> 支影片<span class="sec" style="font-size:14px;font-weight:400">（共 <span class="nf">3</span> 個檔案）</span></h2>
+<div class="files" id="delFiles"></div><p class="sec small">同一次拍攝的 .insv／.lrv／.thm 視為一組，會一起處理。</p>
+<p class="small"><b>從清單移除</b>：原始檔保留在磁碟上，可用 <span data-mac="⌘Z" data-win="Ctrl+Z">⌘Z</span> 復原。<br><b><span data-mac="移到垃圾桶" data-win="移到資源回收筒">移到垃圾桶</span></b>：原始檔移到<span data-mac="垃圾桶" data-win="資源回收筒">垃圾桶</span>（可還原，非永久刪除），並清除快取與已勾選片段。</p>
+<div class="actions"><button class="primary" data-primary onclick="removeSel()">從清單移除</button><button class="btn danger" onclick="openDlg('dTrash')" id="toTrash"><span data-mac="移到垃圾桶…" data-win="移到資源回收筒…">移到垃圾桶…</span></button><button class="btn" onclick="closeDlg()">取消</button></div></div></div>
+
+<div class="modal" id="dTrash" role="dialog" aria-modal="true" aria-labelledby="hTr" data-esc="close"><div class="box"><h2 id="hTr"><svg class="i"><use href="#i-alert"/></svg>確定將 <span class="nf">3</span> 個檔案移到<span data-mac="垃圾桶" data-win="資源回收筒">垃圾桶</span>？</h2>
+<div class="files" id="trFiles"></div><label class="switch" id="pvOnlyRow"><input type="checkbox" id="pvOnly" onchange="fillDel()"> 只刪除預覽檔（LRV／THM），保留原始檔</label><p class="sec">這些檔案會離開素材庫；之後可從<span data-mac="垃圾桶" data-win="資源回收筒">垃圾桶</span>還原原始檔（App 內無法復原）。</p>
+<div class="actions"><button class="btn danger" onclick="doTrash()">移到<span data-mac="垃圾桶" data-win="資源回收筒">垃圾桶</span></button><button class="primary" data-primary onclick="closeDlg()">取消</button></div></div></div>
+
+<div class="modal" id="dPerm" role="dialog" aria-modal="true" aria-labelledby="hPerm" data-esc="close"><div class="box"><h2 id="hPerm" style="color:#FFB3B3"><svg class="i"><use href="#i-alert"/></svg>無法移到<span data-mac="垃圾桶" data-win="資源回收筒">資源回收筒</span></h2>
+<div class="dangerbox" id="permMsg"></div><div class="files" id="permFiles"></div>
+<p class="sec">其他磁碟上的檔案（若有）仍會移到<span data-mac="垃圾桶" data-win="資源回收筒">資源回收筒</span>。不想永久刪除的話，可先把檔案複製到電腦再刪除。</p>
+<label class="switch"><input type="checkbox" id="permOk" onchange="$('#permGo').disabled=!this.checked"> 我了解無法還原</label>
+<div class="actions"><button class="btn danger" id="permGo" disabled onclick="doTrash(true)">永久刪除</button><button class="btn" id="permSkip" onclick="doTrash(false,true)">略過這 <span id="permN">1</span> 個檔案</button><button class="primary" data-primary onclick="closeDlg()">取消</button></div></div></div>
+
+<div class="modal" id="dConsent" role="dialog" aria-modal="true" aria-labelledby="hCon" aria-describedby="conBody" data-esc="back:dSet"><div class="box"><h2 id="hCon"><svg class="i"><use href="#i-cloud"/></svg><span class="m-consent">開啟雲端 AI 挑選？</span><span class="m-info">雲端 AI 會上傳什麼</span></h2>
+<p id="conBody">開啟後，當你按「雲端 AI 挑選」時，App 會把<b>每個候選片段 1–3 張 256px 關鍵影格</b>和<b>你輸入的描述文字</b>傳送到 <b class="svcN">OpenAI 相容 API</b>。不會上傳原始影片、聲音、檔名或位置資訊。</p>
+<p class="sec">資料如何保存與使用，依該服務的政策：<button class="lnk">查看 <span class="svcN">OpenAI 相容 API</span> 的資料政策</button><br>費用由你的 API 帳號支付，每次約上傳 30–90 張影像。可隨時在設定關閉並刪除金鑰。</p>
+<div class="actions m-consent"><button class="primary" onclick="consent(true)">我了解，開啟</button><button class="btn" data-primary onclick="consent(false)">取消</button></div>
+<div class="actions m-info"><button class="lnk" style="margin-right:auto" onclick="aiOffFromInfo()">在設定中關閉雲端 AI</button><button class="primary" data-primary onclick="closeDlg()">關閉</button></div></div></div>
+
+<div class="modal" id="dDisk" role="dialog" aria-modal="true" aria-labelledby="hDisk" data-esc="close"><div class="box"><h2 id="hDisk"><svg class="i"><use href="#i-alert"/></svg>磁碟空間可能不足</h2><p>輸出到「影片」資料夾約需 <b>1.2 GB</b>，目前只剩 <b>0.8 GB</b>。</p>
+<div class="actions"><button class="primary" data-primary onclick="closeDlg()">選擇其他位置…</button><button class="btn" onclick="openDlg('dProg')">仍要繼續</button><button class="btn" onclick="closeDlg()">取消</button></div></div></div>
+
+<div class="modal" id="dProg" role="dialog" aria-modal="true" aria-labelledby="hProg" data-esc="confirmCancel"><div class="box"><h2 id="hProg">正在產生成品…</h2>
+<div class="pbar" role="progressbar" aria-valuenow="62" aria-valuemin="0" aria-valuemax="100" aria-label="整體進度"><i></i></div>
+<p><b>步驟 2/3：合併與轉場</b>・整體 62%・約剩 40 秒</p>
+<ol class="steps"><li class="done">1. 處理片段（8/8）</li><li class="cur">2. 合併與轉場</li><li>3. 混音與輸出</li></ol>
+<div class="actions"><button class="btn" data-primary onclick="openDlg('dCancel')">取消</button><button class="btn" onclick="openDlg('dDone')">（模擬完成）</button></div></div></div>
+
+<div class="modal" id="dCancel" role="dialog" aria-modal="true" aria-labelledby="hCan" data-esc="back:dProg"><div class="box"><h2 id="hCan">要停止產生嗎？</h2><p>已處理的暫存檔會被刪除。</p>
+<div class="actions"><button class="primary" data-primary onclick="openDlg('dProg')">繼續產生</button><button class="btn danger" onclick="closeDlg()">停止</button></div></div></div>
+
+<div class="modal" id="dDone" role="dialog" aria-modal="true" aria-labelledby="hDone" data-esc="close"><div class="box"><h2 id="hDone"><svg class="i" style="color:var(--ok)"><use href="#i-ok"/></svg>完成！</h2><p>精華_20261024_2310.mp4<br><span class="sec">32 秒・1920×1080・48.6 MB</span></p>
+<div class="actions"><button class="primary" data-primary onclick="closeDlg()"><svg class="i"><use href="#i-play"/></svg>播放</button><button class="btn" onclick="closeDlg()"><span data-mac="在 Finder 中顯示" data-win="在檔案總管中顯示">在 Finder 中顯示</span></button><button class="btn" onclick="closeDlg()">另存 9:16 直式版</button><button class="btn" onclick="closeDlg()">關閉</button></div></div></div>
+
+<div class="modal" id="dErr" role="dialog" aria-modal="true" aria-labelledby="hErr" data-esc="close"><div class="box"><h2 id="hErr"><svg class="i" style="color:var(--err)"><use href="#i-alert"/></svg>輸出失敗</h2><p>寫入檔案時發生錯誤：磁碟已滿。</p><pre>ffmpeg: No space left on device</pre>
+<div class="actions"><button class="primary" data-primary onclick="closeDlg()">重試</button><button class="btn">複製錯誤細節</button><button class="btn" onclick="closeDlg()">關閉</button></div></div></div>
+
+<div class="modal" id="dSet" role="dialog" aria-modal="true" aria-labelledby="hSet" data-esc="settings"><div class="box" style="width:min(620px,94vw)"><h2 id="hSet"><span data-mac="設定" data-win="選項">設定</span></h2>
+<div role="tablist" aria-label="設定分類" id="tabs"><button role="tab" aria-selected="true" aria-controls="t1" id="tb1">一般</button><button role="tab" aria-selected="false" aria-controls="t2" id="tb2" tabindex="-1">推薦</button><button role="tab" aria-selected="false" aria-controls="t3" id="tb3" tabindex="-1">音樂</button><button role="tab" aria-selected="false" aria-controls="t4" id="tb4" tabindex="-1">效能</button><button role="tab" aria-selected="false" aria-controls="t5" id="tb5" tabindex="-1">智慧評分</button><button role="tab" aria-selected="false" aria-controls="t6" id="tb6" tabindex="-1">素材庫</button></div>
+<div class="tabp on" id="t1" role="tabpanel" aria-labelledby="tb1"><div class="row"><label for="s1">介面語言</label><select id="s1" style="width:180px"><option>繁體中文</option></select></div><div class="row"><label for="s2">啟動時</label><select id="s2" style="width:180px"><option>詢問是否續作</option><option>自動續作</option><option>開新專案</option></select></div><div class="row"><label for="s3">減少動態（停用自動播放）</label><input type="checkbox" id="s3"></div><div class="row"><label for="s3b">時間軸預設排序</label><select id="s3b" style="width:180px"><option>依拍攝時間</option><option>依匯入順序</option><option>依 AI 分數</option></select></div></div>
+<div class="tabp" id="t2" role="tabpanel" aria-labelledby="tb2"><div class="row"><label for="s4">每支影片推薦數</label><input type="number" id="s4" class="txt" style="width:80px" value="4" min="1" max="10"></div><div class="row"><label for="s5">候選長度（秒）</label><input type="number" id="s5" class="txt" style="width:80px" value="4" min="2" max="10"></div><div class="row"><label for="s6">預設勾選數</label><input type="number" id="s6" class="txt" style="width:80px" value="2" min="0" max="5"></div></div>
+<div class="tabp" id="t3" role="tabpanel" aria-labelledby="tb3"><div class="row"><label for="s7">預設音樂資料夾</label><span><span class="sec">~/Music/旅行</span> <button class="btn sm" id="s7">選擇…</button></span></div><div class="row"><label for="s8">預設音樂</label><select id="s8" style="width:180px"><option>隨機</option><option>無</option></select></div></div>
+<div class="tabp" id="t4" role="tabpanel" aria-labelledby="tb4"><div class="row"><label for="s9">同時播放預覽上限</label><input type="number" id="s9" class="txt" style="width:80px" value="8" min="4" max="16"></div><div class="row"><label for="s10">硬體編碼（<span data-mac="VideoToolbox" data-win="Media Foundation">VideoToolbox</span>，較快、檔案略大）</label><input type="checkbox" id="s10" checked></div><div class="row"><label for="s11">分析／預覽並行數</label><select id="s11" style="width:180px"><option>自動（核心數÷2）</option><option>1</option><option>2</option><option>4</option></select></div><div class="row"><label for="s12">ffmpeg</label><span class="sec small" id="s12">內建 ffmpeg 7.1（原生 arm64）<button class="btn sm">更改…</button></span></div></div>
+<div class="tabp" id="t5" role="tabpanel" aria-labelledby="tb5"><div class="row"><label for="s13">本機臉部／笑容／清晰度評分<br><span class="sec small">模型隨 App 安裝（約 12 MB），完全離線、不需下載或帳號；分析較慢。<br>只在你的電腦上計算臉部數量、大小、笑容與清晰度分數；<b>不做身分辨識，不儲存臉部影像、特徵或 landmark</b>，素材庫只保存 0–100 的分數。</span><span class="small" id="haarNote" style="display:block;color:#FFD666"></span></label><input type="checkbox" id="s13"></div><div class="row"><label for="s14">雲端 AI「描述你想要的畫面」<br><span class="sec small">預設關閉。會上傳低解析度關鍵影格與描述文字到你選的服務</span></label><input type="checkbox" id="s14" onchange="reqAI(this.checked)"></div><div class="row"><label for="s15">服務</label><select id="s15" style="width:200px"><option>OpenAI 相容 API</option><option>Google Gemini</option><option>xAI</option></select></div><div class="row"><label for="s16">API 金鑰（存在<span data-mac="鑰匙圈" data-win="認證管理員">鑰匙圈</span>）</label><input type="password" id="s16" class="txt" style="width:200px" placeholder="sk-…"></div><div class="row"><span></span><span style="display:flex;gap:6px;align-items:center"><span id="keySt" role="status" class="small"></span><button class="btn" id="keyTest" onclick="testKey()">測試連線</button><button class="btn danger" onclick="delKey()">刪除已儲存的金鑰</button></span></div></div>
+<div class="tabp" id="t6" role="tabpanel" aria-labelledby="tb6"><div class="row"><span>快取（預覽、縮圖、分析結果）</span><span><b>1.8 GB</b>・412 支影片</span></div><div class="row"><span>監看資料夾</span><span class="small" style="text-align:right">~/Movies/Insta360/DCIM（含子資料夾）・<span style="color:var(--ok)">監看中</span> <button class="btn sm">移除</button><br><span data-mac="/Volumes/SD 卡/DCIM" data-win="E:\DCIM">/Volumes/SD 卡/DCIM</span>・<span class="badge off">已中斷連線（SD 卡未插入）</span> <button class="btn sm">移除</button></span></div><div class="row"><span>掃描頻率</span><span class="sec small">每 30 秒；使用電池時每 5 分鐘；磁碟休眠或卸載時暫停</span></div><div class="row"><span>快取上限</span><select aria-label="快取上限" style="width:140px"><option>5 GB</option><option>10 GB</option><option>不限</option></select></div><div class="row"><button class="btn">重新分析全部…</button><button class="btn">清除預覽快取（保留勾選）</button></div></div>
+<div class="actions act-mac"><span class="sec small" style="margin-right:auto">變更會立即生效</span><button class="primary" data-primary onclick="closeDlg()">完成</button></div>
+<div class="actions act-win"><span class="sec small" id="setDirty" style="margin-right:auto" role="status"></span><button class="primary" data-primary onclick="setOK()">確定</button><button class="btn" onclick="setCancel()">取消</button><button class="btn" id="setApply" onclick="setApplied()">套用</button></div></div></div>
+
+<div class="toast" id="toast" role="status"><span id="toastMsg"></span><span id="toastAct"></span></div>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+let pf='mac',RM=false;
+const pal=["#f60,#fc0,#09f","#0a8,#9f6,#036","#c0f,#f39,#30c","#999,#333,#ccc","#06f,#0ff,#003","#f30,#900,#fa0","#3c3,#060,#cfc","#fcf,#909,#f6f"];
+const V=[{id:1,n:"VID_0001",x:"MP4",st:"已分析",d:"00:42",fs:[["VID_0001.mp4",1130],["LRV_0001.lrv",92],["VID_0001.thm",.1]]},
+{id:2,n:"VID_0002",x:"LRV",st:"已分析",d:"01:15",fs:[["LRV_0002.lrv",118],["VID_0002.insv",4900],["VID_0002.thm",.1]]},
+{id:3,n:"VID_0003",x:"MOV",st:"待分析",d:"00:58",p:42,vol:"sd",fs:[["VID_0003.mov",1230]]},
+{id:4,n:"VID_0004",x:"INSV",st:"錯誤",d:"—",vol:"sd",fs:[["VID_0004.insv",3890],["VID_0004.thm",.1]]},
+{id:5,n:"VID_0005",x:"MP4",st:"已變更",d:"00:31",fs:[["VID_0005.mp4",820]]},
+{id:6,n:"VID_0006",x:"MP4",st:"遺失",d:"00:20",fs:[["VID_0006.mp4",510]]},
+{id:7,n:"VID_0007",x:"MP4",st:"已中斷連線",d:"00:26",fs:[["VID_0007.mp4",640]]}];
+let aiOn=false,keyOK=false,aiState="idle";const AIM={c1_2:[87,"小孩在浪邊笑、臉部清楚"],c2_0:[81,"兩個小孩奔跑，海浪在背景"],c5_1:[74,"海邊人物，但臉部較小"],c1_0:[66,"海浪近景，有人物側臉"]};
+const gb=mb=>mb>=1024?(mb/1024).toFixed(1)+" GB":mb>=1?Math.round(mb)+" MB":"<1 MB";
+const noTrash=v=>(v.vol=="sd"&&pf=="win")||v.vol=="net";
+const volName=v=>v.vol=="net"?(pf=="win"?"網路磁碟 \\\\NAS\\video":"網路磁碟 //nas/video"):"記憶卡或 USB 磁碟（E:）";
+const PVX=/\.(lrv|lrf|thm)$/i;
+const C=[];V.forEach((v,vi)=>{if(v.st=="已分析"||v.st=="已變更")for(let k=0;k<4;k++)C.push({id:`c${v.id}_${k}`,v:v.id,s:4+k*9,l:[4,3.5,5,4][k],g:pal[(vi*4+k)%8],star:[5,4,3,2][k]})});
+let sel=["c1_0","c1_1","c2_0","c2_1"],vsel=new Set(),filter="全部",collapsed=new Set(),removed=[];
+const badgeCls={"已分析":"","待分析":"pend","已變更":"chg","錯誤":"err","遺失":"miss","已中斷連線":"off"};
+const fmt=s=>"00:"+s.toFixed(1).padStart(4,"0");
+// ---------- 左欄 ----------
+function renderChips(){const live=V.filter(v=>!removed.includes(v.id));const cnt={"全部":live.length,"已勾選":new Set(sel.map(c=>C.find(x=>x.id==c).v)).size,"待分析":live.filter(v=>v.st=="待分析"||v.st=="已變更").length,"錯誤":live.filter(v=>v.st=="錯誤"||v.st=="遺失").length};
+$("#chips").innerHTML=Object.entries(cnt).map(([k,n])=>`<button class="chip" tabindex="${k==filter?0:-1}" aria-pressed="${k==filter}" onclick="filter='${k}';renderList()">${k} ${n}</button>`).join("")}
+$("#chips").addEventListener("keydown",e=>{const it=$$("#chips .chip"),i=it.indexOf(document.activeElement),d={ArrowRight:1,ArrowLeft:-1}[e.key];if(i<0||!d)return;e.preventDefault();const n=it[(i+d+it.length)%it.length];it.forEach(x=>x.tabIndex=x===n?0:-1);n.focus()});
+function visV(){const q=$("#q").value.trim().toLowerCase();return V.filter(v=>!removed.includes(v.id)&&v.n.toLowerCase().includes(q)&&(filter=="全部"||(filter=="已勾選"&&sel.some(c=>c.startsWith(`c${v.id}_`)))||(filter=="待分析"&&["待分析","已變更"].includes(v.st))||(filter=="錯誤"&&["錯誤","遺失"].includes(v.st))))}
+function renderList(){renderChips();const f=document.activeElement?.id;const vs=visV();let act=vs.findIndex(v=>v.id==window._act);if(act<0)act=0;
+$("#vlist").innerHTML=vs.map((v,i)=>{const extra="";
+const lab=v.st=="待分析"?`分析中 ${v.p}%`:v.st;
+return `<li class="vid" role="option" id="v${v.id}" oncontextmenu="event.preventDefault();pickV({},${v.id});($('#vacts button')||$('#delBtn')).focus()" aria-selected="${vsel.has(v.id)}" tabindex="${i==act?0:-1}" onclick="pickV(event,${v.id})"><div class="th" style="background:${v.st=="錯誤"||v.st=="遺失"?"#4a2a2a":v.st=="已中斷連線"?"#333":`linear-gradient(45deg,${pal[(v.id*3)%8]})`}"></div><div><div class="nm">${v.n}<span class="vh">，</span><span class="xbadge">${v.x}</span></div><span class="badge ${badgeCls[v.st]}">${lab}</span> <span class="sec small">${v.d}</span>${extra}</div></li>`}).join("")||`<li class="sec" style="padding:8px">沒有符合的影片</li>`;
+if(f&&document.getElementById(f))document.getElementById(f).focus();
+renderActs();renderWall()}
+function renderActs(){$("#selCount").textContent=`已選 ${vsel.size} 支`;$("#delBtn").disabled=!vsel.size;const st=new Set([...vsel].map(i=>V.find(v=>v.id==i).st));let h="";
+if(vsel.size==1&&st.has("錯誤"))h+=`<button class="btn sm">說明</button>`;if(vsel.size==1&&st.has("遺失"))h+=`<button class="btn sm">重新指定位置…</button>`;if(st.has("已變更"))h+=`<button class="btn sm">重新分析</button>`;$("#vacts").innerHTML=h}
+function pickV(e,id){if(e.shiftKey||e.metaKey||e.ctrlKey){vsel.has(id)?vsel.delete(id):vsel.add(id)}else vsel=new Set([id]);window._act=id;
+$$("#vlist .vid").forEach(li=>{const i=+li.id.slice(1);li.setAttribute("aria-selected",vsel.has(i));li.tabIndex=i==id?0:-1});renderActs();
+document.getElementById("g"+id)?.scrollIntoView({block:"start",behavior:RM?"auto":"smooth"})}
+$("#vlist").addEventListener("keydown",e=>{const items=$$("#vlist .vid");const i=items.indexOf(document.activeElement);if(i<0)return;
+if(e.key=="ArrowDown"||e.key=="ArrowUp"){e.preventDefault();const n=items[Math.max(0,Math.min(items.length-1,i+(e.key=="ArrowDown"?1:-1)))];items.forEach(x=>x.tabIndex=-1);n.tabIndex=0;n.focus();if(e.shiftKey){vsel.add(+n.id.slice(1));pickV({shiftKey:true},+n.id.slice(1));vsel.add(+n.id.slice(1))}}
+if(e.key=="Enter"||e.key==" "){e.preventDefault();pickV({metaKey:e.key==" "&&vsel.size>0&&(e.metaKey||e.ctrlKey)},+items[i].id.slice(1))}
+if(e.key=="Delete"||e.key=="Backspace"){if(!vsel.size)vsel.add(+items[i].id.slice(1));openDlg("dDelete",items[i])}
+if((e.metaKey||e.ctrlKey)&&e.key=="a"){e.preventDefault();items.forEach(x=>vsel.add(+x.id.slice(1)));pickV({shiftKey:true},+items[i].id.slice(1));items.forEach(x=>vsel.add(+x.id.slice(1)));renderList()}});
+// ---------- 卡片牆 ----------
+function maskW(){const a=$("#rgAsp [aria-checked=true]").dataset.v;return a=="9:16"?34.2:a=="1:1"?21.9:0}
+function cardHTML(c){const on=sel.includes(c.id),v=V.find(x=>x.id==c.v),m=maskW();
+const lab=`${v.n} ${fmt(c.s)} 到 ${fmt(c.s+c.l)}，${c.star} 星`,ai=aiState=="done"&&AIM[c.id];
+return `<div class="card" id="k_${c.id}" role="group" aria-label="${lab}" data-on="${on}" onclick="tog('${c.id}')"><div class="pv" style="background-image:linear-gradient(120deg,${c.g},${c.g.split(",")[0]})"><div class="mask l" style="width:${m}%"></div><div class="mask r" style="width:${m}%"></div><button class="chk" id="${c.id}" role="checkbox" tabindex="-1" aria-keyshortcuts="Enter" aria-describedby="wallHint" aria-checked="${on}" aria-label="勾選 ${lab}${ai?`，AI 相符 ${ai[0]}%`:""}"><svg class="i"><use href="#i-check"/></svg></button>${ai?`<span class="aim">AI 相符 ${ai[0]}%</span>`:""}<span class="pvtag">${RM?"靜止":"靜音循環"}・${c.l.toFixed(1)} 秒</span></div><div class="meta"><span>${fmt(c.s)}–${fmt(c.s+c.l)}<br><span class="star" aria-hidden="true">${"★".repeat(c.star)}${"☆".repeat(5-c.star)}</span></span><button class="btn ghost" tabindex="-1" aria-label="微調 ${lab}" onclick="event.stopPropagation();show('trim')">微調</button></div>${ai?`<div class="aiwhy">${ai[1]}</div>`:""}</div>`}
+function renderWall(){const f=document.activeElement?.id;const only=$("#onlyChk").checked;let h="";
+visV().forEach(v=>{const cs=C.filter(c=>c.v==v.id&&(!only||sel.includes(c.id)));const n=C.filter(c=>c.v==v.id&&sel.includes(c.id)).length;const ex=!collapsed.has(v.id);
+if(only&&!cs.length)return;
+h+=`<section class="group" id="g${v.id}" aria-label="${v.n}"><div class="gh"><button class="tog" aria-expanded="${ex}" onclick="tg(${v.id})"><svg class="i"><use href="#i-chev"/></svg>${v.n}</button><span class="sec">${v.st=="待分析"?`分析中 ${v.p}%…`:v.st=="錯誤"||v.st=="遺失"||v.st=="已中斷連線"?"":`4 段候選・已選 ${n}`}</span>${cs.length?`<button class="btn sm" data-tip="依設定重新推薦，保留已勾選">重新推薦</button><button class="btn sm">＋ 手動新增片段</button>`:""}</div>`;
+if(ex){h+=`<div class="cards">`;if(v.st=="待分析")h+=`<div class="card" aria-hidden="true"><div class="pv skel"></div><div class="meta sec">分析中…</div></div>`.repeat(4);
+else if(v.st=="錯誤")h+=`<div class="card errc" role="group" aria-label="錯誤"><div class="body"><b>無法開啟 ${v.n}</b><br>360° 原始檔需先在 Insta360 Studio 匯出成平面 MP4。<div class="acts" style="margin-top:8px;display:flex;gap:6px"><button class="btn sm">說明</button><button class="btn sm" onclick="vsel=new Set([${v.id}]);openDlg('dDelete',this)">移除</button></div></div></div>`;
+else if(v.st=="遺失")h+=`<div class="card errc" role="group" aria-label="遺失"><div class="body"><b>找不到原始檔 ${v.n}</b><br>檔案可能已被移動或外接硬碟未連接。勾選與微調都已保留。<div style="margin-top:8px"><button class="btn sm">重新指定位置…</button></div></div></div>`;
+else if(v.st=="已中斷連線")h+=`<div class="card offc" role="group" aria-label="已中斷連線"><div class="body"><b>SD 卡未插入</b><br>${v.n} 在監看資料夾「SD 卡/DCIM」。重新插入後會自動恢復；勾選與微調都已保留，不會標成遺失。</div></div>`;
+else h+=cs.map(cardHTML).join("");h+="</div>"}h+="</section>"});
+$("#wall").innerHTML=h||`<p class="sec">沒有符合的片段</p>`;rovWall();if(f&&document.getElementById(f))document.getElementById(f).focus();renderTL()}
+function tg(id){collapsed.has(id)?collapsed.delete(id):collapsed.add(id);renderWall();document.querySelector(`#g${id} .tog`).focus()}
+function tog(id){const i=sel.indexOf(id);i>=0?sel.splice(i,1):sel.push(id);const el=document.getElementById(id);if(el){el.setAttribute("aria-checked",sel.includes(id));document.getElementById("k_"+id).dataset.on=sel.includes(id)}
+const v=id.split("_")[0].slice(1),n=sel.filter(c=>c.startsWith(`c${v}_`)).length,s=document.querySelector(`#g${v} .gh .sec`);if(s)s.textContent=`4 段候選・已選 ${n}`;renderTL();renderChips()}
+$("#wall").addEventListener("keydown",e=>{const c=e.target.closest?.(".chk[role=checkbox]");if(!c||e.target!==c)return;
+if(e.key=="Enter"&&(e.metaKey||e.ctrlKey)){e.preventDefault();return}
+if(e.key==" "){e.preventDefault();tog(c.id)}if(e.key=="Enter"){e.preventDefault();show("trim")}
+if(["ArrowRight","ArrowLeft","ArrowDown","ArrowUp"].includes(e.key)){e.preventDefault();const all=$$("#wall .chk[role=checkbox]");const i=all.indexOf(c);const cols=getComputedStyle(c.closest(".cards")).gridTemplateColumns.split(" ").length;
+const d={ArrowRight:1,ArrowLeft:-1,ArrowDown:cols,ArrowUp:-cols}[e.key];all[Math.max(0,Math.min(all.length-1,i+d))].focus()}});
+function autoPick(){sel=[];V.forEach(v=>C.filter(c=>c.v==v.id).sort((a,b)=>b.star-a.star).slice(0,2).forEach(c=>sel.push(c.id)));syncChk();renderTL();renderChips()}
+function clearAll(){sel=[];syncChk();renderTL();renderChips()}
+function wItems(){return $$("#wall button:not(.ghost)")}
+function rovWall(){const all=wItems();if(!all.length)return;let a=all.find(x=>x.id&&x.id==window._chkAct)||all[window._wIdx]||all.find(x=>x.matches(".chk"))||all[0];all.forEach(x=>x.tabIndex=x===a?0:-1);$$("#wall .ghost").forEach(x=>x.tabIndex=-1)}
+$("#wall").addEventListener("focusin",e=>{const it=wItems(),i=it.indexOf(e.target);if(i<0)return;window._chkAct=e.target.id||"";window._wIdx=i;rovWall()});
+$("#wall").addEventListener("keydown",e=>{const it=wItems(),t=document.activeElement,i=it.indexOf(t);if(i<0)return;
+ if(t.matches(".chk")){if(e.key=="Home"){e.preventDefault();const g=t.closest(".group")?.querySelector(".tog");if(g)g.focus()}return}
+ const d={ArrowRight:1,ArrowDown:1,ArrowLeft:-1,ArrowUp:-1}[e.key];if(!d)return;e.preventDefault();const n=it[Math.max(0,Math.min(it.length-1,i+d))];n.focus()});
+function syncChk(){$$("#wall .chk").forEach(el=>{const on=sel.includes(el.id);el.setAttribute("aria-checked",on);document.getElementById("k_"+el.id).dataset.on=on})}
+// ---------- 時間軸 ----------
+function renderTL(){const t=$("#track"),f=document.activeElement?.dataset?.cid;
+const ta=sel.includes(window._clipAct)?window._clipAct:sel[0];
+t.innerHTML=sel.length?sel.map((id,i)=>{const c=C.find(x=>x.id==id),v=V.find(x=>x.id==c.v);return `<li class="clip" tabindex="${id==ta?0:-1}" draggable="true" data-cid="${id}" aria-label="第 ${i+1} 段：${v.n} ${fmt(c.s)}，${c.l} 秒" style="width:${Math.max(48,c.l*22)}px;background:linear-gradient(120deg,${c.g})"><button class="x" tabindex="-1" aria-label="移除第 ${i+1} 段" onclick="tog('${id}')"><span><svg class="i" style="width:14px;height:14px"><use href="#i-x"/></svg></span></button><div class="band">${i+1}. ${v.n.replace(/\.\w+$/,"")}</div></li>`}).join(""):`<li class="tlempty">勾選上方的片段卡，就會依序加入這裡</li>`;
+$$("#track .clip").forEach(el=>{el.ondragstart=e=>{el.classList.add("drag");e.dataTransfer.setData("t",el.dataset.cid)};el.ondragend=()=>el.classList.remove("drag");el.ondragover=e=>e.preventDefault();el.ondrop=e=>{e.preventDefault();move(e.dataTransfer.getData("t"),sel.indexOf(el.dataset.cid))};el.ondblclick=()=>show("trim")});
+if(f){const el=t.querySelector(`[data-cid="${f}"]`);el&&el.focus()}
+const segs=sel.map(id=>C.find(x=>x.id==id)),tot=segs.reduce((a,c)=>a+c.l,0);let tg=+$("#target").value;if(tg==-1){const raw=$("#tcust").value,v=+raw,ok=raw!==""&&Number.isFinite(v)&&v>=5&&v<=600;
+if($("#target").value=="-1"){$("#tcust").setAttribute("aria-invalid",!ok);$("#custErr").hidden=ok}if(ok)window._custLast=v;tg=window._custLast||20;$("#custLast").textContent=tg}let s=`已選 ${sel.length} 段・${tot.toFixed(1)} 秒`;
+if(tg>0){s+=` / 目標 ${tg} 秒`;const minTot=segs.reduce((a,c)=>a+Math.min(c.l,1.5),0);
+if(minTot>tg+1e-9){const ov=minTot-tg;let k=0,acc=0;for(const c of [...segs].sort((a,b)=>a.star-b.star)){if(acc>=ov-1e-9)break;acc+=1.5;k++}s+=` <span class="warn">・縮到每段 1.5 秒仍超過 ${ov.toFixed(1)} 秒，建議取消勾選 ${k} 段</span>`}
+else if(tot>tg)s+=` <span class="warn">・超過 ${(tot-tg).toFixed(1)} 秒，將依比例縮短</span>`}
+$("#sum").innerHTML=s;const go=$("#go");go.disabled=!sel.length;$("#pvBtn").disabled=!sel.length;$("#why").textContent=sel.length?"":"請至少勾選 1 個片段"}
+$("#track").addEventListener("focusin",e=>{const el=e.target.closest?.(".clip");if(!el)return;window._clipAct=el.dataset.cid;$$("#track .clip").forEach(x=>x.tabIndex=x===el?0:-1)});
+function move(id,to){const i=sel.indexOf(id);if(i<0||to<0||to>=sel.length)return;sel.splice(i,1);sel.splice(to,0,id);renderTL();$(`#track [data-cid="${id}"]`).focus()}
+$("#track").addEventListener("keydown",e=>{const el=e.target.closest(".clip");if(!el)return;const id=el.dataset.cid,i=sel.indexOf(id);
+if((e.metaKey||e.ctrlKey)&&(e.key=="ArrowUp"||e.key=="ArrowDown")||e.altKey&&(e.key=="ArrowLeft"||e.key=="ArrowRight")){e.preventDefault();move(id,i+(e.key=="ArrowUp"||e.key=="ArrowLeft"?-1:1))}
+else if(e.key=="ArrowRight"||e.key=="ArrowLeft"){e.preventDefault();const n=el[e.key=="ArrowRight"?"nextElementSibling":"previousElementSibling"];n&&n.focus()}
+else if(e.key=="Delete"||e.key=="Backspace"){const n=el.nextElementSibling||el.previousElementSibling;const nid=n?.dataset.cid;tog(id);nid?$(`#track [data-cid="${nid}"]`).focus():$("#go").disabled?$("#q").focus():0}
+else if(e.key=="Enter"&&!(e.metaKey||e.ctrlKey))show("trim")});
+// ---------- 分段控制 / 分頁 ----------
+function roving(group,sel_,attr,onchg){const items=()=>[...group.querySelectorAll(sel_)];items().forEach(b=>b.tabIndex=b.getAttribute(attr)=="true"?0:-1);
+const pick=b=>{items().forEach(x=>{x.setAttribute(attr,x===b);x.tabIndex=x===b?0:-1});b.focus();onchg&&onchg(b)};
+group.addEventListener("click",e=>{const b=e.target.closest(sel_);b&&pick(b)});
+group.addEventListener("keydown",e=>{const it=items(),i=it.indexOf(document.activeElement);if(i<0)return;const d={ArrowRight:1,ArrowDown:1,ArrowLeft:-1,ArrowUp:-1}[e.key];
+if(d){e.preventDefault();pick(it[(i+d+it.length)%it.length])}if(e.key=="Home"){e.preventDefault();pick(it[0])}if(e.key=="End"){e.preventDefault();pick(it[it.length-1])}})}
+$$("[role=radiogroup]").forEach(g=>roving(g,"[role=radio]","aria-checked",g.id=="rgAsp"?()=>{const m=maskW();$$(".mask.l,.mask.r").forEach(x=>x.style.width=m+"%")}:null));
+roving($("#tabs"),"[role=tab]","aria-selected",b=>{$$(".tabp").forEach(p=>p.classList.toggle("on",p.id==b.getAttribute("aria-controls")))});
+// ---------- 對話框 ----------
+let stack=[],opener=null;
+function openDlg(id,from,keepSnap){const fresh=!stack.length;if(fresh)opener=from||document.activeElement;if(id=="dSet"&&fresh&&!keepSnap)takeSnap();$$(".modal").forEach(m=>m.classList.remove("on"));stack=[id];const m=document.getElementById(id);m.classList.add("on");
+$$(".app,.mocknav").forEach(x=>x.inert=true);
+if(["dDelete","dTrash","dPerm"].includes(id))fillDel();if(id=="dPerm"){$("#permOk").checked=false;$("#permGo").disabled=true}if(id=="dTrash"){$("#pvOnly").checked=false;fillDel()}
+const vis=[...m.querySelectorAll("[data-primary]")].find(x=>x.offsetParent);(vis||m.querySelector("button")).focus()}
+function delVs(){const vs=[...vsel].map(i=>V.find(v=>v.id==i)).filter(Boolean);return vs.length?vs:[V[2],V[3]]}
+function grpLine(v){const t=v.fs.reduce((a,f)=>a+f[1],0),st=v.n;return `<b>${st}</b> 共 ${v.fs.length} 個檔案，${gb(t)}<br><span class="sec small">${v.fs.map(f=>`${f[0]}（${gb(f[1])}）`).join("・")}</span>`}
+function fillDel(){const vs=delVs(),nf=vs.reduce((a,v)=>a+v.fs.length,0);$$(".dn").forEach(x=>x.textContent=vs.length);
+$("#delFiles").innerHTML=vs.map(grpLine).join("<br>");$("#trFiles").innerHTML=vs.map(grpLine).join("<br>");$("#hTr").lastChild.textContent="？";$$(".nf").forEach(x=>x.textContent=nf);
+const bad=vs.filter(noTrash),bf=bad.reduce((a,v)=>a+v.fs.length,0);$("#permFiles").innerHTML=bad.map(grpLine).join("<br>");
+const vn=[...new Set(bad.map(volName))].join("、");$("#permN").textContent=bf;
+$("#permMsg").innerHTML=`⚠ 下列 ${bf} 個檔案位於 <b>${vn}</b>，該磁碟沒有${pf=="mac"?"垃圾桶":"資源回收筒"}，刪除後<b>無法還原</b>。可以略過這些檔案，其餘照常移到${pf=="mac"?"垃圾桶":"資源回收筒"}。`;
+const canPv=vs.some(v=>v.fs.some(f=>PVX.test(f[0]))&&v.fs.some(f=>!PVX.test(f[0])));$("#pvOnlyRow").hidden=!canPv;
+if($("#pvOnly").checked){const pv=vs.flatMap(v=>v.fs.filter(f=>PVX.test(f[0])));$("#trFiles").innerHTML=pv.map(f=>`${f[0]}（${gb(f[1])}）`).join("<br>")+`<br><span class="sec small">原始檔保留，影片仍在清單中</span>`;$("#dTrash .nf").textContent=pv.length}}
+function closeDlg(){$$(".modal").forEach(m=>m.classList.remove("on"));stack=[];$$(".app,.mocknav").forEach(x=>x.inert=false);if(opener&&document.contains(opener))opener.focus();opener=null}
+document.addEventListener("keydown",e=>{const m=$(".modal.on");
+if(m){if(e.key=="Escape"){e.preventDefault();const a=m.dataset.esc;a=="settings"?(pf=="win"?setCancel():closeDlg()):a=="confirmCancel"?openDlg("dCancel"):a.startsWith("back:")?openDlg(a.slice(5)):closeDlg()}
+if(e.key=="Tab"){const f=[...m.querySelectorAll("button,input,select,[tabindex='0']")].filter(x=>!x.disabled&&x.offsetParent&&x.tabIndex>=0);const i=f.indexOf(document.activeElement);
+if(e.shiftKey&&(i<=0)){e.preventDefault();f[f.length-1].focus()}else if(!e.shiftKey&&i==f.length-1){e.preventDefault();f[0].focus()}}return}
+const rb=$(".rail button");if($("#right").classList.contains("open")&&rb.offsetParent){if(e.key=="Escape"){toggleDrawer(rb);return}
+if(e.key=="Tab"){const f=[...$("#right").querySelectorAll("button,input,select,[tabindex='0']")].filter(x=>!x.disabled&&x.offsetParent&&x.tabIndex>=0),a=document.activeElement,i=f.indexOf(a);
+if(a===rb){e.preventDefault();(e.shiftKey?f[f.length-1]:f[0]).focus()}else if(i>=0&&((!e.shiftKey&&i==f.length-1)||(e.shiftKey&&i==0))){e.preventDefault();rb.focus()}}}
+const mod=pf=="mac"?e.metaKey:e.ctrlKey;if(mod&&e.key=="Enter"&&!$("#go").disabled&&$("#main").classList.contains("on")){e.preventDefault();startExport($("#go"))}
+if(mod&&e.key=="z"&&window._trashed&&!(window._last||[]).length){e.preventDefault();const tn=pf=="mac"?"垃圾桶":"資源回收筒";toast(`檔案已在${tn}中，請到${pf=="mac"?" Finder ":"檔案總管"}的${tn}還原`,`<button class="btn sm" onclick="this.closest('.toast').classList.remove('on')">在${tn}中顯示</button>`);return}
+if(mod&&e.key=="z"&&removed.length){e.preventDefault();undoRemove()}
+if(e.altKey&&(pf=="mac"?e.metaKey:e.ctrlKey)&&(e.code=="KeyT")&&$("#main").classList.contains("on")){e.preventDefault();($("#track .clip[tabindex='0']")||$("#go")).focus()}});
+function startExport(b){openDlg("dDisk",b)}
+// ---------- 移除 / 復原 ----------
+function dropIds(ids){removed.push(...ids);window._last=ids;sel=sel.filter(c=>!ids.includes(+c.split("_")[0].slice(1)));vsel=new Set();closeDlg();renderList()}
+function toast(msg,act){$("#toastMsg").textContent=msg;$("#toastAct").innerHTML=act||"";$("#toast").classList.add("on");clearTimeout(window._tt);window._tt=setTimeout(()=>$("#toast").classList.remove("on"),8000);$("#q").focus()}
+function removeSel(){window._trashed=false;const ids=delVs().map(v=>v.id);dropIds(ids);toast(`已從清單移除 ${ids.length} 支影片`,`<button class="btn sm" onclick="undoRemove()">復原</button>`)}
+function doTrash(perm,skip){const vs=delVs(),tn0=pf=="mac"?"垃圾桶":"資源回收筒";
+if($("#dTrash").classList.contains("on")&&$("#pvOnly").checked){let n=0;vs.forEach(v=>{n+=v.fs.filter(f=>PVX.test(f[0])).length;v.fs=v.fs.filter(f=>!PVX.test(f[0]));v.x=v.fs[0][0].split(".").pop().toUpperCase();if(v.x=="INSV")v.st="錯誤"});
+vsel=new Set();closeDlg();renderList();window._trashed=true;toast(`已將 ${n} 個預覽檔移到${tn0}，原始檔保留`,`<button class="btn sm" onclick="this.closest('.toast').classList.remove('on')">在${tn0}中顯示</button>`);return}
+if(skip){const ok=vs.filter(v=>!noTrash(v)),bad=vs.filter(noTrash),n1=ok.reduce((a,v)=>a+v.fs.length,0),n2=bad.reduce((a,v)=>a+v.fs.length,0);dropIds(ok.map(v=>v.id));window._last=[];window._trashed=true;
+toast((n1?`已將 ${n1} 個檔案移到${tn0}；`:"")+`略過 ${n2} 個檔案（仍在清單中）`);return}
+if(!perm&&vs.some(noTrash)){openDlg("dPerm");return}
+const tn=pf=="mac"?"垃圾桶":"資源回收筒",ok=vs.filter(v=>!noTrash(v)),bad=vs.filter(noTrash),n1=ok.reduce((a,v)=>a+v.fs.length,0),n2=bad.reduce((a,v)=>a+v.fs.length,0);
+dropIds(vs.map(v=>v.id));window._last=[];window._trashed=true;
+toast((n1?`已將 ${n1} 個檔案移到${tn}`:"")+(n1&&n2?"；":"")+(n2?`已永久刪除 ${n2} 個檔案`:""),n1?`<button class="btn sm" onclick="this.closest('.toast').classList.remove('on')">在${tn}中顯示</button>`:"")}
+function demoPerm(k){setPf("win");V[2].vol=V[3].vol=k=="net"?"net":"sd";vsel=new Set([3,4]);openDlg("dPerm")}
+function undoRemove(){removed=removed.filter(i=>!(window._last||[]).includes(i));$("#toast").classList.remove("on");renderList()}
+// ---------- 其他 ----------
+function show(id){closeDlg();$$(".screen").forEach(s=>s.classList.toggle("on",s.id==id));const h=$(`#${id} button`);h&&h.focus();if(id=="trim")layoutTrim()}
+function toggleDrawer(b){const o=$("#right").classList.toggle("open");b.setAttribute("aria-expanded",o);if(o)$("#right [role=radio][tabindex='0']").focus();else b.focus()}
+$("#center").addEventListener("pointerdown",()=>{const rb=$(".rail button");if($("#right").classList.contains("open")&&rb.offsetParent){toggleDrawer(rb);setTimeout(()=>rb.focus(),0)}});
+function previewFinal(){["#pcap","#pbar"].forEach(s=>$(s).hidden=!$(s).hidden)}
+function setPf(p){pf=p||(pf=="mac"?"win":"mac");document.body.className=pf+(RM?" rm":"");$("#pfBtn").textContent=pf=="mac"?"macOS":"Windows";$("#track").setAttribute("aria-keyshortcuts",pf=="mac"?"Meta+Alt+T":"Control+Alt+T");
+$$("[data-mac]").forEach(x=>x.textContent=x.dataset[pf]);$$("[data-tip]").forEach(x=>{const k=x.dataset["key"+(pf=="mac"?"Mac":"Win")];x.title=x.dataset.tip+(k?`（${k}）`:"")});
+$("#haarNote").textContent=pf=="win"?"此裝置（Windows on ARM）不支援笑容偵測，只計算臉部與清晰度。":"";$("#aiwrap")&&renderAI()}
+function toggleRM(){RM=!RM;document.body.classList.toggle("rm",RM);$("#rmBtn").textContent="減少動態："+(RM?"開":"關");renderWall()}
+function toggleAI(on){aiOn=on;$("#aiBtn").textContent="雲端 AI："+(on?"開":"關");$("#s14").checked=on;renderAI()}
+const winStaged=()=>pf=="win"&&$("#dSet").classList.contains("on");
+function reqAI(on){if(!on){winStaged()?markDirty():toggleAI(false);return}$("#s14").checked=false;$("#dConsent").dataset.mode="consent";$("#dConsent").dataset.esc="back:dSet";openDlg("dConsent",$("#s14"))}
+function consent(yes){const w=pf=="win";openDlg("dSet",null,true);$$("#tabs [role=tab]")[4].click();$("#s14").checked=yes;if(w){if(yes)markDirty()}else toggleAI(yes);$("#s14").focus()}
+function openInfo(b){const d=$("#dConsent");d.dataset.mode="info";d.dataset.esc="close";openDlg("dConsent",b)}
+function aiOffFromInfo(){const o=opener;closeDlg();openDlg("dSet",o);$$("#tabs [role=tab]")[4].click();$("#s14").focus()}
+// R4：設定快照（Windows「選項」：確定／取消／套用；Mac：立即生效）
+let snap=null;function takeSnap(){snap={v:$$("#dSet input,#dSet select").map(x=>[x,x.type=="checkbox"?x.checked:x.value]),ai:aiOn,key:keyOK,kst:$("#keySt").innerHTML};$("#setDirty").textContent="";$("#setApply").disabled=true}
+function markDirty(){if(pf=="win"){$("#setDirty").textContent="有尚未套用的變更";$("#setApply").disabled=false}}
+let pendKey=null,pendDel=false;const staging=()=>pf=="win"&&$("#dSet").classList.contains("on");
+function commitKey(){if(pendKey!==null){keyOK=pendKey;if(aiState=="key"&&keyOK)aiState="idle"}pendKey=null;pendDel=false;renderAI()}
+function restoreSnap(){pendKey=null;pendDel=false;if(!snap)return;snap.v.forEach(([x,v])=>x.type=="checkbox"?x.checked=v:x.value=v);keyOK=snap.key;$("#keySt").innerHTML=snap.kst;toggleAI(snap.ai)}
+function setApplied(){commitKey();toggleAI($("#s14").checked);takeSnap();$("#setDirty").textContent="已套用"}
+function setOK(){if(pf=="win"){commitKey();toggleAI($("#s14").checked)}closeDlg()}
+function setCancel(){restoreSnap();closeDlg()}
+function testKey(){const v=$("#s16").value.trim(),ok=v.length>=8;if(staging()){pendKey=ok;pendDel=false;markDirty()}else{keyOK=ok;if(aiState=="key"&&ok)aiState="idle"}$("#keySt").innerHTML=(ok?`<span style="color:var(--ok)">✓ 連線成功</span>`:`<span style="color:#FF9C9C">金鑰無效或未填寫</span>`)+(staging()?`<span class="sec small">（按「套用」或「確定」後生效）</span>`:"");renderAI()}
+function delKey(){$("#s16").value="";if(staging()){pendKey=false;pendDel=true;markDirty();$("#keySt").textContent="將在按「套用」或「確定」時刪除儲存的金鑰";return}keyOK=false;$("#keySt").textContent="已刪除儲存的金鑰";renderAI()}
+function demoAI(st){if(!aiOn){aiOn=true;toggleAI(true)}keyOK=st!="key";aiState=st;renderAI();renderWall()}
+function pickAI(){Object.keys(AIM).forEach(id=>{if(!sel.includes(id))sel.push(id)});syncChk();renderTL();renderChips()}
+function renderAI(){$("#aiwrap").hidden=!aiOn;if(!aiOn)return;const ready=keyOK,run=aiState=="run";$("#aiq").disabled=!ready||run;$("#aiGo").disabled=!ready||run;
+const svc=$("#s15").value,ico=`<svg class="i"><use href="#i-cloud"/></svg>`;
+const prev=aiState=="quota"||aiState=="off"?"上次未完成・":"";
+$("#aiNote").innerHTML=!ready?`<svg class="i"><use href="#i-alert"/></svg>${aiState=="key"?"金鑰無效，請到設定重新測試":"請先在設定 › 智慧評分填入並測試金鑰"} <button class="btn sm" onclick="openDlg('dSet',this);$$('#tabs [role=tab]')[4].click()">開啟設定</button>`
+:run?`<span role="status">AI 分析中 12/30…</span><span class="pbar" style="width:120px;display:inline-block"><i style="width:40%"></i></span><button class="btn sm" onclick="demoAI('idle')">取消</button>`
+:`${ico}${prev}將上傳 64 張影像到 ${svc}<button class="lnk" onclick="openInfo(this)">詳細</button>`;
+const n=Object.keys(AIM).length;$("#aiAll").hidden=aiState!="done";$("#aiAll").textContent=`勾選全部相符（${n}）`;
+const E={key:["金鑰無效","請到設定重新輸入並測試金鑰；測試通過前無法使用雲端 AI。"],quota:["已達額度上限",`${svc} 回報額度不足，已改用本機評分。`],off:["無法連線，已改用本機評分","請檢查網路後重試。"]}[aiState];
+$("#aiErr").innerHTML=E?`<div class="banner err" role="alert"><svg class="i"><use href="#i-alert"/></svg><span><b>${E[0]}</b>・${E[1]}</span><span style="flex:1"></span>${aiState=="key"?"":`<button class="btn sm" onclick="demoAI('run')">重試</button>`}<button class="btn sm" onclick="openDlg('dSet',this);$$('#tabs [role=tab]')[4].click()">設定</button></div>`:""}
+let tIn=12.5,tOut=16.5;const DUR=42;function layoutTrim(){$("#hIn").style.left=`calc(${tIn/DUR*100}% - 12px)`;$("#hOut").style.left=`calc(${tOut/DUR*100}% - 12px)`;$("#tsel").style.left=tIn/DUR*100+"%";$("#tsel").style.width=(tOut-tIn)/DUR*100+"%";
+$("#hIn").setAttribute("aria-valuenow",tIn);$("#hIn").setAttribute("aria-valuetext",fmt(tIn));$("#hOut").setAttribute("aria-valuenow",tOut);$("#hOut").setAttribute("aria-valuetext",fmt(tOut));$("#tin").value=fmt(tIn);$("#tout").value=fmt(tOut);$("#tlen").textContent=`長度 ${(tOut-tIn).toFixed(1)} 秒`}
+let PH=13.2;document.addEventListener("keydown",e=>{if(!$("#trim").classList.contains("on")||$(".modal.on")||e.metaKey||e.ctrlKey||e.altKey||e.target.matches("input,select,textarea"))return;
+const k=e.key.toLowerCase();if(k=="i"&&PH<tOut-.5){tIn=PH;layoutTrim();$("#trimLive").textContent="入點 "+fmt(tIn)}else if(k=="o"&&PH>tIn+.5){tOut=PH;layoutTrim();$("#trimLive").textContent="出點 "+fmt(tOut)}
+else if(k=="i"||k=="o")$("#trimLive").textContent="播放頭太靠近"+(k=="i"?"出點":"入點")+"，至少保留 0.5 秒"});
+["hIn","hOut"].forEach(h=>document.getElementById(h).addEventListener("keydown",e=>{const st={ArrowRight:.1,ArrowLeft:-.1}[e.key];if(!st)return;e.preventDefault();const d=e.shiftKey?st*10:st;if(h=="hIn")tIn=Math.max(0,Math.min(tOut-.5,+(tIn+d).toFixed(1)));else tOut=Math.min(DUR,Math.max(tIn+.5,+(tOut+d).toFixed(1)));layoutTrim()}));
+$("#dSet").addEventListener("change",e=>{if(e.target.id!="s14")markDirty()});
+setPf("mac");renderList();
+</script></body></html>

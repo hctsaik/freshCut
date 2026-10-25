@@ -1,0 +1,5 @@
+const p=require('puppeteer-core');(async()=>{const b=await p.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});const pg=await b.newPage();await pg.setViewport({width:1440,height:900});await pg.goto('file:///workspace/insta-editor/mockup.html');await pg.evaluate(()=>show('main'));
+console.log(await pg.evaluate(()=>wItems().slice(0,8).map(x=>x.className+'|'+(x.id||x.textContent.trim().slice(0,20)))));
+await pg.focus('#c1_0');await pg.keyboard.press('Home');console.log(await pg.evaluate(()=>{const a=document.activeElement;return [a.className,a.textContent.trim().slice(0,30),a.closest('.vgrp,.grp,section')?.className]}));
+const O='/workspace/insta-editor/review/v4/r4/';await pg.select('#target','-1');await pg.click('#tcust',{clickCount:3});await pg.keyboard.type('2');await pg.select('#target','30');const r=await pg.$('#custErr');const bb=await r.boundingBox();await pg.screenshot({path:O+'07_N1_custErr_stale_1440.png',clip:{x:bb.x-300,y:bb.y-120,width:700,height:220}});
+await b.close()})()

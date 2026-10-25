@@ -1,0 +1,1 @@
+opencv-python-headless>=4.8,<5   # 人臉／笑臉偵測；沒有對應 wheel 的平台（例如部分 Windows ARM64）裝不上也不影響主程式
