@@ -25,7 +25,7 @@ except core.ClipInvalid:
 out = os.path.join(root, "o")
 r = core.export_clips([(core.Segment(src, 4.0, 99.0), ["start"]), (core.Segment(src, 30.0, 35.0), ["uniform"])], out, co)
 assert r[0][0] and not r[0][1] and abs(core.probe(r[0][0]).duration - 2.0) < 0.2, r
-assert r[1][0] is None and "ClipInvalid" in r[1][1], r
+assert r[1][0] is None and "超出素材長度" in r[1][1] and "ClipInvalid" not in r[1][1], r   # R72：只顯示中文原因
 assert not glob.glob(os.path.join(out, "*.part*"))
 
 # ---- #4 驗證：沒有聲音（原聲開、素材有聲）、太短、沒有影像 → 失敗
@@ -53,7 +53,7 @@ def broken(seg, part, co, cb, cancel):
 core._clip_direct = broken
 out2 = os.path.join(root, "o2"); os.makedirs(out2)
 r = core.export_clips([(core.Segment(src, 0.0, 4.0), ["start"])], out2, co)
-assert r[0][0] is None and "ClipInvalid" in r[0][1] and not os.listdir(out2), (r, os.listdir(out2))
+assert r[0][0] is None and "沒有聲音" in r[0][1] and not os.listdir(out2), (r, os.listdir(out2))
 core._clip_direct = orig
 print("export validation OK")
 

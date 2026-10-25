@@ -1,12 +1,13 @@
 """R69：只輸出片段的介面元件（SPEC：review/clips_design/SPEC.md）。
 策略列（7 種開關＋策略設定）、匯出設定面板、底部匯出列、匯出完成對話框、在 Finder／檔案總管中顯示。"""
 import os, sys, subprocess, datetime
-from PySide6.QtCore import Qt, Signal, QRect, QSize, QPoint, QUrl
+from PySide6.QtCore import Qt, Signal, QRect, QSize, QPoint, QUrl, QEvent
 from PySide6.QtGui import QDesktopServices, QFontMetrics
 from PySide6.QtWidgets import (QWidget, QFrame, QLabel, QPushButton, QHBoxLayout, QVBoxLayout, QGridLayout, QLayout,
                                QComboBox, QCheckBox, QDoubleSpinBox, QSpinBox, QDialog, QProgressBar, QLineEdit,
                                QFileDialog, QSizePolicy, QButtonGroup, QListWidget, QListWidgetItem)
 from app import core
+from app.core import zh_reason
 from .style import prop, PF
 
 # chip 色（SPEC §2.4：字色、底色；對比 ≥ 4.5:1）
@@ -338,7 +339,7 @@ class ExportBar(QFrame):
         self.prog = QProgressBar(); self.prog.setFixedWidth(160); self.prog.setTextVisible(False); self.prog.setRange(0, 1000)
         self.prog_l = QLabel(""); self.prog_l.setAccessibleName("匯出進度")
         # R71：給足「匯出中 120/500 · 剩約 12:34」的寬度，不再截成「剩約 0:0…」
-        self.prog_l.setMinimumWidth(QFontMetrics(self.prog_l.font()).horizontalAdvance("匯出中 9999/9999 · 剩約 99:99") + 12)
+        self._fit_prog()
         self.cancel_b = prop(QPushButton("取消"), danger=True); self.cancel_b.setAccessibleName("取消匯出")
         for w in (self.prog, self.prog_l):
             h.addWidget(w); w.hide()
@@ -351,7 +352,23 @@ class ExportBar(QFrame):
         self.exp_b = prop(QPushButton("匯出已選片段（0）"), primary=True); h.addWidget(self.exp_b)
         self.exp_b.setMinimumWidth(180)
 
+    PROG_WORST = "匯出中 9999/9999 · 剩約 99:99"
+
+    def _fit_prog(self):
+        """R72：用套完樣式表之後的實際字型量寬度（不是預設字型）。"""
+        self.prog_l.ensurePolished()
+        self.prog_l.setMinimumWidth(self.prog_l.fontMetrics().horizontalAdvance(self.PROG_WORST) + 12)
+
+    def changeEvent(self, e):
+        super().changeEvent(e)
+        if e.type() in (QEvent.StyleChange, QEvent.FontChange, QEvent.PolishRequest) and hasattr(self, "prog_l"):
+            self._fit_prog()
+
+    def showEvent(self, e):
+        super().showEvent(e); self._fit_prog()
+
     def busy(self, on):
+        self._fit_prog()
         for w in (self.prog, self.prog_l):
             w.setVisible(on)
         self.summary.setVisible(not on); self.cancel_b.setEnabled(True); self.prev_b.setEnabled(not on)
@@ -377,25 +394,28 @@ class ExportDoneDialog(QDialog):
     def __init__(self, parent, results, rels, folder, elapsed, cancelled=False, total=None, want=None, got=None):
         super().__init__(parent); self.setWindowTitle("匯出完成"); self.setMinimumWidth(520)
         self.folder = folder
-        ok = [(p, r) for (p, e), r in zip(results, rels) if p]
+        ok = sorted([(p, r) for (p, e), r in zip(results, rels) if p], key=lambda t: os.path.basename(t[0]).lower())   # R72：依檔名排序
         bad = [(i, r, e) for i, ((p, e), r) in enumerate(zip(results, rels)) if not p]
         self.ok_paths = [p for p, _ in ok]
         v = QVBoxLayout(self)
+        if want is None:
+            want = [getattr(p, "want", None) for p, _ in results]; got = [getattr(p, "got", None) for p, _ in results]
+        self.trunc = sorted([(r, w, g) for (p, e), r, w, g in zip(results, rels, *self._wants(results, want, got)) if p
+                             and w and g is not None and g < w - 0.05], key=lambda t: os.path.basename(t[0]).lower())
         head = (f"已取消：已匯出 {len(ok)} / {total} 個片段" if cancelled else
+                f"⚠ 已匯出 {len(ok)} 個片段，其中 {len(self.trunc)} 段被截短" if not bad and self.trunc else   # R72
                 f"✓ 已匯出 {len(ok)} 個片段" if not bad else
                 f"⚠ 匯出失敗：{len(bad)} 個片段沒有成功" if not ok else
                 f"⚠ 已匯出 {len(ok)} 個片段，{len(bad)} 個失敗")
         if bad and not cancelled:
             self.setWindowTitle("匯出未完成")
+        elif self.trunc and not cancelled:
+            self.setWindowTitle("匯出完成（有片段被截短）")
         self.title = prop(QLabel(head), h=True); self.title.setStyleSheet("font-size:18px;font-weight:700"); v.addWidget(self.title)
         mb = sum(os.path.getsize(p) for p in self.ok_paths if os.path.exists(p)) / 1e6
         self.meta = prop(QLabel(f"耗時 {fmt_mmss(elapsed)} · 共 {mb:.0f} MB · 存到 {folder}"), sec=True, small=True)
         self.meta.setWordWrap(True); v.addWidget(self.meta)
         names = [os.path.relpath(p, folder).replace(os.sep, "/") for p in self.ok_paths]
-        if want is None:
-            want = [getattr(p, "want", None) for p, _ in results]; got = [getattr(p, "got", None) for p, _ in results]
-        self.trunc = [(r, w, g) for (p, e), r, w, g in zip(results, rels, *self._wants(results, want, got)) if p
-                      and w and g is not None and g < w - 0.05]
         # R70：長檔名不截尾——清單可捲動、中間省略、滑鼠移上去看完整路徑
         self.files = QListWidget(); self.files.setAccessibleName("已匯出的檔案")
         self.files.setTextElideMode(Qt.ElideMiddle); self.files.setUniformItemSizes(True)
@@ -405,7 +425,7 @@ class ExportDoneDialog(QDialog):
         self.files.setStyleSheet("QListWidget{font-family:Menlo,Consolas,monospace;font-size:12px;background:#141414;"
                                  "padding:4px;border-radius:4px}")
         tset = {r for r, _, _ in self.trunc}
-        for n, p, r in zip(names, self.ok_paths, [r for (pp, e), r in zip(results, rels) if pp]):
+        for n, p, r in zip(names, self.ok_paths, [r for _, r in ok]):
             base = os.path.basename(n); sub = os.path.dirname(n)
             it = QListWidgetItem(base + ("　（已截短）" if r in tset else ""))
             it.setToolTip(p + (f"\n資料夾：{sub}/" if sub else "")); it.setData(Qt.UserRole, p); self.files.addItem(it)
@@ -416,21 +436,40 @@ class ExportDoneDialog(QDialog):
         self.names = names
         v.addWidget(self.files)
         subs = sorted({os.path.dirname(n) for n in names if os.path.dirname(n)})
-        self.dir_l = prop(QLabel(("位置：" + folder) if not subs else
-                                 f"位置：{folder}　（依影片分成 {len(subs)} 個子資料夾，滑鼠移到檔名可看完整路徑）"), sec=True, small=True)
-        self.dir_l.setWordWrap(True); v.addWidget(self.dir_l)
+        self.dir_l = prop(QLabel("位置：" + folder), sec=True, small=True)
+        self.dir_l.setWordWrap(True); self.dir_l.setToolTip(folder); v.addWidget(self.dir_l)
+        # R72：提示獨立一行、不自動換行（「路徑」不會被拆成兩行）
+        self.hint_l = prop(QLabel(f"依影片分成 {len(subs)} 個子資料夾 · 滑鼠移到檔名可看完整路徑" if subs else
+                                  "滑鼠移到檔名可看完整路徑"), sec=True, small=True)
+        self.hint_l.setWordWrap(False); v.addWidget(self.hint_l)
         if self.trunc:   # R71：部分超出影片長度的片段會被截短——要說出來，不能默默算成功
-            self.trunc_l = prop(QLabel(f"⚠ {len(self.trunc)} 段因超出影片長度被截短："
-                                       + "；".join(f"{os.path.basename(r)} {w:.1f}→{g:.1f} 秒" for r, w, g in self.trunc[:3])
-                                       + ("…" if len(self.trunc) > 3 else "")), warn=True)
-            self.trunc_l.setWordWrap(True); self.trunc_l.setStyleSheet("color:#FFB74D"); v.addWidget(self.trunc_l)
+            # R72：每個檔名自成一行、不自動換行；太長就中間省略（不會在檔名中間斷行），完整清單在 tooltip
+            self.trunc_l = prop(QLabel(""), warn=True); self.trunc_l.setStyleSheet("color:#FFB74D")
+            self.trunc_l.setWordWrap(False); self.trunc_l.ensurePolished()
+            fm = self.trunc_l.fontMetrics(); lw = 470
+            lines = [f"⚠ {len(self.trunc)} 段因超出影片長度被截短："]
+            for r, w, g in self.trunc[:3]:
+                tail = f"  {w:.1f}→{g:.1f} 秒"
+                lines.append("• " + fm.elidedText(os.path.basename(r), Qt.ElideMiddle, lw - fm.horizontalAdvance("• " + tail)) + tail)
+            if len(self.trunc) > 3:
+                lines.append(f"…另 {len(self.trunc) - 3} 段")
+            self.trunc_l.setText("\n".join(lines)); self.trunc_lines = lines
+            self.trunc_l.setToolTip("\n".join(f"{r}：{w:.1f}→{g:.1f} 秒" for r, w, g in self.trunc))
+            v.addWidget(self.trunc_l)
         self.bad_idx = [i for i, _, _ in bad]
         if bad:
             fr = QHBoxLayout(); v.addLayout(fr)
-            msg = f"{len(bad)} 個片段失敗：" + "；".join(f"{os.path.basename(r)}（{((e or '').splitlines() or [''])[0][:60]}）"
-                                                       for _, r, e in bad[:2]) + ("…" if len(bad) > 2 else "")
-            self.fail_l = prop(QLabel(msg), err=True); self.fail_l.setWordWrap(True); fr.addWidget(self.fail_l, 1)
-            self.fail_l.setToolTip("\n".join(f"{r}：{e}" for _, r, e in bad))
+            # R72：每個失敗檔一行、不在檔名中間換行（太長就中間省略），原因只有中文
+            self.fail_l = prop(QLabel(""), err=True); self.fail_l.setWordWrap(False); self.fail_l.ensurePolished()
+            fm = self.fail_l.fontMetrics(); lw = 360
+            lines = [f"{len(bad)} 個片段失敗："]
+            for _, r, e in bad[:3]:
+                why = "（" + zh_reason(((e or '').splitlines() or [''])[0])[:40] + "）"
+                lines.append("• " + fm.elidedText(os.path.basename(r), Qt.ElideMiddle, max(80, lw - fm.horizontalAdvance("• " + why))) + why)
+            if len(bad) > 3:
+                lines.append(f"…另 {len(bad) - 3} 個")
+            self.fail_l.setText("\n".join(lines)); self.fail_lines = lines; fr.addWidget(self.fail_l, 1)
+            self.fail_l.setToolTip("\n".join(f"{r}：{zh_reason(e or '')}" for _, r, e in bad))
             self.retry_b = prop(QPushButton(f"重試失敗的 {len(bad)} 個"), link=True); fr.addWidget(self.retry_b)
             self.retry_b.clicked.connect(lambda: (self.accept(), self.retry.emit(self.bad_idx)))
         h = QHBoxLayout(); v.addLayout(h); h.addStretch(1)

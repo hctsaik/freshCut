@@ -1603,6 +1603,29 @@ def export_clip(seg, out_path, co=None, progress=None, cancel=None):
                 pass
 
 
+_CJK = re.compile(r"[\u3400-\u9fff]")
+
+
+def zh_reason(e):
+    """R72：給使用者看的失敗原因——只有中文，不帶例外類別名稱（ClipInvalid: …）。"""
+    import errno, subprocess
+    if isinstance(e, str):
+        s = re.sub(r"^\s*(?:[A-Za-z_][\w.]*:\s*)+", "", e).strip()
+        return s if _CJK.search(s) else "匯出失敗（未知錯誤）"
+    msg = str(e)
+    if isinstance(e, ClipInvalid) and _CJK.search(msg):
+        return msg
+    if isinstance(e, FileNotFoundError):
+        return "找不到來源影片或輸出資料夾"
+    if isinstance(e, PermissionError):
+        return "沒有寫入輸出資料夾的權限"
+    if isinstance(e, OSError) and getattr(e, "errno", None) == errno.ENOSPC:
+        return "磁碟空間不足"
+    if isinstance(e, subprocess.CalledProcessError):
+        return "轉檔失敗（影片可能損毀或格式不支援）"
+    return zh_reason(msg)
+
+
 class ClipInvalid(RuntimeError):
     """R70：輸出檔驗證失敗（沒有影像/聲音或太短）——不可回報成功。"""
 
@@ -1692,7 +1715,8 @@ def export_clips(items, folder, opts=None, progress=None, cancel=None):
         except Cancelled:
             raise
         except Exception as e:  # noqa: BLE001 — 單段失敗不影響其他段
-            out.append((None, f"{type(e).__name__}: {e}"))
+            print(f"export_clips: {p} 失敗：{type(e).__name__}: {e}", file=sys.stderr)   # 技術細節只進 log
+            out.append((None, zh_reason(e)))
     if progress:
         progress(1.0, "完成")
     return out
