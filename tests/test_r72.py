@@ -67,8 +67,8 @@ d.close()
 # ---- 失敗對話框：原因中文、無類別前綴
 d = C.ExportDoneDialog(None, [(None, "ClipInvalid: 輸出檔沒有聲音"), (None, "ValueError: something")], ["a.mp4", "b.mp4"],
                        root, 1)
-assert "ClipInvalid" not in d.fail_l.text() and "ValueError" not in d.fail_l.text() and "輸出檔沒有聲音" in d.fail_l.text(), d.fail_l.text()
-assert not d.fail_l.wordWrap() and all(d.fail_l.fontMetrics().horizontalAdvance(l) <= 372 for l in d.fail_lines)
+ft = "\n".join(d.fail_lines)   # R73：檔名一行、原因下一行
+assert "ClipInvalid" not in ft and "ValueError" not in ft and "輸出檔沒有聲音" in ft, ft
 assert "ClipInvalid" not in d.fail_l.toolTip() and "something" not in d.fail_l.toolTip()
 d.close()
 

@@ -406,7 +406,7 @@ class ExportDoneDialog(QDialog):
                 f"⚠ 已匯出 {len(ok)} 個片段，其中 {len(self.trunc)} 段被截短" if not bad and self.trunc else   # R72
                 f"✓ 已匯出 {len(ok)} 個片段" if not bad else
                 f"⚠ 匯出失敗：{len(bad)} 個片段沒有成功" if not ok else
-                f"⚠ 已匯出 {len(ok)} 個片段，{len(bad)} 個失敗")
+                f"⚠ 已匯出 {len(ok)} 個片段，{len(bad)} 個失敗" + (f"、{len(self.trunc)} 段被截短" if self.trunc else ""))   # R73
         if bad and not cancelled:
             self.setWindowTitle("匯出未完成")
         elif self.trunc and not cancelled:
@@ -458,18 +458,23 @@ class ExportDoneDialog(QDialog):
             v.addWidget(self.trunc_l)
         self.bad_idx = [i for i, _, _ in bad]
         if bad:
-            fr = QHBoxLayout(); v.addLayout(fr)
-            # R72：每個失敗檔一行、不在檔名中間換行（太長就中間省略），原因只有中文
-            self.fail_l = prop(QLabel(""), err=True); self.fail_l.setWordWrap(False); self.fail_l.ensurePolished()
-            fm = self.fail_l.fontMetrics(); lw = 360
-            lines = [f"{len(bad)} 個片段失敗："]
+            # R73：檔名自成一行（完整，太長才中間省略），原因放下一行、可以換行——長原因不再把檔名擠成「VID_2…2.mp4」
+            self.fail_box = QVBoxLayout(); self.fail_box.setSpacing(2); v.addLayout(self.fail_box)
+            self.fail_l = prop(QLabel(f"{len(bad)} 個片段失敗："), err=True); self.fail_box.addWidget(self.fail_l)
+            self.fail_l.ensurePolished(); fm = self.fail_l.fontMetrics(); self.fail_name_w = 470
+            self.fail_rows = []
             for _, r, e in bad[:3]:
-                why = "（" + zh_reason(((e or '').splitlines() or [''])[0])[:40] + "）"
-                lines.append("• " + fm.elidedText(os.path.basename(r), Qt.ElideMiddle, max(80, lw - fm.horizontalAdvance("• " + why))) + why)
+                nl = prop(QLabel("• " + fm.elidedText(os.path.basename(r), Qt.ElideMiddle, self.fail_name_w - fm.horizontalAdvance("• "))),
+                          err=True)
+                nl.setWordWrap(False); nl.setToolTip(r)
+                rl = prop(QLabel("　" + zh_reason(e or "")), sec=True, small=True); rl.setWordWrap(True)
+                rl.setContentsMargins(12, 0, 0, 4)
+                self.fail_box.addWidget(nl); self.fail_box.addWidget(rl); self.fail_rows.append((nl, rl))
             if len(bad) > 3:
-                lines.append(f"…另 {len(bad) - 3} 個")
-            self.fail_l.setText("\n".join(lines)); self.fail_lines = lines; fr.addWidget(self.fail_l, 1)
+                self.fail_box.addWidget(prop(QLabel(f"…另 {len(bad) - 3} 個（滑鼠移到上方標題看全部）"), sec=True, small=True))
+            self.fail_lines = [self.fail_l.text()] + [t for nl, rl in self.fail_rows for t in (nl.text(), rl.text())]
             self.fail_l.setToolTip("\n".join(f"{r}：{zh_reason(e or '')}" for _, r, e in bad))
+            fr = QHBoxLayout(); v.addLayout(fr); fr.addStretch(1)
             self.retry_b = prop(QPushButton(f"重試失敗的 {len(bad)} 個"), link=True); fr.addWidget(self.retry_b)
             self.retry_b.clicked.connect(lambda: (self.accept(), self.retry.emit(self.bad_idx)))
         h = QHBoxLayout(); v.addLayout(h); h.addStretch(1)

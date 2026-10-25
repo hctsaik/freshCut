@@ -1603,6 +1603,11 @@ def export_clip(seg, out_path, co=None, progress=None, cancel=None):
                 pass
 
 
+def fmt_secs(x):
+    x = max(0.0, float(x or 0)); m, sec = divmod(x, 60)
+    return f"{int(m)} 分 {sec:.1f} 秒" if m else f"{sec:.1f} 秒"
+
+
 _CJK = re.compile(r"[\u3400-\u9fff]")
 
 
@@ -1652,7 +1657,7 @@ def clamp_segment(seg):
     D = float(src.duration or 0)
     s0 = max(0.0, min(float(seg.start), D)); e0 = max(0.0, min(float(seg.end), D))
     if e0 - s0 < CLIP_MIN_SEC:
-        raise ClipInvalid(f"入點／出點超出素材長度（素材 {D:.2f} 秒，片段 {seg.start:.2f}–{seg.end:.2f} 秒）")
+        raise ClipInvalid(f"片段超出素材長度（素材只有 {fmt_secs(D)}）")   # R73：原因寫短，細節留在 log
     if (s0, e0) != (seg.start, seg.end):
         seg = copy.copy(seg); seg.start, seg.end = s0, e0
     return seg, src
