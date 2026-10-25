@@ -1,0 +1,5 @@
+2026-10-25 17:53:04.0877443710 tests/test_gui_clips.py
+2026-10-25 17:52:54.2637546610 tests/test_strategies.py
+2026-10-25 17:50:31.3199045310 tests/test_gui.py
+2026-10-25 17:43:13.6203634880 app/gui/main.py
+2026-10-25 17:33:45.1369595790 app/gui/clips.py

@@ -31,9 +31,10 @@ assert core.strat_key("middle") == "uniform" and core.STRAT_NAMES["action"] == "
 f = feats()
 w = core.strategy_windows(f, D, core.strategy_config(ONLY("uniform", n=1, len=5)))
 assert w == [("uniform", 15.5, 20.5, 0)], w
+# R70：均勻取樣每支最多 1 段（n=3 會夾回 1）
+assert core.strategy_config(ONLY("uniform", n=3, len=4))["uniform"]["n"] == 1
 w = core.strategy_windows(f, D, core.strategy_config(ONLY("uniform", n=3, len=4)))
-assert [round((s + e) / 2, 2) for _, s, e, _ in w] == [6.67, 20.0, 33.33] or \
-       [round((s + e) / 2, 1) for _, s, e, _ in w] == [6.7, 20.0, 33.3], w
+assert len(w) == 1, w
 
 # ---- loud：最大聲處在窗口 40%；沒有聲音就不產生
 f = feats(); f.audio[30] = 1.0; f.audio[29] = f.audio[31] = 0.6; f.audio[60] = 0.8; f.audio[59] = f.audio[61] = 0.5

@@ -1190,7 +1190,7 @@ STRAT_PER = {"start": dict(on=True, len=7.0, n=1), "people": dict(on=True, len=6
              "uniform": dict(on=True, len=6.5, n=1), "loud": dict(on=False, len=5.0, n=2),
              "scene": dict(on=False, len=4.0, n=3)}
 STRAT_RANGE = {"start": ((3, 15), (1, 1)), "people": ((3, 15), (1, 3)), "action": ((3, 15), (1, 5)),
-               "whole": ((5, 30), (1, 1)), "uniform": ((2, 15), (1, 10)), "loud": ((2, 15), (1, 5)),
+               "whole": ((5, 30), (1, 1)), "uniform": ((2, 15), (1, 1)), "loud": ((2, 15), (1, 5)),
                "scene": ((2, 10), (1, 10))}
 STRAT_TOTAL_MAX = 12
 # 先驗：train split（seed 49）上各策略 IoU≥0.5 的比例（R60 量測；uniform 沿用 middle；loud/scene 為 R67 train 量測）
@@ -1377,9 +1377,11 @@ def strategy_candidates(f, path, duration, legacy=None, prefs=None, step=0.5, en
         seg.quality = {"sharp": float(f.sharp[i0:i1].mean()) if i1 > i0 and len(getattr(f, "sharp", [])) else 1.0,
                        "shake": float(f.shake[i0:i1].mean()) if i1 > i0 and len(getattr(f, "shake", [])) else 0.0}
         segs.append(seg)
+    uni = lambda sg: set(getattr(sg, "strategies", None) or []) == {"uniform"}
+    segs = [sg for sg in segs if not uni(sg)] + [sg for sg in segs if uni(sg)]   # R70：保底的均勻取樣排最後
     segs = segs[:STRAT_TOTAL_MAX]
     for i, seg in enumerate(segs):
-        seg.rank = i; seg.optional = i > 0
+        seg.rank = i; seg.optional = i > 0 or uni(seg)                          # R70：只有均勻取樣 → 不自動勾
     out = _Cands(segs)
     if legacy is not None:
         out.worth, out.person, out.bad = legacy.worth, legacy.person, legacy.bad
@@ -1580,6 +1582,8 @@ def export_clip(seg, out_path, co=None, progress=None, cancel=None):
     """R66：輸出一段到 out_path。一律先寫 <名稱>.part<副檔名>，成功才 os.replace；
     取消或失敗只刪自己的 .part——原本存在的同名檔絕不會被刪（SPEC 驗收 #4）。"""
     co = co or ClipOptions()
+    want = float(seg.end) - float(seg.start)
+    seg, src = clamp_segment(seg)
     root, ext = os.path.splitext(out_path)
     part = root + ".part" + (ext or ".mp4")
     cb = (lambda f: progress(f)) if progress else None
@@ -1588,14 +1592,65 @@ def export_clip(seg, out_path, co=None, progress=None, cancel=None):
             _clip_direct(seg, part, co, cb, cancel)
         else:
             _clip_reframed(seg, part, co, cb, cancel)
+        validate_clip(part, seg, co, src)
         os.replace(part, out_path)
-        return out_path
+        return ClipPath(out_path, want, seg.end - seg.start)
     finally:
         if os.path.exists(part):
             try:
                 os.remove(part)
             except OSError:
                 pass
+
+
+class ClipInvalid(RuntimeError):
+    """R70：輸出檔驗證失敗（沒有影像/聲音或太短）——不可回報成功。"""
+
+
+CLIP_MIN_SEC = 0.3
+
+
+class ClipPath(str):
+    """R71：export_clip 的回傳值——仍是路徑字串，另帶 want（要求秒數）與 got（夾到素材長度後的秒數），
+    讓完成對話框能標出「已截短」。"""
+    def __new__(cls, path, want=None, got=None):
+        o = super().__new__(cls, path); o.want, o.got = want, got; return o
+
+    @property
+    def truncated(self):
+        return bool(self.want and self.got is not None and self.got < self.want - 0.05)
+
+
+def clamp_segment(seg):
+    """R70：入點/出點夾回素材實際長度（資料庫裡的時間可能超出檔尾，或素材被換過）。
+    回傳 (新 Segment 副本, MediaInfo)；夾完長度不足 CLIP_MIN_SEC 時丟 ClipInvalid。"""
+    import copy
+    src = probe(seg.path)
+    D = float(src.duration or 0)
+    s0 = max(0.0, min(float(seg.start), D)); e0 = max(0.0, min(float(seg.end), D))
+    if e0 - s0 < CLIP_MIN_SEC:
+        raise ClipInvalid(f"入點／出點超出素材長度（素材 {D:.2f} 秒，片段 {seg.start:.2f}–{seg.end:.2f} 秒）")
+    if (s0, e0) != (seg.start, seg.end):
+        seg = copy.copy(seg); seg.start, seg.end = s0, e0
+    return seg, src
+
+
+def validate_clip(path, seg, co, src=None):
+    """R70：匯出後檢查：要有影像串流；保留原聲且素材有聲音時要有音軌；長度不能明顯短於預期。"""
+    try:
+        info = probe(path)
+    except Exception as e:  # noqa: BLE001
+        raise ClipInvalid(f"輸出檔無法讀取或沒有影像：{e}") from None
+    if getattr(co, "audio", False) and (src is None or src.has_audio) and not info.has_audio:
+        raise ClipInvalid("輸出檔沒有聲音")
+    want = seg.end - seg.start
+    if not (getattr(seg, "ramp", None) or getattr(seg, "curve", None)):
+        need = max(CLIP_MIN_SEC, want - max(0.5, 0.1 * want))
+    else:
+        need = CLIP_MIN_SEC          # 變速片段長度會變，只擋幾乎是空檔
+    if info.duration < need:
+        raise ClipInvalid(f"輸出檔太短（{info.duration:.2f} 秒，預期約 {want:.2f} 秒）")
+    return info
 
 
 def _as_clip_options(opts):

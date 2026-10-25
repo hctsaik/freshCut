@@ -1,0 +1,166 @@
+{
+ "tip": "小提示：不知道從哪開始？按工具列的「一鍵成片」選一個資料夾，",
+ "welcome_tab": [
+  "QPushButton:匯入資料夾…",
+  "QPushButton:知道了",
+  "QLineEdit:AI 搜尋片段",
+  "QPushButton:一鍵成片（選資料夾）…",
+  "QPushButton:匯入影片…",
+  "QPushButton:匯入資料夾…",
+  "QPushButton:知道了",
+  "QLineEdit:AI 搜尋片段"
+ ],
+ "import_count": 3,
+ "analyze_s": 10.6,
+ "errs_after_analyze": [],
+ "clips": 9,
+ "checked": 5,
+ "per_file": {
+  "VID_0001.mp4": [
+   [
+    4.0,
+    8.0,
+    0.529,
+    1
+   ],
+   [
+    9.5,
+    13.5,
+    0.377,
+    0
+   ],
+   [
+    15.5,
+    19.5,
+    0.425,
+    1
+   ],
+   [
+    26.0,
+    30.0,
+    0.423,
+    0
+   ]
+  ],
+  "VID_0002.mp4": [
+   [
+    0.5,
+    4.5,
+    0.19,
+    1
+   ]
+  ],
+  "VID_0003.mp4": [
+   [
+    3.0,
+    7.0,
+    0.484,
+    1
+   ],
+   [
+    7.0,
+    11.0,
+    0.398,
+    0
+   ],
+   [
+    21.5,
+    25.5,
+    0.469,
+    1
+   ],
+   [
+    25.5,
+    29.5,
+    0.404,
+    0
+   ]
+  ]
+ },
+ "main_tab": [
+  "QListWidget:影片清單",
+  "QScrollArea:",
+  "QScrollArea:",
+  "QComboBox:",
+  "QComboBox:",
+  "QComboBox:",
+  "QComboBox:",
+  "QComboBox:",
+  "QCheckBox:自動調色（偏暗、灰濛時修",
+  "QComboBox:",
+  "QCheckBox:保留原始聲音",
+  "QCheckBox:結尾淡出",
+  "QComboBox:",
+  "QCheckBox:精彩瞬間慢動作",
+  "QComboBox:",
+  "QComboBox:",
+  "QLineEdit:",
+  "QCheckBox:片頭加上拍攝日期",
+  "Timeline:成品片段順序（Ctrl+",
+  "QPushButton:預覽成品",
+  "QPushButton:產生成品",
+  "ClipCard:已勾選 VID_0001",
+  "QLineEdit:AI 搜尋片段",
+  "QLineEdit:搜尋影片",
+  "QListWidget:影片清單",
+  "QScrollArea:",
+  "QScrollArea:",
+  "QComboBox:",
+  "QComboBox:",
+  "QComboBox:"
+ ],
+ "space_toggle": [
+  true,
+  false
+ ],
+ "summary": "已選 5 段・約 20 秒",
+ "cust_err": [
+  true,
+  "太短了：5 段每段至少 1.5 秒，至少要 8 秒"
+ ],
+ "cust_err_after": false,
+ "drawer_btn": true,
+ "hdr_clip": {
+  "▾ VID_0001": [
+   96,
+   736,
+   true
+  ],
+  "重新推薦": [
+   611,
+   736,
+   true
+  ],
+  "＋ 手動新增片段": [
+   735,
+   736,
+   true
+  ]
+ },
+ "wall_cols_1024_drawer": null,
+ "export": [
+  {
+   "p": "/tmp/r10a_79nly7z7/final.mp4",
+   "m": null
+  },
+  20.5
+ ],
+ "final": "MediaInfo(path='/tmp/r10a_79nly7z7/final.mp4', duration=18.0, width=1920, height=1080, has_audio=True)",
+ "oneclick": [
+  {
+   "p": "/tmp/r10a_79nly7z7/oneclick.mp4",
+   "m": null
+  },
+  36.6
+ ],
+ "oneclick_probe": "MediaInfo(path='/tmp/r10a_79nly7z7/oneclick.mp4', duration=23.93, width=1920, height=1080, has_audio=True)",
+ "cancel_existing": [
+  {
+   "p": null,
+   "m": "cancelled"
+  },
+  false
+ ],
+ "after_fail_cb_left": true,
+ "stale_oneclick_fired_export": true
+}

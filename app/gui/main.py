@@ -17,11 +17,19 @@ from . import dialogs as D, ai
 VIDEO_FILTER = "影片 (*.mp4 *.mov *.m4v *.insv *.lrv *.avi *.mkv *.MP4 *.MOV *.INSV *.LRV)"
 TARGETS = [("15 秒", 15), ("30 秒", 30), ("60 秒", 60), ("不限", 0), ("自訂…", -1)]
 ASPECTS = [("橫式 16:9", "16:9"), ("直式 9:16（Reels、Shorts）", "9:16"), ("方形 1:1", "1:1")]
-TRANS = [("淡入淡出 0.5 秒", 0.5), ("淡入淡出 1 秒", 1.0), ("無（直接切換）", 0.0)]
 STYLES = [("自訂", ""), ("Vlog", "Vlog"), ("運動", "運動"), ("旅行", "旅行")]
-PACES = [("平穩（每 4 拍換一段）", "平穩"), ("輕快（每 2 拍）", "輕快"), ("史詩（每 8 拍）", "史詩")]
 FRAMES = [("跟著主體（直式/方形）", "smart"), ("置中裁切", "center")]
 PROJ = [("自動偵測（360／魚眼）", "auto"), ("一般影片", ""), ("360 全景（等距）", "equirect"), ("360 雙魚眼 .insv", "dfisheye"), ("單一圓形魚眼", "fisheye")]
+
+
+def _uniform_only(c):
+    """R70：只有「均勻取樣」選到的片段（保底），卡片排最後、預設不勾。"""
+    import json as _j
+    try:
+        st = _j.loads(c.get("strategy") or "[]")
+    except (ValueError, TypeError):
+        return False
+    return c.get("source") == "ai" and set(st or []) == {"uniform"}
 
 
 class Main(QMainWindow):
@@ -39,6 +47,8 @@ class Main(QMainWindow):
         self.ai_hits = set()
         self.setWindowTitle("精華剪輯")
         self.resize(1360, 860)
+        # R70：明確的最小尺寸——否則版面把「右欄 320」也算進最小寬度，視窗縮不到 1280 以下、抽屜永遠出不來
+        self.setMinimumSize(1000, 640)
         self._build()
         self._shortcuts()
         self.toast = Toast(self.centralWidget())
@@ -46,6 +56,17 @@ class Main(QMainWindow):
         cw = self.centralWidget
         self.toast.anchor = lambda: (self.ebar.mapTo(cw(), self.ebar.rect().topLeft()).y()
                                      if self.ebar.isVisible() else cw().height() - 60)
+        # R71：toast 放進底部匯出列中間的空白處（摘要／進度右側、按鈕左側），不再蓋到卡片
+        def _zone():
+            if not (hasattr(self, "ebar") and self.ebar.isVisible()):
+                return None
+            eb = self.ebar; o = eb.mapTo(cw(), eb.rect().topLeft())
+            lw = eb.prog_l if eb.prog_l.isVisible() else eb.summary
+            left = o.x() + lw.geometry().right() + 12
+            rb = eb.reason if (eb.reason.isVisible() and eb.reason.text()) else eb.prev_b
+            right = o.x() + rb.geometry().left() - 12
+            return left, right, o.y(), o.y() + eb.height()
+        self.toast.zone = _zone
         self.toast.right_limit = lambda: (self.rscroll.mapTo(cw(), self.rscroll.rect().topLeft()).x()
                                           if self.rscroll.isVisible() else cw().width())
         self.watch = QTimer(self, timeout=self._watch_tick); self.watch.start(watch_interval() * 1000)
@@ -92,7 +113,7 @@ class Main(QMainWindow):
         ic = QLabel("⬇"); ic.setAlignment(Qt.AlignCenter); ic.setStyleSheet("font-size:44px;color:#FFC400"); wv.addWidget(ic)
         t = prop(QLabel("把 Insta360 資料夾或影片拖到這裡"), h=True); t.setAlignment(Qt.AlignCenter)
         t.setStyleSheet("font-size:20px;font-weight:700"); wv.addWidget(t)
-        steps = prop(QLabel("① 匯入 → ② AI 幫每支挑 2–4 段候選 → ③ 勾選喜歡的 → ④ 一鍵產生有轉場、配樂的成品"), sec=True)
+        steps = prop(QLabel("① 匯入 → ② AI 幫每支挑 2–4 段候選 → ③ 勾選喜歡的 → ④ 每段各自匯出成一個檔案"), sec=True)
         steps.setAlignment(Qt.AlignCenter); steps.setWordWrap(True); wv.addWidget(steps)
         s = prop(QLabel("會自動挑出精彩片段；檔案不會被修改。Insta360 的 .insv／.lrv 會合併成一支。"), sec=True)
         s.setAlignment(Qt.AlignCenter); wv.addWidget(s)
@@ -207,9 +228,6 @@ class Main(QMainWindow):
         for a, t in (("16:9", "16:9"), ("9:16", "9:16"), ("1:1", "1:1")):
             c = QCheckBox(t); c.setToolTip(f"按「產生成品」時也輸出 {t} 版（檔名加 _{CV.FORMAT_SUFFIX[a]}）"); fr.addWidget(c); self.fmt_c[a] = c
         self.res = row("解析度", QComboBox()); self.res.addItem("1080p", "1080p"); self.res.addItem("4K（較慢）", "4K")
-        self.trans = row("轉場", QComboBox())
-        for t, v in TRANS:
-            self.trans.addItem(t, v)
         self.look_c = row("濾鏡", QComboBox())
         from app import core as _c
         for k in _c.LOOKS:
@@ -223,9 +241,7 @@ class Main(QMainWindow):
         self._prev_t = QTimer(self); self._prev_t.setSingleShot(True); self._prev_t.setInterval(250)
         self._prev_t.timeout.connect(self.update_look_preview)
         self.look_c.currentIndexChanged.connect(self._prev_t.start); self.auto_col.toggled.connect(self._prev_t.start)
-        self.music = row("背景音樂", QComboBox())
         self.keep_audio = QCheckBox("保留原始聲音"); self.keep_audio.setChecked(True); rv.addWidget(self.keep_audio)
-        self.vol = row("音樂音量", QSlider(Qt.Horizontal)); self.vol.setRange(0, 100); self.vol.setValue(60)
         self.fade = QCheckBox("結尾淡出"); self.fade.setChecked(True); rv.addWidget(self.fade)
         # R63：進階設定（AI 剪輯／文字／特效／貼圖）預設收合，右欄從 ~45 個控制項降到 ~20 個；有非預設值時自動展開
         self.adv_b = QPushButton("進階設定 ▸（AI 剪輯、文字、特效、貼圖）"); self.adv_b.setCheckable(True)
@@ -237,10 +253,6 @@ class Main(QMainWindow):
         self.style_c = row("風格範本", QComboBox())
         for t, v in STYLES:
             self.style_c.addItem(t, v)
-        self.beat = QCheckBox("剪接點對齊音樂節拍"); self.beat.setChecked(True); rv.addWidget(self.beat)
-        self.pace = row("節奏", QComboBox())
-        for t, v in PACES:
-            self.pace.addItem(t, v)
         self.slowmo = QCheckBox("精彩瞬間慢動作"); rv.addWidget(self.slowmo)
         self.frame_c = row("構圖", QComboBox())
         for t, v in FRAMES:
@@ -259,7 +271,7 @@ class Main(QMainWindow):
         self.fx = row("特效模板", QComboBox())
         for t in core.EFFECTS:
             self.fx.addItem({"": "無", "節拍放大": "節拍放大（跟著強拍）", "閃白": "閃白", "故障": "故障（輕微）"}[t], t)
-        self.fx.setToolTip("有背景音樂時跟著強拍觸發；沒有音樂時在剪接點觸發")
+        self.fx.setToolTip("在剪接點觸發")
         # R29：特效預覽條（觸發前／觸發／0.05 秒後／0.15 秒後）
         self.fx_preview = QLabel(); self.fx_preview.setAccessibleName("特效預覽"); self.fx_preview.hide()
         self.fx_preview.setScaledContents(True); self.fx_preview.setFixedHeight(54)
@@ -297,10 +309,8 @@ class Main(QMainWindow):
         H.addWidget(rscroll); self.rscroll = rscroll; self._drawer_open = False
         self.style_c.currentIndexChanged.connect(lambda: self.apply_style(self.style_c.currentData()))
         self.share.currentIndexChanged.connect(lambda: self.apply_share(self.share.currentData()))
-        self.music.currentIndexChanged.connect(self._beat_state); self.beat.toggled.connect(self._beat_state)
         for w in (self.target, self.cust):
             (w.currentIndexChanged if w is self.target else w.valueChanged).connect(self._target_changed)
-        self.music.currentIndexChanged.connect(lambda: self.vol.setEnabled(bool(self.music.currentData())))
         # 下：時間軸
         bot = QFrame(); bot.setObjectName("panel"); bv = QVBoxLayout(bot); bv.setContentsMargins(12, 6, 12, 10)
         hdr = QHBoxLayout(); self.tl_title = prop(QLabel("成品順序"), h=True); hdr.addWidget(self.tl_title)
@@ -362,6 +372,7 @@ class Main(QMainWindow):
             for i, t in enumerate(names):
                 b = QPushButton(t); b.setCheckable(True); b.setAccessibleName(f"{acc}：{t}")
                 b.setStyleSheet("QPushButton{border-radius:0;padding:4px 10px}QPushButton:checked{background:#3d3520;color:#FFE08A;border-color:#FFC400}")
+                b.setMinimumWidth(b.fontMetrics().horizontalAdvance(t) + 24)   # R70：窄視窗不可被擠扁
                 grp.addButton(b, i); h.addWidget(b); out.append(b)
             out[0].setChecked(True); grp.idClicked.connect(cb); return box, out
         fb.addWidget(prop(QLabel("顯示"), sec=True, small=True))
@@ -373,6 +384,8 @@ class Main(QMainWindow):
         fb.addWidget(self.fold_b)
         self.selall_b = QPushButton("本頁全選"); self.selall_b.setToolTip("勾選目前顯示的所有片段（Ctrl+A）")
         self.selall_b.clicked.connect(self.select_visible); fb.addWidget(self.selall_b)
+        for b in (self.fold_b, self.selall_b):
+            b.setMinimumWidth(b.sizeHint().width())
         fb.addStretch(1); self.count_l.setTextFormat(Qt.RichText); fb.addWidget(self.count_l)
         # 右欄：匯出設定
         self.legacy_rscroll = self.rscroll; self.legacy_rscroll.hide()
@@ -380,6 +393,15 @@ class Main(QMainWindow):
         es = QScrollArea(); es.setWidgetResizable(True); es.setFixedWidth(320); es.setFocusPolicy(Qt.NoFocus)
         es.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff); es.setWidget(self.exp_panel)
         self._H.addWidget(es); self.rscroll = es
+        # R70：窄視窗（< NARROW）右欄收成 48px 圖示條，點一下展開 320px 抽屜
+        self.dstrip = QFrame(); self.dstrip.setObjectName("panel"); self.dstrip.setFixedWidth(48)
+        self.dstrip.setStyleSheet("QFrame#panel{border-left:1px solid #3a3a3a}")
+        dv = QVBoxLayout(self.dstrip); dv.setContentsMargins(4, 8, 4, 8)
+        self.strip_b = QPushButton("⚙"); self.strip_b.setCheckable(True); self.strip_b.setFixedSize(40, 40)
+        self.strip_b.setToolTip("匯出設定"); self.strip_b.setAccessibleName("顯示或隱藏匯出設定")
+        self.strip_b.setStyleSheet("QPushButton{font-size:18px;border-radius:6px}QPushButton:checked{background:#3d3520;color:#FFE08A;border:1px solid #FFC400}")
+        dv.addWidget(self.strip_b); dv.addStretch(1); self.dstrip.hide()
+        self._H.addWidget(self.dstrip)
         self.exp_panel.changed.connect(self._export_settings_changed)
         # 底部匯出列
         self.legacy_bot.hide()
@@ -387,8 +409,11 @@ class Main(QMainWindow):
                        "drawer_b": self.drawer_b}
         self.ebar = ExportBar(); self._V.addWidget(self.ebar)
         self.summary, self.reason, self.prev_b, self.exp_b = self.ebar.summary, self.ebar.reason, self.ebar.prev_b, self.ebar.exp_b
-        self.drawer_b = self.ebar.drawer_b; self.drawer_b.toggled.connect(self._toggle_drawer)
-        self.exp_b.clicked.connect(lambda: self.export_clips())
+        self.drawer_b = self.strip_b; self.drawer_b.toggled.connect(self._toggle_drawer)
+        self.exp_b.clicked.connect(lambda: self.cancel_export() if self._exp_job else self.export_clips())
+        self.strat_bar.tip_closed.connect(lambda: self.lib.set("uniform_tip_seen", 1))
+        if not self.lib.get("uniform_tip_seen") and self.lib.strategy_cfg().get("uniform", {}).get("on"):
+            self.strat_bar.tip.show()
         self.prev_b.clicked.connect(self.preview_selected)
         self.ebar.cancel_b.clicked.connect(self.cancel_export)
         self._exp_job = None; self._rc_job = None; self._rc_pending = False
@@ -484,12 +509,14 @@ class Main(QMainWindow):
         self._exp_items, self._exp_folder, self._exp_t0 = items, folder, time.time()
         self._exp_rels = core.plan_clip_names(items, co)
         self.ebar.busy(True); self.ebar.prog_l.setText(f"匯出中 0/{len(items)}")
+        self._lock_settings(True)
         self._summary()
         from .workers import export_clips_job
         self._exp_job = self.run_job(export_clips_job, items, folder, co, progress=self._exp_progress,
                                      done=lambda r: self._exp_done(r, on_done),
                                      cancelled=lambda: self._exp_end(None, on_done, cancelled=True),
                                      failed=lambda m: (self._exp_end(None, on_done), self._job_failed(m)))
+        self._summary()                      # R70：主按鈕變「取消匯出」
         return self._exp_job
 
     def _exp_progress(self, f, m):
@@ -498,16 +525,23 @@ class Main(QMainWindow):
         el = time.time() - self._exp_t0
         left = f"剩約 {int(el / f * (1 - f)) // 60}:{int(el / f * (1 - f)) % 60:02d}" if f > 0.02 else "估算中…"
         self.ebar.prog.setValue(int(f * 1000))
-        if self.ebar.cancel_b.isEnabled():
+        if not getattr(self, "_cancelling", False):
             self.ebar.prog_l.setText(f"匯出中 {i}/{n} · {left}")
 
     def cancel_export(self):
         if self._exp_job:
-            self._exp_job.cancelled = True
+            self._exp_job.cancelled = True; self._cancelling = True
             self.ebar.cancel_b.setEnabled(False); self.ebar.prog_l.setText("正在取消…（已完成的檔案會保留）")
+            self.exp_b.setEnabled(False); self.exp_b.setText("正在取消…")
+
+    def _lock_settings(self, on):
+        """R70：匯出中右欄設定、策略列都不可改（改了也不會影響正在跑的匯出）。"""
+        for wdg in (self.exp_panel, self.strat_bar):
+            wdg.setEnabled(not on)
+            wdg.setToolTip("匯出中無法修改設定" if on else "")
 
     def _exp_end(self, res, on_done, cancelled=False):
-        self._exp_job = None; self.ebar.busy(False); self._summary()
+        self._exp_job = None; self._cancelling = False; self.ebar.busy(False); self._lock_settings(False); self._summary()
         if cancelled:
             self.toast.show_msg("已取消匯出：已完成的片段保留，沒有留下未完成的檔案，也沒有動到原有的檔案", ms=6000)
         if on_done:
@@ -532,6 +566,11 @@ class Main(QMainWindow):
         items = [(f"{group_name(c['path'])} {fmt(c['start'])}–{fmt(c['end'])}", c.get("proxy"), c.get("thumb")) for c in rows]
         self.preview_dlg = PreviewDialog(self, items, autoplay=self.autoplay); self.preview_dlg.open()
         return self.preview_dlg
+
+    def keyPressEvent(self, e):
+        if e.key() == Qt.Key_Escape and getattr(self, "_drawer_open", False) and hasattr(self, "dstrip"):
+            self.drawer_b.setChecked(False); self.drawer_b.setFocus(); e.accept(); return    # R70：Esc 收起抽屜
+        super().keyPressEvent(e)
 
     def resizeEvent(self, e):
         super().resizeEvent(e); self._layout_drawer()
@@ -627,6 +666,32 @@ class Main(QMainWindow):
 
     def _layout_drawer(self):
         narrow = self.width() < self.NARROW
+        if hasattr(self, "dstrip"):
+            self.dstrip.setVisible(narrow)
+            if not narrow and self._drawer_open:
+                self._drawer_open = False; self.drawer_b.blockSignals(True); self.drawer_b.setChecked(False)
+                self.drawer_b.blockSignals(False)
+            host = self._H.parentWidget()
+            overlay = narrow and self._drawer_open
+            inside = self._H.indexOf(self.rscroll) >= 0
+            if overlay and inside:            # 抽屜浮在卡片牆上，不擠壓中間欄
+                self._H.removeWidget(self.rscroll); self.rscroll.setParent(host)
+            elif not overlay and not inside:
+                self.rscroll.setParent(host); self._H.insertWidget(self._H.indexOf(self.dstrip), self.rscroll)
+            if overlay:
+                # R71：抽屜只蓋內容區，底邊停在匯出列上緣，不遮主按鈕／「取消匯出」
+                top = self._H.geometry().top()
+                bot = self.ebar.mapTo(host, self.ebar.rect().topLeft()).y() if self.ebar.isVisible() else host.height()
+                right = self.dstrip.mapTo(host, self.dstrip.rect().topLeft()).x() if self.dstrip.isVisible() else host.width() - 48
+                self.rscroll.setGeometry(right - 320, top, 320, max(100, bot - top))
+                self.rscroll.setStyleSheet("QScrollArea{border-left:1px solid #555;background:#1b1b1b}")
+                self.rscroll.show(); self.rscroll.raise_()
+            else:
+                self.rscroll.setStyleSheet("")
+                self.rscroll.setVisible(not narrow)
+            self.drawer_b.setText("✕" if (narrow and self._drawer_open) else "⚙")
+            self.drawer_b.setToolTip("收起匯出設定" if self._drawer_open else "匯出設定")
+            return
         self.drawer_b.setVisible(narrow)
         self.rscroll.setVisible(not narrow or self._drawer_open)
         self.drawer_b.setText("匯出設定 ◂" if (narrow and self._drawer_open) else "匯出設定 ▸")
@@ -688,7 +753,6 @@ class Main(QMainWindow):
         self._build_wall()
         if keep:
             QTimer.singleShot(0, lambda v=_sv: self.scroll.verticalScrollBar().setValue(v))   # R63：重建卡片牆不跳回頂端
-        self._music_list()
         self._timeline()
         ws = self.lib.watched_status()
         self.watch_lab.setText("\n".join(f"監看：{os.path.basename(p) or p}（{s}）" for p, _, s in ws))
@@ -708,6 +772,21 @@ class Main(QMainWindow):
             self.scroll.ensureWidgetVisible(hdr, 0, 0)
 
     def _build_wall(self):
+        from app.library import group_name
+        from .clips import chip_keys
+        # R71（500+ 段效能）：重建時停掉牆的畫面更新
+        # （曾試過先 hide 整面牆：未 show 前建牆會永久藏住、1024 寬標題列也排不回來，已改成只停畫面更新）
+        self.wall.setUpdatesEnabled(False)
+        try:
+            self._build_wall_inner()
+        finally:
+            self.wall.setUpdatesEnabled(True)
+        if hasattr(self, "strat_bar"):
+            self.strat_bar.set_cfg(self.lib.strategy_cfg()); self.strat_bar.set_counts(self._strategy_counts())
+        self._apply_filter()
+        QTimer.singleShot(0, self._reflow)
+
+    def _build_wall_inner(self):
         from app.library import group_name
         from .clips import chip_keys
         self.wall.clear(); self.cards = {}; self._headers = {}; self._dups = {}
@@ -746,6 +825,8 @@ class Main(QMainWindow):
             for f in files:
                 ext = os.path.splitext(f["path"])[1][1:].upper()
                 clips = self.lib.clips(f["id"])
+                # R70：只有「均勻取樣」選到的片段排最後（保底用）
+                clips = sorted(clips, key=lambda c: _uniform_only(c) and not c.get("checked"))
                 dur = f.get("duration") or 0
                 st = f["status"] if f["status"] != STATUS_DONE else f"{fmt(dur).split('.')[0]} · {len(clips)} 段"
                 h = GroupHeader(group_name(f["path"]), ext, st)
@@ -757,24 +838,6 @@ class Main(QMainWindow):
                 self.wall.add_group(h, cards)
                 self._headers[f["id"]] = h
         self.wall.finish()
-        if hasattr(self, "strat_bar"):
-            self.strat_bar.set_cfg(self.lib.strategy_cfg()); self.strat_bar.set_counts(self._strategy_counts())
-        self._apply_filter()
-        QTimer.singleShot(0, self._reflow)
-
-    def _music_list(self):
-        cur = self.music.currentData()
-        self.music.blockSignals(True); self.music.clear(); self.music.addItem("無", "")
-        from app import music as _mu
-        for mood in _mu.MOODS:
-            self.music.addItem(f"內建・{mood}（自動合成，CC0）", f"builtin:{mood}")
-        d = self.lib.get("music_dir", "")
-        for p in (core.list_music(d) if d and os.path.isdir(d) else []):
-            self.music.addItem(os.path.basename(p), p)
-        i = self.music.findData(cur); self.music.setCurrentIndex(max(0, i)); self.music.blockSignals(False)
-        self.vol.setEnabled(bool(self.music.currentData()))
-        if hasattr(self, "beat"):
-            self._beat_state()
 
     def _timeline(self):
         tl = self.lib.timeline()
@@ -821,7 +884,13 @@ class Main(QMainWindow):
         self.exp_b.setText(f"匯出已選片段（{n}）")
         self.exp_b.setAccessibleName(f"匯出已選片段，{n} 段")
         busy = bool(getattr(self, "_exp_job", None))
-        self.exp_b.setEnabled(n > 0 and not busy); self.prev_b.setEnabled(n > 0 and not busy)
+        if busy:
+            stopping = self._exp_job.cancelled
+            self.exp_b.setText("正在取消…" if stopping else "取消匯出")
+            self.exp_b.setAccessibleName("取消匯出")
+            self.exp_b.setEnabled(not stopping); self.prev_b.setEnabled(False)
+        else:
+            self.exp_b.setEnabled(n > 0); self.prev_b.setEnabled(n > 0)
         self.reason.setText("" if n else "勾選片段後即可匯出")
         self.exp_panel.set_sample(items[0] if items else None)
 
@@ -858,6 +927,8 @@ class Main(QMainWindow):
 
     def run_job(self, fn, *a, done=None, failed=None, cancelled=None, progress=None):
         """在背景執行；主執行緒先 commit，工作執行緒開自己的 SQLite 連線。"""
+        if getattr(self, "_closed", False):        # R70：視窗關掉後不再開工作（資料庫已關閉）
+            return None
         self.lib.db.commit()
         job = Job(fn, *a); self.jobs.append(job)
         if progress:
@@ -1051,18 +1122,9 @@ class Main(QMainWindow):
             self.refresh(); self.toast.show_msg("已復原", ms=3000)
 
     # ---------- 輸出 ----------
-    def _music_path(self):
-        """內建音樂在第一次使用時合成到素材庫的 music/ 資料夾（約 1 秒），之後沿用。"""
-        m = self.music.currentData() or ""
-        if m.startswith("builtin:"):
-            from app import music as _mu
-            m = _mu.ensure(os.path.join(self.lib.root, "music"), m.split(":", 1)[1])
-        return m
-
     def options(self, preview=False):
-        m = self._music_path()
         return core.ExportOptions(aspect=self.aspect.currentData(), resolution="1080p" if preview else self.res.currentData(),
-                                  crossfade=self.trans.currentData(), music=m, music_volume=self.vol.value() / 100,
+                                  crossfade=0.0, music="",
                                   keep_original_audio=self.keep_audio.isChecked(), fade_out=1.5 if self.fade.isChecked() else 0,
                                   hw_encode=bool(self.lib.get("hw_encode", True)) and not preview,
                                   reframe=self.frame_c.currentData(), projection=self.proj.currentData(),
@@ -1205,32 +1267,25 @@ class Main(QMainWindow):
         a, b = _t.strftime("%Y.%m.%d", _t.localtime(min(ts))), _t.strftime("%Y.%m.%d", _t.localtime(max(ts)))
         return a if a == b else f"{a} – {b[5:] if a[:4] == b[:4] else b}"
 
-    def _beat_state(self):
-        on = bool(self.music.currentData())
-        self.beat.setEnabled(on); self.pace.setEnabled(on and self.beat.isChecked())
-        self.beat.setToolTip("" if on else "先選背景音樂")
-
     def apply_style(self, name):
         from app import smart
         t = smart.TEMPLATES.get(name)
         if not t:
             return
-        self.pace.setCurrentIndex(max(0, self.pace.findData(t["pacing"])))
-        self.trans.setCurrentIndex(min(range(self.trans.count()), key=lambda i: abs(self.trans.itemData(i) - t["crossfade"])))
+        self._pacing = t["pacing"]
         self.slowmo.setChecked(t["slowmo"] > 0)
         self.target.setCurrentIndex(max(0, self.target.findData(t["target"])))
         self.date_c.setChecked(t["title"])
         lk = {"運動": "鮮豔", "旅行": "電影"}.get(name, "")
         self.look_c.setCurrentIndex(max(0, self.look_c.findData(lk)))
-        self.toast.show_msg(f"已套用「{name}」風格：{self.pace.currentText()}、"
+        self.toast.show_msg(f"已套用「{name}」風格："
                             f"{'有' if t['slowmo'] else '無'}慢動作", ms=3000)
 
     def _prep(self):
         """交給背景輸出工作的 AI 步驟參數。"""
-        m = self._music_path()
-        return {"root": self.root, "music": m if (m and self.beat.isChecked()) else "",
-                "pacing": self.pace.currentData(), "slowmo": 0.5 if self.slowmo.isChecked() else 0.0,
-                "crossfade": self.trans.currentData(),
+        return {"root": self.root, "music": "",
+                "pacing": getattr(self, "_pacing", "平穩"), "slowmo": 0.5 if self.slowmo.isChecked() else 0.0,
+                "crossfade": 0.0,
                 "stickers": self.stickers + ([self._cur_sticker()] if self._cur_sticker() else [])}
 
     def one_click(self, folder=None, out=None, on_done=None, only_fids=None, brief=None):
@@ -1267,7 +1322,7 @@ class Main(QMainWindow):
 
     def start_tagging(self):
         from app import semantic
-        if getattr(self, "_tagging", False) or not semantic.has_clip():
+        if getattr(self, "_closed", False) or getattr(self, "_tagging", False) or not semantic.has_clip():
             return
         self._tagging = True
 
@@ -1522,9 +1577,7 @@ class Main(QMainWindow):
         if "aspect" in b:
             self.aspect.setCurrentIndex(self.aspect.findData(b["aspect"]))
         if "pace" in b:
-            self.pace.setCurrentIndex(self.pace.findData(b["pace"]))
-        if "mood" in b:
-            self.music.setCurrentIndex(max(0, self.music.findData(f"builtin:{b['mood']}" if b["mood"] else "")))
+            self._pacing = b["pace"]
         if b.get("tags"):
             self.theme.setCurrentIndex(max(0, self.theme.findData(b["tags"][0])))
         if "slowmo" in b:
@@ -1546,8 +1599,8 @@ class Main(QMainWindow):
         if not self.lib.clip_rows():
             self.toast.show_msg("先做一支影片，再來調整", ms=3000); return []
         st = dict(self._refine, target=self._target() or int(sum(c["end"] - c["start"] for c in self.lib.timeline())) or 60,
-                  pace=self.pace.currentData(), fx=self.fx.currentData() or "",
-                  mood=(self.music.currentData() or "").replace("builtin:", "") if (self.music.currentData() or "").startswith("builtin:") else self._refine.get("mood", ""))
+                  pace=getattr(self, "_pacing", "平穩"), fx=self.fx.currentData() or "",
+                  mood=self._refine.get("mood", ""))
         st, msg = CV.refine_state(cmds, st)
         if "drop" in cmds:
             cid = self.tl.currentItem().data(Qt.UserRole) if self.tl.currentItem() else None
@@ -1567,11 +1620,9 @@ class Main(QMainWindow):
             else:
                 self.target.setCurrentIndex(self.target.findData(-1)); self.cust.setValue(st["target"])
         if any(c in cmds for c in ("hype", "warm", "calm")):
-            self.pace.setCurrentIndex(self.pace.findData(st["pace"]))
+            self._pacing = st["pace"]
             if st.get("fx") is not None:
                 self.fx.setCurrentIndex(max(0, self.fx.findData(st["fx"])))
-        if any(c in cmds for c in ("music", "hype", "warm")):
-            self.music.setCurrentIndex(max(0, self.music.findData(f"builtin:{st['mood']}")))
         if any(c in cmds for c in ("shorter", "longer", "people", "drop")):
             b = getattr(self, "last_brief", {}) or {}
             self.lib.auto_pick(self._target() or st["target"], prefer_tag=b.get("tags") or self.theme.currentData() or None,
@@ -1584,19 +1635,15 @@ class Main(QMainWindow):
     # ---------- R35：偏好與我的範本 ----------
     def prefs(self):
         return {"target": self.target.currentData(), "cust": self.cust.value(), "aspect": self.aspect.currentData(),
-                "res": self.res.currentData(), "trans": self.trans.currentData(), "look": self.look_c.currentData(),
-                "music": self.music.currentData(), "vol": self.vol.value(), "pace": self.pace.currentData(),
-                "fx": self.fx.currentData(), "beat": self.beat.isChecked(), "slowmo": self.slowmo.isChecked(),
+                "res": self.res.currentData(), "look": self.look_c.currentData(),
+                "fx": self.fx.currentData(), "slowmo": self.slowmo.isChecked(),
                 "frame": self.frame_c.currentData(), "tstyle": self.tstyle.currentData(), "tanim": self.tanim.currentData(),
                 "fade": self.fade.isChecked(), "keep_audio": self.keep_audio.isChecked(), "auto_color": self.auto_col.isChecked(),
                 "theme": self.theme.currentData(), "formats": self.formats()}
 
     def set_prefs(self, d):
-        combos = {"aspect": self.aspect, "res": self.res, "trans": self.trans, "look": self.look_c, "music": self.music,
-                  "pace": self.pace, "fx": self.fx, "frame": self.frame_c, "tstyle": self.tstyle, "tanim": self.tanim,
+        combos = {"aspect": self.aspect, "res": self.res, "look": self.look_c, "fx": self.fx, "frame": self.frame_c, "tstyle": self.tstyle, "tanim": self.tanim,
                   "theme": self.theme}
-        if "music" in d:
-            self._music_list()
         for k, w in combos.items():
             if k in d:
                 i = w.findData(d[k])
@@ -1608,9 +1655,7 @@ class Main(QMainWindow):
                 self.target.setCurrentIndex(i)
         if "cust" in d:
             self.cust.setValue(int(d["cust"]))
-        if "vol" in d:
-            self.vol.setValue(int(d["vol"]))
-        for k, w in (("beat", self.beat), ("slowmo", self.slowmo), ("fade", self.fade), ("keep_audio", self.keep_audio),
+        for k, w in (("slowmo", self.slowmo), ("fade", self.fade), ("keep_audio", self.keep_audio),
                      ("auto_color", self.auto_col)):
             if k in d:
                 w.setChecked(bool(d[k]))
@@ -1679,7 +1724,7 @@ class Main(QMainWindow):
         self._settings_applied()
 
     def _settings_applied(self):
-        self._music_list(); self._ai_state()
+        self._ai_state()
 
     def _ai_state(self):
         self.cloud = bool(self.lib.get("ai_on", False)) and bool(self.lib.get("ai_key_ok", False)) and bool(ai.get_key())
@@ -1741,6 +1786,7 @@ class Main(QMainWindow):
         return self._ai_job
 
     def closeEvent(self, e):
+        self._closed = True
         try:
             self.save_prefs()
         except Exception:

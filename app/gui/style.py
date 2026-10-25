@@ -13,6 +13,9 @@ def key(mac, win):
 BG, PANEL, CARD, LINE, LINE2 = "#141414", "#1d1d1d", "#222222", "#707070", "#3a3a3a"
 TX, TX2, ACC, WARN, ERR, OK = "#EEEEEE", "#B0B0B0", "#FFC400", "#FFA000", "#FF6B6B", "#8FD18F"
 
+import os as _os
+_AS = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "assets").replace("\\", "/")
+CHK, CHK_DIS = _AS + "/check.png", _AS + "/check_dis.png"
 QSS = f"""
 * {{ color:{TX}; font-size:13px; }}
 QMainWindow, QDialog, QWidget#root {{ background:{BG}; }}
@@ -62,6 +65,8 @@ QRadioButton::indicator {{ border-radius:9px; }}
 QCheckBox::indicator:checked, QRadioButton::indicator:checked {{ background:{ACC}; border:2px solid {ACC}; }}
 QCheckBox::indicator:focus {{ border:2px solid #FFFFFF; }}
 QCheckBox::indicator:disabled {{ background:#202020; border:2px solid #555555; }}
+QCheckBox::indicator:checked {{ image:url({CHK}); }}
+QCheckBox::indicator:checked:disabled {{ background:#5E5230; border:2px solid #7A6A3A; image:url({CHK_DIS}); }}
 QPushButton[accent2="true"] {{ background:#2C2C2C; color:{ACC}; border:1px solid {ACC}; font-weight:700; padding:7px 14px; border-radius:8px; }}
 QPushButton[accent2="true"]:focus {{ border:2px solid #FFFFFF; }}
 QPushButton[accent2="true"]:disabled {{ color:#8A8A8A; border:1px solid #767676; background:#242424; }}

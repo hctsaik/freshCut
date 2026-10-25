@@ -1,0 +1,21 @@
+2026-10-25 20:29:39
+app/gui:
+total 208
+drwxr-xr-x 2 box box  4096 19:52:24 __pycache__
+-rw-r--r-- 1 box box 98231 19:52:17 main.py
+-rw-r--r-- 1 box box 30912 19:50:58 widgets.py
+-rw-r--r-- 1 box box 26985 19:25:30 clips.py
+-rw-r--r-- 1 box box  6605 19:24:55 style.py
+drwxr-xr-x 2 box box  4096 19:24:55 assets
+-rw-r--r-- 1 box box  6318 18:24:01 workers.py
+-rw-r--r-- 1 box box 23685 16:37:34 dialogs.py
+-rw-r--r-- 1 box box  3279 04:38:09 ai.py
+-rw-r--r-- 1 box box     0 00:05:41 __init__.py
+
+tests:
+total 236
+-rw-r--r-- 1 box box 32056 19:52:17 test_gui.py
+-rw-r--r-- 1 box box  7428 19:35:50 test_r71.py
+-rw-r--r-- 1 box box  8574 19:26:08 test_gui_clips.py
+-rw-r--r-- 1 box box  8085 18:35:57 test_r70.py
+-rw-r--r-- 1 box box 11323 18:21:34 test_clips_r66.py

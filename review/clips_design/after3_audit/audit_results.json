@@ -1,0 +1,130 @@
+{
+ "cancel_overFalse": {
+  "cancelled": true,
+  "pre_intact": true,
+  "parts": [],
+  "files": [
+   "VID_20240825_023257_349_0m01_0s-0m05_0s_start.mp4",
+   "VID_20240825_023257_349_0m01_0s-0m05_0s_start_2.mp4"
+  ]
+ },
+ "cancel_overTrue": {
+  "cancelled": true,
+  "pre_intact": true,
+  "parts": [],
+  "files": [
+   "VID_20240825_023257_349_0m01_0s-0m05_0s_start.mp4"
+  ]
+ },
+ "audio_off_oor": [
+  [
+   "/tmp/tmpa9u6u0va/na/VID_20240827_111111_002_0m01_0s-0m05_0s_start.mp4",
+   true,
+   4.0,
+   2.0,
+   null,
+   [
+    [
+     "video",
+     2.0
+    ]
+   ]
+  ],
+  [
+   null,
+   null,
+   null,
+   null,
+   "ClipInvalid: 入點／出點超出素材長度（素材 3.00 秒，片段 9999.00–10004.00 秒）",
+   null
+  ]
+ ],
+ "drawer1200": {
+  "drawer": [
+   832,
+   0,
+   320,
+   672
+  ],
+  "exp_b": [
+   1008,
+   681,
+   180,
+   38
+  ],
+  "covered": false,
+  "exp_b_visible": true
+ },
+ "drawer1024": {
+  "drawer": [
+   656,
+   0,
+   320,
+   672
+  ],
+  "exp_b": [
+   832,
+   681,
+   180,
+   38
+  ],
+  "covered": false,
+  "exp_b_visible": true
+ },
+ "n_items": 4,
+ "exporting": {
+  "cancels": [
+   "取消匯出"
+  ],
+  "disabled_checked": [
+   "保留原音",
+   "依影片建立子資料夾"
+  ],
+  "pills_enabled": [
+   false,
+   false,
+   false,
+   false,
+   false,
+   false,
+   false
+  ],
+  "prog": "匯出中 0/4 · 估算中…",
+  "prog_fits": false
+ },
+ "done": {
+  "n": 4,
+  "hbar": false,
+  "hpolicy": 1,
+  "items": [
+   [
+    "VID_20240825_023257_349_AI人物_01.mp4",
+    "/tmp/tmpa9u6u0va/out/VID_20240825_023257_349/VID_20240825_023257_349_AI人物_01.mp4\n資料夾：VID_20240825_023257_349/"
+   ],
+   [
+    "VID_20240826_101010_001_AI人物_01.mp4",
+    "/tmp/tmpa9u6u0va/out/VID_20240826_101010_001/VID_20240826_101010_001_AI人物_01.mp4\n資料夾：VID_20240826_101010_001/"
+   ],
+   [
+    "VID_20240827_111111_002_整支_01.mp4",
+    "/tmp/tmpa9u6u0va/out/VID_20240827_111111_002/VID_20240827_111111_002_整支_01.mp4\n資料夾：VID_20240827_111111_002/"
+   ],
+   [
+    "VID_20240827_111111_002_從頭開始_01.mp4　（已截短）",
+    "/tmp/tmpa9u6u0va/out/VID_20240827_111111_002/VID_20240827_111111_002_從頭開始_01.mp4\n資料夾：VID_20240827_111111_002/"
+   ]
+  ],
+  "trunc": 1,
+  "trunc_l": "⚠ 1 段因超出影片長度被截短：VID_20240827_111111_002_從頭開始_01.mp4 4.0→1.0 秒",
+  "title": "✓ 已匯出 4 個片段"
+ },
+ "toast": {
+  "toast": [
+   739,
+   813,
+   415,
+   37
+  ],
+  "overlaps_cards": false
+ }
+}

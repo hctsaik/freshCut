@@ -64,10 +64,10 @@ assert len(w.cards) >= 6, len(w.cards)
 # 窄視窗：右側設定收成抽屜
 w.resize(1000, 760); app.processEvents()
 assert w.drawer_b.isVisible() and not w.rscroll.isVisible()
-w.drawer_b.click(); app.processEvents(); assert w.rscroll.isVisible() and "◂" in w.drawer_b.text()
+w.drawer_b.click(); app.processEvents(); assert w.rscroll.isVisible() and w.drawer_b.text() == "✕" and w.dstrip.width() == 48 and w.rscroll.width() == 320
 shot(w, "gui_10_narrow_drawer.png")
 w.drawer_b.click(); app.processEvents(); assert not w.rscroll.isVisible()
-w.resize(1360, 860); app.processEvents(); assert w.rscroll.isVisible() and not w.drawer_b.isVisible()
+w.resize(1360, 860); app.processEvents(); assert w.rscroll.isVisible() and not w.drawer_b.isVisible() and not w.dstrip.isVisible()
 w2 = Main(root=os.path.join(root, "lib")); app.processEvents(); wait(1000)
 assert not w2.toast.isVisible(), "提示只出現一次"; w2.close(); w2.deleteLater()
 print("R9 drawer/tip OK")
@@ -121,10 +121,13 @@ w.aspect.setCurrentIndex(0); w.res.setCurrentIndex(0)
 w.lib.set("hw_encode", False)
 w.export(out=out, auto=True, on_done=lambda p, err=None: res.update(p=p, err=err))
 wait(400); shot(w._prog, "gui_5_progress.png")
-spin(lambda: res, timeout=300)
+# R71：不用牆鐘時間判定——等「完成」或「失敗」事件；上限只是防卡死（負載高時一鍵輸出可能超過 300 秒）
+n_err = len(JOB_ERRORS)
+spin(lambda: res or len(JOB_ERRORS) > n_err, timeout=float(os.environ.get("GUI_EXPORT_TIMEOUT", 1800)))
+assert len(JOB_ERRORS) == n_err, JOB_ERRORS[n_err:]
 assert res.get("p") == out and not res.get("err"), res
 info = core.probe(out)
-exp = sum(c["end"] - c["start"] for c in w.lib.timeline()) - 3 * 0.5
+exp = sum(c["end"] - c["start"] for c in w.lib.timeline())   # R70：轉場元件已移除，crossfade=0
 print("export duration", info.duration, "expected≈", exp, info.width, info.height)
 assert (info.width, info.height) == (1920, 1080) and abs(info.duration - exp) < 1.0
 
@@ -213,13 +216,12 @@ assert w._search_mode in ("basic", "clip"), w._search_mode
 w.aiq.setText("量子力學"); j = w.ai_search(); spin(lambda: j.finished); wait(100)
 assert w._search_mode in ("unknown", "clip")
 w.apply_style("運動")
-assert w.pace.currentData() == "輕快" and w.slowmo.isChecked() and w.target.currentData() == 30
+assert w._pacing == "輕快" and w.slowmo.isChecked() and w.target.currentData() == 30
 o = w.options(); assert o.look == "鮮豔" and o.auto_enhance, (o.look, o.auto_enhance)
-mdir = os.path.join(root, "music"); os.makedirs(mdir)
-subprocess.run([ff, "-y", "-v", "error", "-f", "lavfi", "-i", "aevalsrc='sin(2*PI*660*t)*exp(-40*mod(t,0.5))':s=44100:d=60",
-                os.path.join(mdir, "beat120.m4a")], check=True)
-w.lib.set("music_dir", mdir); w._music_list(); w.music.setCurrentIndex(w.music.findData(os.path.join(mdir, "beat120.m4a")))
-assert w.beat.isEnabled() and w.pace.isEnabled()
+# R70：配樂／轉場／節拍元件已從介面程式碼移除
+for a in ("music", "trans", "beat", "vol", "pace", "_music_list", "_music_path", "_beat_state"):
+    assert not hasattr(w, a), a
+assert o.music == "" and o.crossfade == 0.0 and w._prep()["music"] == ""
 w.title_e.setText("測試旅行"); w.date_c.setChecked(True)
 res = {}; out3 = os.path.join(root, "auto.mp4")
 shot(w, "gui_8_ai_panel.png")
@@ -229,14 +231,8 @@ assert res.get("p") == out3, res
 tl = w.lib.timeline(); info = core.probe(out3)
 print("one-click:", len(tl), "clips, duration", info.duration)
 assert 3 <= len(tl) and 8 < info.duration < 45 and info.has_audio
-assert w.lib.get(next(k for k in [r[0] for r in w.lib.db.execute("SELECT k FROM kv WHERE k LIKE 'beats:%'")])), "節拍要快取"
-w.music.setCurrentIndex(0); w.title_e.setText(""); w.date_c.setChecked(False); w.slowmo.setChecked(False)
+w.title_e.setText(""); w.date_c.setChecked(False); w.slowmo.setChecked(False)
 print("R2-5 OK")
-w.music.setCurrentIndex(w.music.findData("builtin:放鬆"))
-assert w.beat.isEnabled(); bp = w._music_path()
-assert bp.endswith(".wav") and os.path.getsize(bp) > 100000 and w._music_path() == bp
-w.music.setCurrentIndex(0)
-print("R7 builtin music OK")
 
 # R8：鎖定（L 鍵）＋換一批
 w.refresh(); spin(lambda: w.cards, 10)
@@ -364,7 +360,13 @@ for i in range(w.tl.count()):
     it = w.tl.item(i); assert it.sizeHint().width() >= fm.horizontalAdvance(it.text()) + 30
 w.toast.show_msg("分析完成，已幫每支影片勾選最精彩的 2 段"); app.processEvents()
 tl_top = w.ebar.mapTo(w.centralWidget(), w.ebar.rect().topLeft()).y()   # R69：toast 不可蓋住匯出列
-assert w.toast.geometry().bottom() < tl_top, (w.toast.geometry(), tl_top)
+# R71：toast 改放在匯出列中間的空白處——不蓋卡片牆、不蓋匯出列的按鈕
+tg = w.toast.geometry(); cw = w.centralWidget()
+vr = w.scroll.viewport().rect().translated(w.scroll.viewport().mapTo(cw, w.scroll.viewport().rect().topLeft()))
+assert not tg.intersects(vr), (tg, vr)
+for b in (w.ebar.exp_b, w.ebar.prev_b):
+    br = b.rect().translated(b.mapTo(cw, b.rect().topLeft()))
+    assert not tg.intersects(br), (tg, br)
 shot(w, "gui_14_1024.png"); w.resize(1360, 860); app.processEvents()
 print("R14 OK")
 # R15：CLIP 標籤卡片 chip＋一鍵成片主題
@@ -509,16 +511,15 @@ print("R32 GUI OK")
 w.cloud = False
 res = {}; b = w.run_brief("15秒方形海邊 熱血 史詩", out=os.path.join(root, "brief.mp4"),
                           on_done=lambda p, err=None: res.update(p=p, err=err))
-assert b["target"] == 15 and w.aspect.currentData() == "1:1" and w.pace.currentData() == "史詩"
-assert w.music.currentData() == "builtin:熱血" and w.theme.currentData() == "海"
+assert b["target"] == 15 and w.aspect.currentData() == "1:1" and w._pacing == "史詩"
+assert w.theme.currentData() == "海"
 spin(lambda: "p" in res, 300); assert res["p"] and core.probe(res["p"]).width == core.probe(res["p"]).height, res
 shot(w, "gui_33_brief.png")
 print("R33 GUI OK")
 # R34：調整指令
 tgt0 = w._target(); w.refine("長一點"); assert w._target() == min(600, round(tgt0 * 1.4)), w._target()
 w.refine("短一點"); assert w._target() < round(tgt0 * 1.4)
-m0 = w.music.currentData(); w.refine("換首歌"); assert w.music.currentData() != m0 and w.music.currentData().startswith("builtin:")
-w.refine("更熱血"); assert w.pace.currentData() == "輕快" and w.music.currentData() == "builtin:熱血"
+w.refine("更熱血"); assert w._pacing == "輕快"
 tl = w.lib.timeline(); assert len(tl) >= 2
 lock_id = tl[0]["id"]; w.lock_clip(lock_id, True); w.refresh()
 w.tl.setCurrentRow(0); msg = w.refine("這段不要"); assert "鎖定" in msg[-1] and lock_id in [c["id"] for c in w.lib.timeline()]
@@ -536,9 +537,9 @@ w.aspect.setCurrentIndex(w.aspect.findData("9:16")); w.fmt_c["1:1"].setChecked(T
 t = w.save_template("IG 直式"); assert "IG 直式" in t and w.tpl_c.findData("IG 直式") >= 0
 w.aspect.setCurrentIndex(w.aspect.findData("16:9")); w.fmt_c["1:1"].setChecked(False)
 w.apply_template("IG 直式"); assert w.aspect.currentData() == "9:16" and w.fmt_c["1:1"].isChecked()
-w.pace.setCurrentIndex(w.pace.findData("平穩")); w.save_prefs()
+w.save_prefs()
 w2 = Main(root=os.path.join(root, "lib"), autoplay=False)
-assert w2.aspect.currentData() == "9:16" and w2.pace.currentData() == "平穩" and w2.fmt_c["1:1"].isChecked()
+assert w2.aspect.currentData() == "9:16"  and w2.fmt_c["1:1"].isChecked()
 assert w2.tpl_c.findData("IG 直式") >= 0
 spin(lambda: getattr(w2, "_an_job", None) is None, 60); w2.close()
 w.delete_template("IG 直式"); assert w.tpl_c.findData("IG 直式") < 0

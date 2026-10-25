@@ -98,7 +98,7 @@ n = len(w._export_items()); assert w.exp_b.text() == f"匯出已選片段（{n}�
 out = os.path.join(root, "out"); w.exp_panel.folder_e.setText(out)
 w.exp_panel.audio.setChecked(False)
 res = {}
-w.export_clips(on_done=lambda r: res.update(r=r)); assert w.ebar.cancel_b.isVisibleTo(w)
+w.export_clips(on_done=lambda r: res.update(r=r)); assert w.exp_b.text() == "取消匯出" and not w.ebar.cancel_b.isVisibleTo(w)   # R71：只有一個取消
 spin(lambda: "r" in res, 300); app.processEvents()
 files = sorted(glob.glob(os.path.join(out, "**", "*.mp4"), recursive=True))
 assert len(files) == n, (len(files), n)
@@ -109,7 +109,7 @@ for (path, err), (seg, _) in zip(res["r"], items):
     assert abs(pr.duration - (seg.end - seg.start)) <= 0.1, (path, pr.duration, seg.end - seg.start)
 assert not glob.glob(os.path.join(out, "**", "*.part*"), recursive=True)
 dlg = w.done_dlg; assert dlg.title.text() == f"✓ 已匯出 {n} 個片段", dlg.title.text()
-assert dlg.files.text().count(".mp4") == min(4, n)
+assert dlg.files.count() == n and all(dlg.files.item(i).text().endswith(".mp4") for i in range(n))
 w.grab().save(os.path.join(root, "done.png"))
 dlg.close_b.click()
 print("#3 OK", n, "files")
@@ -124,7 +124,7 @@ assert res["r"] is None
 for p_, sz in before.items():
     assert os.path.exists(p_) and os.path.getsize(p_) == sz, p_
 assert not glob.glob(os.path.join(out, "**", "*.part*"), recursive=True)
-assert w.exp_b.isEnabled() and not w.ebar.cancel_b.isVisibleTo(w)
+assert w.exp_b.isEnabled() and w.exp_b.text() != "取消匯出" and not w.ebar.cancel_b.isVisibleTo(w)
 w.exp_panel.over.setChecked(False)
 print("#4 OK")
 

@@ -1,0 +1,19 @@
+15.88  TX on BG
+ 7.77  TX2 on PANEL
+ 7.34  TX2 on CARD
+ 8.42  err #FF9C9C on PANEL
+11.82  primary #111 on ACC
+ 4.69  primary disabled #B0A070 on #3d3520
+ 4.50  disabled #8A8A8A on #242424
+ 4.72  lineedit disabled #8A8A8A on #202020
+ 5.38  placeholder #9A9A9A on #262626
+10.23  link #9CC3FF on BG
+ 8.21  danger #FFB3B3 on #2c2c2c
+ 3.21  card border #707070 vs CARD (1.4.11)
+ 3.72  card border #707070 vs BG
+15.91  focus #FFF vs CARD
+ 1.00  checked-card focus ACC vs checked ACC (focus change)
+10.47  selected TX on #3d3520
+12.42  aierr TX on #3a2424
+10.89  toast TX on #333
+ 1.62  disabled input border LINE2 vs BG

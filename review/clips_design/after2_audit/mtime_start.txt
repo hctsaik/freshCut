@@ -1,0 +1,21 @@
+2026-10-25 18:51:44
+tests:
+total 228
+-rw-r--r-- 1 box box  8085 18:35:57 test_r70.py
+-rw-r--r-- 1 box box 31389 18:31:14 test_gui.py
+-rw-r--r-- 1 box box  8467 18:22:30 test_gui_clips.py
+-rw-r--r-- 1 box box 11323 18:21:34 test_clips_r66.py
+-rw-r--r-- 1 box box  4144 17:52:54 test_strategies.py
+-rw-r--r-- 1 box box  2352 17:30:12 test_recompute_r68.py
+-rw-r--r-- 1 box box  2504 16:49:23 test_export_clips.py
+-rw-r--r-- 1 box box  3897 15:29:17 test_library.py
+-rw-r--r-- 1 box box  2401 05:14:23 test_fisheye_follow.py
+-rw-r--r-- 1 box box  4817 04:55:30 test_lrv.py
+-rw-r--r-- 1 box box  4706 04:54:52 test_fisheye.py
+-rw-r--r-- 1 box box  8228 04:37:10 test_convenience.py
+-rw-r--r-- 1 box box  5240 04:22:37 test_effects.py
+-rw-r--r-- 1 box box  1409 04:19:41 test_retag.py
+-rw-r--r-- 1 box box  2247 04:12:20 test_perf.py
+-rw-r--r-- 1 box box  2340 04:08:47 test_speed.py
+-rw-r--r-- 1 box box  2571 03:59:24 test_robust.py
+drwxr-xr-x 2 box box  4096 03:50:40 __pycache__

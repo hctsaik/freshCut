@@ -11,6 +11,12 @@ class Sig(QObject):
     cancelled = Signal()
 
 
+def _gone(e):
+    """R70：關閉時常見的「資料庫已關閉／訊號來源已刪除」——不是使用者要看的錯誤。"""
+    m = str(e)
+    return "Signal source has been deleted" in m or "closed database" in m
+
+
 class Job(QRunnable):
     def __init__(self, fn, *a, **kw):
         super().__init__()
@@ -24,15 +30,20 @@ class Job(QRunnable):
         from app import core
         core.set_cancel(lambda: self.cancelled)      # 讓 ffmpeg 可在執行中被中止
         try:
-            r = self.fn(self, *self.a, **self.kw)
-            self.finished = True
-            self.sig.cancelled.emit() if self.cancelled else self.sig.done.emit(r)
-        except core.Cancelled:
-            self.finished = True
-            self.sig.cancelled.emit()
-        except Exception as e:  # noqa: BLE001 — 轉成介面上的錯誤訊息
-            self.finished = True
-            self.sig.failed.emit(f"{type(e).__name__}: {e}")
+            try:
+                r = self.fn(self, *self.a, **self.kw)
+                self.finished = True
+                self.sig.cancelled.emit() if self.cancelled else self.sig.done.emit(r)
+            except core.Cancelled:
+                self.finished = True
+                self.sig.cancelled.emit()
+            except Exception as e:  # noqa: BLE001 — 轉成介面上的錯誤訊息
+                self.finished = True
+                if not _gone(e):
+                    self.sig.failed.emit(f"{type(e).__name__}: {e}")
+        except RuntimeError as e:      # R70：視窗／程式已關閉，訊號來源被刪除——安靜結束
+            if not _gone(e):
+                raise
         finally:
             core.set_cancel(None)
 

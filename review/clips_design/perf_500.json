@@ -1,0 +1,16 @@
+{
+ "files": 45,
+ "clips_in_db": 531,
+ "load_to_wall_s": 2.593,
+ "cards": 531,
+ "needs_analysis": 0,
+ "rebuild_wall_s": 2.025,
+ "full_repaint_s": 0.038,
+ "scroll_step_ms_median": 3.6,
+ "scroll_step_ms_max": 4.7,
+ "select_all_s": 0.52,
+ "selected": 531,
+ "export_plan_s": 0.044,
+ "export_items": 531,
+ "resize_reflow_s": 0.129
+}

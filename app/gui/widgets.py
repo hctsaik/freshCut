@@ -19,6 +19,23 @@ def fmt(t):
     return f"{int(t // 60):02d}:{t % 60:04.1f}"
 
 
+_THUMBS = {}
+
+
+def _thumb_pix(path, w, h):
+    """R71：縮圖快取（路徑＋mtime＋尺寸）。重建卡片牆（切策略、重算候選）時不必每張重新解碼與縮放。"""
+    try:
+        k = (path, os.path.getmtime(path), w, h)
+    except OSError:
+        k = (path, 0, w, h)
+    pm = _THUMBS.get(k)
+    if pm is None:
+        if len(_THUMBS) > 3000:
+            _THUMBS.clear()
+        pm = _THUMBS[k] = QPixmap(path).scaled(w, h, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+    return pm
+
+
 class FrameView(QLabel):
     """用 QVideoSink 把影格畫進 QLabel（離螢幕截圖也看得到畫面）；靜音、無限循環。"""
 
@@ -34,7 +51,7 @@ class FrameView(QLabel):
     def set_thumb(self, path):
         self._thumb = path
         if path and os.path.exists(path):
-            self.setPixmap(QPixmap(path).scaled(self.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation))
+            self.setPixmap(_thumb_pix(path, self.width(), self.height()))
 
     def set_size(self, w, h):
         if (w, h) != (self.width(), self.height()):
@@ -268,13 +285,18 @@ class Wall(QWidget):
             return False
         self.COLS = n
         for g, cards in self._grids:
+            shown = [c for c in cards if not getattr(c, "filtered", False)]
+            sig = (n, tuple(id(c) for c in shown))
+            if getattr(g, "_sig", None) == sig:     # R71：500+ 段時篩選沒變的組不重排（省掉整面 remove/add）
+                continue
+            g._sig = sig
             for c in cards:
                 g.removeWidget(c)
             for i in range(g.columnCount()):
                 g.setColumnStretch(i, 0)
-            shown = [c for c in cards if not getattr(c, "filtered", False)]
             for c in cards:
-                c.setVisible(not getattr(c, "filtered", False))
+                if c.isHidden() != bool(getattr(c, "filtered", False)):
+                    c.setVisible(not getattr(c, "filtered", False))
             for i, c in enumerate(shown):
                 g.addWidget(c, i // n, i % n)
             g.setColumnStretch(n, 1)
@@ -304,6 +326,7 @@ class Wall(QWidget):
             c.activated.connect(self._act); c.nav.connect(self._nav)
             self.cards.append(c); self.items.append(c)
         g.setColumnStretch(self.COLS, 1)
+        g._sig = (self.COLS, tuple(id(c) for c in cards if not getattr(c, "filtered", False)))
         self.lay.addWidget(box)
         header.tog.clicked.connect(lambda _=False, b=box, h=header: self._fold(b, h))
         if extra:
@@ -316,7 +339,10 @@ class Wall(QWidget):
         self.set_cols(self.COLS, force=True)
         for (g, cards), h in zip(self._grids, self.headers):
             vis = any(not c.filtered for c in cards) or not cards
-            h.setVisible(vis); g.parentWidget().setVisible(vis)
+            if h.isHidden() == vis:
+                h.setVisible(vis)
+            if g.parentWidget().isHidden() == vis and not getattr(h, "folded", False):
+                g.parentWidget().setVisible(vis)
         return sum(1 for c in self.cards if not c.filtered)
 
     def _fold(self, box, h):
@@ -440,6 +466,16 @@ class Toast(QFrame):
         self.lab.setMaximumWidth(400)
         self.lab.setMinimumWidth(min(self.lab.fontMetrics().horizontalAdvance(text) + 4, 400))
         self.btn.setVisible(bool(action)); self.btn.setText(action or ""); self._cb = cb
+        z = getattr(self, "zone", None); z = z() if z else None
+        if z and z[1] - z[0] >= 220:          # R71：塞進匯出列的空白處，不蓋卡片
+            left, right, top, bot = z
+            bw = (self.btn.sizeHint().width() + 8) if action else 0
+            w = min(560, right - left - 30 - bw)
+            self.lab.setMaximumWidth(w); self.lab.setMinimumWidth(min(self.lab.fontMetrics().horizontalAdvance(text) + 4, w))
+            self.adjustSize()
+            self.move(max(left, right - self.width()), max(8, bot - 4 - self.height() if self.height() > bot - top - 6
+                                                          else top + (bot - top - self.height()) // 2))
+            self.show(); self.raise_(); self.t.start(ms); return
         self.adjustSize()
         p = self.parent()
         anchor = getattr(self, "anchor", None)      # R63：右下角、時間軸上緣之上（不蓋卡片中央與時間軸）

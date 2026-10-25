@@ -1,0 +1,240 @@
+{
+ "analyze_s": 28.8,
+ "default": {
+  "n_cards": 11,
+  "checked": 4,
+  "chips": [
+   "action",
+   "people",
+   "start",
+   "uniform",
+   "whole"
+  ],
+  "count_label": "共 <b style='color:#FFC400'>11</b> 段，已選 <b style='color:#FFC400'>4</b> 段（約 22 秒）",
+  "exp_btn": "匯出已選片段（4）"
+ },
+ "default_cfg": {
+  "start": {
+   "on": true,
+   "len": 7.0,
+   "n": 1
+  },
+  "people": {
+   "on": true,
+   "len": 6.5,
+   "n": 1
+  },
+  "action": {
+   "on": true,
+   "len": 6.5,
+   "n": 2
+  },
+  "whole": {
+   "on": true,
+   "len": 10.0,
+   "n": 1
+  },
+  "uniform": {
+   "on": true,
+   "len": 6.5,
+   "n": 1
+  },
+  "loud": {
+   "on": false,
+   "len": 5.0,
+   "n": 2
+  },
+  "scene": {
+   "on": false,
+   "len": 4.0,
+   "n": 3
+  }
+ },
+ "ac1_action2": {
+  "n_cards": 7,
+  "checked": 3,
+  "chips": [
+   "action"
+  ],
+  "count_label": "共 <b style='color:#FFC400'>7</b> 段，已選 <b style='color:#FFC400'>3</b> 段（約 20 秒）",
+  "exp_btn": "匯出已選片段（3）"
+ },
+ "ac1_per_video": {
+  "1": 2,
+  "2": 1,
+  "3": 2,
+  "4": 2
+ },
+ "ac1_ok": true,
+ "four": {
+  "n_cards": 12,
+  "checked": 3,
+  "chips": [
+   "action",
+   "loud",
+   "people",
+   "start"
+  ],
+  "count_label": "共 <b style='color:#FFC400'>12</b> 段，已選 <b style='color:#FFC400'>3</b> 段（約 15 秒）",
+  "exp_btn": "匯出已選片段（3）"
+ },
+ "multi_cards": [
+  [
+   21,
+   [
+    "loud",
+    "action"
+   ]
+  ],
+  [
+   22,
+   [
+    "people",
+    "loud"
+   ]
+  ],
+  [
+   23,
+   [
+    "loud",
+    "people",
+    "start",
+    "action"
+   ]
+  ],
+  [
+   25,
+   [
+    "people",
+    "action",
+    "loud"
+   ]
+  ],
+  [
+   26,
+   [
+    "loud",
+    "action"
+   ]
+  ],
+  [
+   28,
+   [
+    "people",
+    "loud",
+    "action"
+   ]
+  ]
+ ],
+ "ac2_bystrat_occurrences": 2,
+ "ac2_export_items_for_cid": 1,
+ "after_off_immediate_chips": [
+  "action",
+  "people",
+  "start"
+ ],
+ "after_off_chips": [
+  "action",
+  "people",
+  "start"
+ ],
+ "export_items_strats": [
+  "action",
+  "people"
+ ],
+ "n_items": 2,
+ "ac3_files": [
+  "PRO_LRV_20240824_213353_01_001/PRO_LRV_20240824_213353_01_001_AI人物_01.mp4",
+  "PRO_LRV_20240824_231910_01_003/PRO_LRV_20240824_231910_01_003_AI人物_01.mp4"
+ ],
+ "ac3_probe": [
+  {
+   "dur": 6.52,
+   "streams": [
+    "video",
+    "audio"
+   ]
+  },
+  {
+   "dur": 6.52,
+   "streams": [
+    "video",
+    "audio"
+   ]
+  }
+ ],
+ "ac3_expected_durs": [
+  6.5,
+  6.5
+ ],
+ "done_reveal_label": "開啟資料夾",
+ "done_dialog_w": 533,
+ "ac3_noaudio": [
+  {
+   "dur": 6.52,
+   "streams": [
+    "video"
+   ]
+  }
+ ],
+ "ac4_exp_btn_enabled_during_export_overFalse": true,
+ "ac4_overFalse": {
+  "pre_intact": {
+   "PRO_LRV_20240824_213353_01_001/PRO_LRV_20240824_213353_01_001_AI人物_01.mp4": true,
+   "PRO_LRV_20240824_231910_01_003/PRO_LRV_20240824_231910_01_003_AI人物_01.mp4": true
+  },
+  "all_intact": true,
+  "parts": [],
+  "all_files": [
+   "PRO_LRV_20240824_213353_01_001/PRO_LRV_20240824_213353_01_001_AI人物_01.mp4",
+   "PRO_LRV_20240824_231910_01_003/PRO_LRV_20240824_231910_01_003_AI人物_01.mp4"
+  ]
+ },
+ "ac4_exp_btn_enabled_during_export_overTrue": true,
+ "ac4_overTrue": {
+  "pre_intact": {
+   "PRO_LRV_20240824_213353_01_001/PRO_LRV_20240824_213353_01_001_AI人物_01.mp4": true,
+   "PRO_LRV_20240824_231910_01_003/PRO_LRV_20240824_231910_01_003_AI人物_01.mp4": true
+  },
+  "all_intact": true,
+  "parts": [],
+  "all_files": [
+   "PRO_LRV_20240824_213353_01_001/PRO_LRV_20240824_213353_01_001_AI人物_01.mp4",
+   "PRO_LRV_20240824_231910_01_003/PRO_LRV_20240824_231910_01_003_AI人物_01.mp4"
+  ]
+ },
+ "ac5": {
+  "darwin": [
+   "open",
+   "-R",
+   "/x/a.mp4"
+  ],
+  "win": [
+   "explorer",
+   "/select,C:\\x\\a.mp4"
+  ],
+  "labels": [
+   "在 Finder 中顯示",
+   "在檔案總管中顯示"
+  ]
+ },
+ "ac6_filter_checked": {
+  "visible": 2,
+  "all_on": true,
+  "count_label": "共 <b style='color:#FFC400'>11</b> 段，已選 <b style='color:#FFC400'>2</b> 段（約 13 秒）"
+ },
+ "narrow1200": {
+  "rpanel_visible": true,
+  "drawer_btn": false
+ },
+ "narrow1024": {
+  "rpanel_visible": true,
+  "drawer_btn": false
+ },
+ "visible_leftover_words": [
+  "每個片段各自輸出成一個檔案，不加配樂、轉場或字幕。"
+ ],
+ "visible_primary_buttons": [
+  "匯出已選片段（2）"
+ ]
+}

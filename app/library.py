@@ -570,8 +570,9 @@ class Library:
                 "SELECT COALESCE(MAX(score),0) FROM clips WHERE file_id<>? AND source='ai'", (fid,)).fetchone()[0]])
             best = [c for c in sorted(cands, key=lambda c: -c.score)[:default_checked] if c.score >= LOW_REL * top
                     and not getattr(c, "optional", False)]          # R50：可選的第二段預設不勾
-            if not best and cands:
-                best = [max(cands, key=lambda c: c.score)]
+            if not best and cands:          # R70：保底的「只有均勻取樣」片段不自動勾
+                pool = [c for c in cands if not getattr(c, "optional", False)]
+                best = [max(pool, key=lambda c: c.score)] if pool else []
             # R54：跨檔排序（長度、連拍一組一支、近乎重複）→ 不值得留的影片，AI 片段預設不勾
             wi = self._worth_info(cands, info)
             if wi is not None and not self._rank_keep(fid, path, wi):
